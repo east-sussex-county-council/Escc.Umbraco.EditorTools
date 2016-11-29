@@ -14,8 +14,8 @@
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>umbracoTools</RootNamespace>
-    <AssemblyName>umbracoTools</AssemblyName>
+    <RootNamespace>Escc.Umbraco.EditorTools</RootNamespace>
+    <AssemblyName>Escc.Umbraco.EditorTools</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
@@ -615,6 +615,7 @@
     <Compile Include="App_Plugins\EditorTools\EditorToolsSection.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\Content.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\DocumentType.cs" />
+    <Compile Include="App_Plugins\EditorTools\Models\NonPerishableContent.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

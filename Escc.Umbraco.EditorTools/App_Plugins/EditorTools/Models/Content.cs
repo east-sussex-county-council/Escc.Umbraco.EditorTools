@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ApiTest.Models
+namespace Escc.Umbraco.EditorTools.Models
 {
     // Object to store the Url, Id, Name and DocumentTypeAlies of a content Node
     public class Content

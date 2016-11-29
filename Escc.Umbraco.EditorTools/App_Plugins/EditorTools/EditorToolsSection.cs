@@ -5,7 +5,7 @@ using System.Web;
 using umbraco.businesslogic;
 using umbraco.interfaces;
 
-namespace umbracoTools.App_Plugins.EditorTools
+namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
 {
     // This class creates a new section in umbraco
     [Application("EditorTools", "EditorTools", "icon-tools", 8)]

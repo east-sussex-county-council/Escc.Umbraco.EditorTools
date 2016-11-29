@@ -4,7 +4,7 @@ using Umbraco.Web.Models.Trees;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.Trees;
 
-namespace umbracoTools.App_Plugins.EditorTools.Controllers
+namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
     [Tree("EditorTools", "EditorToolsTree", "Editor Tools")]
     [PluginController("EditorTools")]

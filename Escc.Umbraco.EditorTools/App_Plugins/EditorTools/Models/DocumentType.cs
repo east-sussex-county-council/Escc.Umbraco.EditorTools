@@ -1,4 +1,4 @@
-﻿namespace ApiTest.Models
+﻿namespace Escc.Umbraco.EditorTools.Models
 {
     public class DocumentType
     {

@@ -1,10 +1,10 @@
-﻿using ApiTest.Models;
+﻿using Escc.Umbraco.EditorTools.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Web;
 using Umbraco.Web.WebApi;
 
-namespace UmbracoPlayground.Controllers
+namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
     public class DocumentTypeUsageController : UmbracoAuthorizedApiController
     {
