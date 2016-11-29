@@ -1,0 +1,53 @@
+﻿<!--- This document is the original view called upon clicking on a node in the navigation tree under the Editor Tools section -->
+<!--- If no route has been properly defined for a node, then this html page is shown instead -->
+<!--- This is currently used as a template for a new nodes view -->
+
+<script>
+    function CustomSectionEditController($scope, $routeParams) {
+        $scope.content = { tabs: [{ id: 1, label: "Tab 1" }, { id: 2, label: "Tab 2" }] };
+        $scope.EditMode = function() {
+            return $routeParams.create == 'true';
+        };
+    }
+</script>
+
+<script src="../../../../scripts/jquery-3.1.1.js"></script>
+<script type="text/javascript"> var jq311 = jQuery.noConflict(true);</script>
+<script>
+    jq311(function(){
+       //jq311("#includedContent").load("/App_Plugins/EditorTools/something.html");
+    });
+</script> 
+
+<form ng-controller="CustomSectionEditController" ng-submit="save()">
+    <umb-panel>
+        <umb-header tabs="content.tabs">
+            <div class="umb-headline-editor-wrapper span12 ng-scope">
+                <h1 class="ng-binding">My custom section {{id}}</h1>
+            </div>
+        </umb-header>
+
+        <umb-tab-view>
+            <umb-tab id="tab1" rel="svensson">
+
+                <div class="umb-pane">
+
+                    <div id="includedContent"></div>
+                    <p ng-show="EditMode()">
+                        <span class="label label-warning">In create mode, this label is only showed when the controller sees the create-querystring item.</span>
+                        
+                    </p>
+                </div>
+            </umb-tab>
+
+            <umb-tab id="tab2" rel="kalle">
+
+                <div class="umb-pane">
+
+                    This is tab content for tab 2
+                </div>
+            </umb-tab>
+
+        </umb-tab-view>
+    </umb-panel>
+</form>
