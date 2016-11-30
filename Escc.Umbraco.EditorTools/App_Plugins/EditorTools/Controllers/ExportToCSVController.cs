@@ -2,7 +2,7 @@
 
 namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
-    public class TreeCSVController : UmbracoAuthorizedApiController
+    public class ExportToCSVController : UmbracoAuthorizedApiController
     {
     }
 }

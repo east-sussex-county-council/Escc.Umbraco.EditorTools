@@ -302,12 +302,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Plugins\EditorTools\backoffice\EditorToolsTree\pageExpiryReportView.html" />
-    <Content Include="App_Plugins\EditorTools\backoffice\EditorToolsTree\treeCSVView.html" />
+    <Content Include="App_Plugins\EditorTools\backoffice\EditorToolsTree\exportToCSVView.html" />
     <Content Include="App_Plugins\EditorTools\CurrentUsers.html" />
     <Content Include="App_Plugins\EditorTools\backoffice\EditorToolsTree\currentUsersView.html" />
     <Content Include="App_Plugins\EditorTools\backoffice\EditorToolsTree\documentTypeUsageView.html" />
     <Content Include="App_Plugins\EditorTools\PageExpiryReport.html" />
-    <Content Include="App_Plugins\EditorTools\TreeCSV.html" />
+    <Content Include="App_Plugins\EditorTools\ExportToCSV.html" />
     <Content Include="packages.config" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -612,7 +612,7 @@
     <Compile Include="App_Plugins\EditorTools\Controllers\DocumentTypeUsageController.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\EditorToolsTreeController.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\PageExpiryReportController.cs" />
-    <Compile Include="App_Plugins\EditorTools\Controllers\TreeCSVController.cs" />
+    <Compile Include="App_Plugins\EditorTools\Controllers\ExportToCSVController.cs" />
     <Compile Include="App_Plugins\EditorTools\EditorToolsSection.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\Content.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\DocumentType.cs" />

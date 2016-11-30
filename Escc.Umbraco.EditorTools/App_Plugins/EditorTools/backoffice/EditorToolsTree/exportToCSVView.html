@@ -1,8 +1,8 @@
 ﻿<script>
     // create a function to act as a controller for this view
-    function TreeCSVController($scope, $routeParams) {
+    function ExportToCSVCSVController($scope, $routeParams) {
         // on the dashboard of this view create a tab
-        $scope.content = { tabs: [{ id: 1, label: "Tree CSV" }] };
+        $scope.content = { tabs: [{ id: 1, label: "Export" }] };
         $scope.EditMode = function() {
             return $routeParams.create == 'true';
         };
@@ -15,15 +15,15 @@
     // this function loads a html page to the id includedContent
     // to be injected onto a tabs content
     jq311(function(){
-        jq311("#includedContent").load("/App_Plugins/EditorTools/TreeCSV.html");
+        jq311("#includedContent").load("/App_Plugins/EditorTools/ExportToCSV.html");
     });
 </script>
 
-<div ng-controller="TreeCSVController">
+<div ng-controller="ExportToCSVCSVController">
     <umb-panel>
         <umb-header tabs="content.tabs">
             <div class="umb-headline-editor-wrapper span12 ng-scope">
-                <h1 class="ng-binding">Tree CSV{{id}}</h1>
+                <h1 class="ng-binding">Export To CSV{{id}}</h1>
             </div>
         </umb-header>
         <umb-tab-view>

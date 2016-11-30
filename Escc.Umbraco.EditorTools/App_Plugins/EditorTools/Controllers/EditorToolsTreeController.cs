@@ -37,8 +37,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 route = string.Format("/EditorTools/EditorToolsTree/pageExpiryReportView/pageExpiryReport", "pageExpiryReport");
                 nodes.Add(CreateTreeNode("pageExpiryReport", id, queryStrings, "Page Expiry Report", "icon-document", false, route));
 
-                route = string.Format("/EditorTools/EditorToolsTree/treeCSVView/treeCSV", "treeCSV");
-                nodes.Add(CreateTreeNode("treeCSV", id, queryStrings, "Tree CSV", "icon-document", false, route));
+                route = string.Format("/EditorTools/EditorToolsTree/exportToCSVView/exportToCSV", "exportToCSV");
+                nodes.Add(CreateTreeNode("exportToCSV", id, queryStrings, "Export To CSV", "icon-document", false, route));
             }
             return nodes;
         }

@@ -18,16 +18,16 @@
             <li class="umb-load-indicator__bubble"></li>
         </ul>
 
-        <div class="jumbotron" id="pageJumbotron">
+        <div class="jumbotron" id="pageJumbotron" style="background-color:#f0f78a">
             <div class="container">
-                <h1>Non-Perishable Pages</h1>
-                <p>This report can take some time to generate, please be patient</p>
+                <h1>Pages Set Not To Expire</h1>
+                <p>This report can take some time to generate, please be patient.</p>
             </div>
         </div>
 
-        <div class="jumbotron" id="pageLoadedJumbotron">
+        <div class="jumbotron" id="pageLoadedJumbotron" style="background-color:#97d9ed">
             <div class="container">
-                <h1>Non-Perishable Pages</h1>
+                <h1>Pages Set Not To Expire</h1>
                 <p id="reportDate">Generated at: </p>
                 <button class="btn btn-primary btn-lg" type="button" id="Regenerate">Regenerate Report</button>
             </div>
@@ -152,12 +152,12 @@
                               });
                           });
                       });
-                  });
 
-                $.getJSON(uri + '/GetReportDate')
-                .done(function (data) {
-                    ($('#reportDate').append(data));
-                });
+                      $.getJSON(uri + '/GetReportDate')
+                      .done(function (data) {
+                          ($('#reportDate').text('Generated: ' + data));
+                      });
+                  });
             });
         }
     </script>
