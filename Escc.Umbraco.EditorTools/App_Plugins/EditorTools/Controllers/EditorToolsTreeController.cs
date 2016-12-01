@@ -32,13 +32,13 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 nodes.Add(CreateTreeNode("documentTypeUsage", id, queryStrings, "Document Type Usage", "icon-document", false, route));
 
                 route = string.Format("/EditorTools/EditorToolsTree/currentUsersView/currentUsers", "currentUsers");
-                nodes.Add(CreateTreeNode("currentUsers", id, queryStrings, "Current Users","icon-document", false, route));
+                nodes.Add(CreateTreeNode("currentUsers", id, queryStrings, "Current Users", "icon-users", false, route));
 
                 route = string.Format("/EditorTools/EditorToolsTree/pageExpiryReportView/pageExpiryReport", "pageExpiryReport");
-                nodes.Add(CreateTreeNode("pageExpiryReport", id, queryStrings, "Page Expiry Report", "icon-document", false, route));
+                nodes.Add(CreateTreeNode("pageExpiryReport", id, queryStrings, "Page Expiry Report", "icon-timer", false, route));
 
                 route = string.Format("/EditorTools/EditorToolsTree/exportToCSVView/exportToCSV", "exportToCSV");
-                nodes.Add(CreateTreeNode("exportToCSV", id, queryStrings, "Export To CSV", "icon-document", false, route));
+                nodes.Add(CreateTreeNode("exportToCSV", id, queryStrings, "Export To CSV", "icon-download-alt", false, route));
             }
             return nodes;
         }
