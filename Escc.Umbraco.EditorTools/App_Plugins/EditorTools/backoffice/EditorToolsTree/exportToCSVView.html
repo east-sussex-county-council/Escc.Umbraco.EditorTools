@@ -9,16 +9,6 @@
     }
 </script>
 
-<script src="../../../../scripts/jquery-3.1.1.js"></script>
-<script type="text/javascript"> var jq311 = jQuery.noConflict(true);</script>
-<script>
-    // this function loads a html page to the id includedContent
-    // to be injected onto a tabs content
-    jq311(function(){
-        jq311("#includedContent").load("/App_Plugins/EditorTools/ExportToCSV.html");
-    });
-</script>
-
 <div ng-controller="ExportToCSVCSVController">
     <form novalidate name="form" val-form-manager>
         <umb-panel>
@@ -31,7 +21,7 @@
                 <umb-tab id="tab1" rel="svensson">
                     <div class="umb-pane">
                         <!--- Anything  here is the content of the tab Tree CSV -->
-                        <div id="includedContent"></div>
+                        <div ng-include="'/App_Plugins/EditorTools/ExportToCSV.html'"></div>
                     </div>
                 </umb-tab>
             </umb-tab-view>
