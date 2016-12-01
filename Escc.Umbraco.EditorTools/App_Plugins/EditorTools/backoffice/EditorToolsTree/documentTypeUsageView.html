@@ -9,30 +9,33 @@
     }
 </script>
 
+
 <script src="../../../../scripts/jquery-3.1.1.js"></script>
 <script type="text/javascript"> var jq311 = jQuery.noConflict(true);</script>
 <script>
     // this function loads a html page to the id includedContent
     // to be injected onto a tabs content
-    jq311(function(){
-       jq311("#includedContent").load("/App_Plugins/EditorTools/DocumentTypeUsage.html");
+    jq311(function () {
+        jq311("#includedContent").load("/App_Plugins/EditorTools/DocumentTypeUsage.html");
     });
 </script>
 
 <div ng-controller="DocumentTypeUsageController">
-    <umb-panel>
-        <umb-header tabs="content.tabs">
-            <div class="umb-headline-editor-wrapper span12 ng-scope">
-                <h1 class="ng-binding">Document Type Usage{{id}}</h1>
-            </div>
-        </umb-header>
-        <umb-tab-view>
-            <umb-tab id="tab1" rel="svensson">
-                <div class="umb-pane">
-                    <!--- Anything  here is the content of the tab Document Type Usage -->
-                    <div id="includedContent"></div>
+    <form novalidate name="form" val-form-manager>
+        <umb-panel>
+            <umb-header tabs="content.tabs">
+                <div class="umb-headline-editor-wrapper span12 ng-scope">
+                    <h1 class="ng-binding">Document Type Usage{{id}}</h1>
                 </div>
-            </umb-tab>
-        </umb-tab-view>
-    </umb-panel>
+            </umb-header>
+            <umb-tab-view>
+                <umb-tab id="tab1" rel="svensson">
+                    <div class="umb-pane">
+                        <!--- Anything  here is the content of the tab Document Type Usage -->
+                        <div id="includedContent"></div>
+                    </div>
+                </umb-tab>
+            </umb-tab-view>
+        </umb-panel>
+    </form>
 </div>

@@ -20,19 +20,21 @@
 </script>
 
 <div ng-controller="PageExpiryReportController">
-    <umb-panel>
-        <umb-header tabs="content.tabs">
-            <div class="umb-headline-editor-wrapper span12 ng-scope">
-                <h1 class="ng-binding">Page Expiry Report{{id}}</h1>
-            </div>
-        </umb-header>
-        <umb-tab-view>
-            <umb-tab id="tab1" rel="svensson">
-                <div class="umb-pane">
-                    <!--- Anything  here is the content of the tab Page Expiry Report -->
-                    <div id="includedContent"></div>
+    <form novalidate name="form" val-form-manager>
+        <umb-panel>
+            <umb-header tabs="content.tabs">
+                <div class="umb-headline-editor-wrapper span12 ng-scope">
+                    <h1 class="ng-binding">Page Expiry Report{{id}}</h1>
                 </div>
-            </umb-tab>
-        </umb-tab-view>
-    </umb-panel>
+            </umb-header>
+            <umb-tab-view>
+                <umb-tab id="tab1" rel="svensson">
+                    <div class="umb-pane">
+                        <!--- Anything  here is the content of the tab Page Expiry Report -->
+                        <div id="includedContent"></div>
+                    </div>
+                </umb-tab>
+            </umb-tab-view>
+        </umb-panel>
+    </form>
 </div>
