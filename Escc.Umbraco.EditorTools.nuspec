@@ -1,10 +1,9 @@
 <?xml version="1.0"?>
-<package >
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
-    <id>Package</id>
+    <id>Escc.Umbraco.EditorTools</id>
     <version>1.0.0</version>
-    <authors>CaiL</authors>
-    <owners>CaiL</owners>
+    <authors>ESCC</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Umbraco Editor Tools</description>
 	 <frameworkAssemblies>
@@ -13,6 +12,9 @@
       </frameworkAssemblies>
     <releaseNotes>First Full Release.</releaseNotes>
     <copyright>Copyright 2016</copyright>
+	<iconUrl>https://www.eastsussex.gov.uk/apple-touch-icon.png</iconUrl>
+    <licenseUrl>http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/</licenseUrl>
+    <projectUrl>https://github.com/east-sussex-county-council/Escc.Umbraco.EditorTools</projectUrl>
     <dependencies>
 		<group targetFramework="net452">
 			<dependency id ="jquery.datatables" version="1.10.12"/>
@@ -25,5 +27,6 @@
 		<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\lang\en.xml" target="content\App_Plugins\EditorTools\lang\en.xml"/>
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\*.html" target="content\App_Plugins\EditorTools\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\backoffice\EditorToolsTree\*.html" target="content\App_Plugins\EditorTools\backoffice\EditorToolsTree\"/>	
+	<file src="Escc.Umbraco.EditorTools.targets" target="build" />
   </files>
 </package>

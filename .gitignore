@@ -40,7 +40,7 @@ UpgradeLog*.htm
 Microsoft.CodeDom.Providers.DotNetCompilerPlatform.*
 */*/DataTables
 */scripts/jquery*
-
+*.nupkg
 
 # Umbraco files
 [Uu]mbraco/
