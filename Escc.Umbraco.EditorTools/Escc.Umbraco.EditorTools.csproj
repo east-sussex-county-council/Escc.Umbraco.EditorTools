@@ -306,6 +306,8 @@
     <Content Include="App_Plugins\EditorTools\CurrentUsers.html" />
     <Content Include="App_Plugins\EditorTools\backoffice\EditorToolsTree\currentUsersView.html" />
     <Content Include="App_Plugins\EditorTools\backoffice\EditorToolsTree\documentTypeUsageView.html" />
+    <Content Include="App_Plugins\EditorTools\lang\en.xml" />
+    <Content Include="App_Plugins\EditorTools\lang\en-US.xml" />
     <Content Include="App_Plugins\EditorTools\PageExpiryReport.html" />
     <Content Include="App_Plugins\EditorTools\ExportToCSV.html" />
     <Content Include="packages.config" />

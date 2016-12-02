@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Package</id>
+    <version>1.0.0</version>
+    <authors>CaiL</authors>
+    <owners>CaiL</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Umbraco Editor Tools</description>
+	 <frameworkAssemblies>
+         <frameworkAssembly assemblyName="System" targetFramework="net452" />
+		 <frameworkAssembly assemblyName="System.Runtime.caching" targetFramework="net452" />
+      </frameworkAssemblies>
+    <releaseNotes>First Full Release.</releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <dependencies>
+		<group targetFramework="net452">
+			<dependency id ="jquery.datatables" version="1.10.12"/>
+		</group>
+    </dependencies>
+  </metadata>
+  <files>
+	<file src="Escc.Umbraco.EditorTools\bin\Escc.Umbraco.EditorTools.dll" target="lib"/>
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\lang\en-US.xml" target="content\App_Plugins\EditorTools\lang\en-US.xml"/>
+		<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\lang\en.xml" target="content\App_Plugins\EditorTools\lang\en.xml"/>
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\*.html" target="content\App_Plugins\EditorTools\"/>	
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\backoffice\EditorToolsTree\*.html" target="content\App_Plugins\EditorTools\backoffice\EditorToolsTree\"/>	
+  </files>
+</package>
