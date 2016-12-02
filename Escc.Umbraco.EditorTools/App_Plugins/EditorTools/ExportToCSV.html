@@ -22,15 +22,25 @@
                 <p>Your csv file is being created, please wait!</p>
             </div>
         </div>
+
+
+        <ul class="umb-load-indicator animated -half-second" id="loadindicator">
+            <li class="umb-load-indicator__bubble"></li>
+            <li class="umb-load-indicator__bubble"></li>
+            <li class="umb-load-indicator__bubble"></li>
+        </ul>
+
     </div>
 
     <script>
         $('#pageJumbotron').show();
         $('#exportPending').hide();
+        $('#loadindicator').hide();
 
         $('#exportButton').on('click', function (event) {
             $('#pageJumbotron').hide();
             $('#exportPending').show();
+            $('#loadindicator').show();
         });
 
     </script>

@@ -15,7 +15,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             var sb = new StringBuilder();
 
             // append the first row of column names
-            sb.Append(string.Format("{0},{1},{2},{3},{4}", "Header", "Template", "Expiry Date", "Edit Url", "Live Url") + Environment.NewLine);
+            sb.Append(string.Format("{0},{1},{2},{3},{4},{5}", "Header", "Template", "Document Type", "Expiry Date", "Edit Url", "Live Url") + Environment.NewLine);
 
             // get all nodes at the root of the content tree
             var root = ApplicationContext.Services.ContentService.GetRootContent();
@@ -55,19 +55,23 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             var template = "";
             var expiryDate = "";
             var liveURL = "";
+            var docType = "";
 
-            // performe null checks on the fields
+            // perform null checks on the fields
             if (node.Name == null) name = "Null";
             else name = node.Name;
 
-            if (node.Template == null) template = "Null";
+            if (node.Template == null) template = "No Template Found";
             else template = node.Template.Name.ToString();
 
-            if (node.ExpireDate == null) expiryDate = "Null";
+            if (node.ExpireDate == null) expiryDate = "No Expiry Date";
             else expiryDate = node.ExpireDate.ToString();
 
             if (contentCacheNode == null) liveURL = "Unpublished";
             else liveURL = contentCacheNode.Url;
+
+            if (node.ContentType == null) docType = "None Found";
+            else docType = node.ContentType.Name;
 
             // if the name contains a comma, surround it in "" so the csv doesnt treat each comma as the start of a new column
             if (name.Contains(","))
@@ -77,7 +81,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             }
 
             // append to the string builder
-            sb.Append(string.Format("{0},{1},{2},{3},{4}", name, template, expiryDate, "/umbraco#/content/content/edit/" + node.Id, liveURL) + Environment.NewLine);
+            sb.Append(string.Format("{0},{1},{2},{3},{4},{5}", name, template, docType, expiryDate, "/umbraco#/content/content/edit/" + node.Id, liveURL) + Environment.NewLine);
         }
     }
 }
