@@ -55,27 +55,25 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         private void populateList()
         {
             // get all media at the root
-            var rootMedia = UmbracoContext.Application.Services.MediaService.GetRootMedia();
+            var rootMedia = UmbracoContext.MediaCache.GetAtRoot();
             // instantiate user service to find creator
             var userService = ApplicationContext.Services.UserService;
-
             // for each node in the root
             foreach (var node in rootMedia)
             {
                 // get nodes descendants
-                var descendants = UmbracoContext.Application.Services.MediaService.GetDescendants(node.Id);
+                var descendants = node.Children;
                 // get the nodes creator
-                var creator = userService.GetUserById(node.CreatorId);
+                var creator = userService.GetUserById(node.CreatorId);       
                 // add node to the list
-                mediaList.Add(new Media(node.Name, node.ContentType.Name, node.CreateDate.ToString(), node.Id, creator.Name));
-
+                mediaList.Add(new Media(node.Name, node.CreateDate.ToString(), node.Id, creator.Name, node.Url));
                 // for each child in descendants
                 foreach (var child in descendants)
                 {
                     // get childs creator
                     var childCreator = userService.GetUserById(child.CreatorId);
                     // add child to the list
-                    mediaList.Add(new Media(child.Name, child.ContentType.Name, child.CreateDate.ToString(), child.Id, childCreator.Name));
+                    mediaList.Add(new Media(child.Name, child.CreateDate.ToString(), child.Id, childCreator.Name, child.Url));
                 }
             }
         }

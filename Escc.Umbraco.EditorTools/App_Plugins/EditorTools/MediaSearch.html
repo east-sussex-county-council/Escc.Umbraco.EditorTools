@@ -8,6 +8,13 @@
     <script src="../../Umbraco/lib/bootstrap/js/bootstrap.2.3.2.js"></script>
 </head>
 
+<style media="screen" type="text/css">
+table.dataTable tbody td {
+    word-break: break-word;
+    vertical-align: top;
+}
+</style>
+
 <body>
     <div class="container">
 
@@ -43,17 +50,17 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Media Type</th>
                         <th>Date Created</th>
                         <th>Created By</th>
+                        <th>Live Url</th>
                     </tr>
                 </thead>
                 <tfoot>
                     <tr>
                         <th>Name</th>
-                        <th>Media Type</th>
                         <th>Date Created</th>
                         <th>Created By</th>
+                        <th>Live Url</th>
                     </tr>
                 </tfoot>
                 <tbody></tbody>
@@ -103,7 +110,8 @@
                       // for each item in the list data
                       $.each(data, function (key, item) {
                           //Add row
-                          $('#contentTable').append('<tr><td><a href="/umbraco#/media/media/edit/' + item.Id + '">' + item.Name + '</a></td><td>' + item.ContentType + '</td><td>' + item.CreateDate + '</td><td>' + item.CreatorName + '</td></tr>');
+                          
+                          $('#contentTable').append('<tr><td><a href="/umbraco#/media/media/edit/' + item.Id + '">' + item.Name + '</a></td><td>' + item.CreateDate + '</td><td>' + item.CreatorName + '</td><td><a href="' + item.Url + '">' + item.Url + '</a></td></tr>');
                       });
 
                       // after table has been populated, hide the load indicator, the page jumbotron and show the table, refresh button and the loaded page jumbotron
