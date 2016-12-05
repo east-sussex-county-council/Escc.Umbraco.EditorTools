@@ -24,20 +24,25 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             {
                 nonPerishableList = new List<NonPerishableContent>();
                 populateList();
-
-                // add the list and date generated to the cache 
-                var dateString = DateTime.Now.ToString("dd MMMM yyyy");
-                dateString += DateTime.Now.ToString(" h:mm:sstt").ToLower();
-                cache.Add("pageExpiry", nonPerishableList, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
-                cache.Add("reportDate", dateString, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
+                StoreInCache();
             }
             return nonPerishableList;
+        }
+
+        private void StoreInCache()
+        {
+            // add the list and date generated to the cache 
+            var dateString = DateTime.Now.ToString("dd MMMM yyyy");
+            dateString += DateTime.Now.ToString(" h:mm:sstt").ToLower();
+            cache.Add("pageExpiry", nonPerishableList, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
+            cache.Add("reportDate", dateString, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
         }
 
         public IEnumerable<NonPerishableContent> GetRefreshReport()
         {
             nonPerishableList.Clear();
             populateList();
+            StoreInCache();
             return nonPerishableList;
         }
 
