@@ -301,7 +301,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Plugins\EditorTools\backoffice\EditorToolsTree\mediaSearch.html" />
+    <Content Include="App_Plugins\EditorTools\backoffice\EditorToolsTree\mediaSearchView.html" />
     <Content Include="App_Plugins\EditorTools\backoffice\EditorToolsTree\pageExpiryReportView.html" />
     <Content Include="App_Plugins\EditorTools\backoffice\EditorToolsTree\exportToCSVView.html" />
     <Content Include="App_Plugins\EditorTools\CurrentUsers.html" />
@@ -309,7 +309,7 @@
     <Content Include="App_Plugins\EditorTools\backoffice\EditorToolsTree\documentTypeUsageView.html" />
     <Content Include="App_Plugins\EditorTools\lang\en.xml" />
     <Content Include="App_Plugins\EditorTools\lang\en-US.xml" />
-    <Content Include="App_Plugins\EditorTools\MediaSearchView.html" />
+    <Content Include="App_Plugins\EditorTools\MediaSearch.html" />
     <Content Include="App_Plugins\EditorTools\PageExpiryReport.html" />
     <Content Include="App_Plugins\EditorTools\ExportToCSV.html" />
     <Content Include="packages.config" />

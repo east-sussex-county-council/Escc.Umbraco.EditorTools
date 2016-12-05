@@ -1,17 +1,29 @@
-﻿using System;
+﻿using Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+using Umbraco.Web.WebApi;
 
 namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
-    public class MediaSearchController : Controller
+    public class MediaSearchController : UmbracoAuthorizedApiController
     {
-        // GET: MediaSearch
-        public ActionResult Index()
+        // create a list to store users
+        List<Media> mediaList = new List<Media>();
+
+        public IEnumerable<Media> GetAllMedia()
         {
-            return View();
+            var rootMedia = UmbracoContext.Application.Services.MediaService.GetRootMedia();
+
+            foreach (var node in rootMedia)
+            {
+                var descendants = UmbracoContext.Application.Services.MediaService.GetDescendants(node.Id);
+                mediaList.Add(new Media(node.Name, node.ContentType.Name, node.CreateDate.ToString(), node.Id));
+
+                foreach (var child in descendants)
+                {
+                    mediaList.Add(new Media(child.Name, child.ContentType.Name, child.CreateDate.ToString(), child.Id));
+                }
+            }
+            return mediaList;
         }
     }
 }

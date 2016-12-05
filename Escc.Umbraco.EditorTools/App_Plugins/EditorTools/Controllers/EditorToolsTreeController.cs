@@ -39,6 +39,9 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
                 route = string.Format("/EditorTools/EditorToolsTree/exportToCSVView/exportToCSV", "exportToCSV");
                 nodes.Add(CreateTreeNode("exportToCSV", id, queryStrings, "Export To CSV", "icon-download-alt", false, route));
+
+                route = string.Format("/EditorTools/EditorToolsTree/mediaSearchView/mediaSearch", "exportToCSV");
+                nodes.Add(CreateTreeNode("mediaSearch", id, queryStrings, "Media Search", "icon-file-cabinet", false, route));
             }
             return nodes;
         }
