@@ -53,15 +53,19 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         private void populateList()
         {
             var rootMedia = UmbracoContext.Application.Services.MediaService.GetRootMedia();
+            var userService = ApplicationContext.Services.UserService;
 
             foreach (var node in rootMedia)
             {
                 var descendants = UmbracoContext.Application.Services.MediaService.GetDescendants(node.Id);
-                mediaList.Add(new Media(node.Name, node.ContentType.Name, node.CreateDate.ToString(), node.Id));
+                var creator = userService.GetUserById(node.CreatorId);
+
+                mediaList.Add(new Media(node.Name, node.ContentType.Name, node.CreateDate.ToString(), node.Id, creator.Name));
 
                 foreach (var child in descendants)
                 {
-                    mediaList.Add(new Media(child.Name, child.ContentType.Name, child.CreateDate.ToString(), child.Id));
+                    var childCreator = userService.GetUserById(child.CreatorId);
+                    mediaList.Add(new Media(child.Name, child.ContentType.Name, child.CreateDate.ToString(), child.Id, childCreator.Name));
                 }
             }
         }

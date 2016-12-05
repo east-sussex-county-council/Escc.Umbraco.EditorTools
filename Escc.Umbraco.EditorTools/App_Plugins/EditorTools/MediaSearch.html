@@ -45,6 +45,7 @@
                         <th>Name</th>
                         <th>Media Type</th>
                         <th>Date Created</th>
+                        <th>Created By</th>
                     </tr>
                 </thead>
                 <tfoot>
@@ -52,6 +53,7 @@
                         <th>Name</th>
                         <th>Media Type</th>
                         <th>Date Created</th>
+                        <th>Created By</th>
                     </tr>
                 </tfoot>
                 <tbody></tbody>
@@ -101,7 +103,7 @@
                       // for each item in the list data
                       $.each(data, function (key, item) {
                           //Add row
-                          $('#contentTable').append('<tr><td><a href="/umbraco#/media/media/edit/' + item.Id + '">' + item.Name + '</a></td><td>' + item.ContentType + '</td><td>' + item.CreateDate + '</td></tr>');
+                          $('#contentTable').append('<tr><td><a href="/umbraco#/media/media/edit/' + item.Id + '">' + item.Name + '</a></td><td>' + item.ContentType + '</td><td>' + item.CreateDate + '</td><td>' + item.CreatorName + '</td></tr>');
                       });
 
                       // after table has been populated, hide the load indicator, the page jumbotron and show the table, refresh button and the loaded page jumbotron
