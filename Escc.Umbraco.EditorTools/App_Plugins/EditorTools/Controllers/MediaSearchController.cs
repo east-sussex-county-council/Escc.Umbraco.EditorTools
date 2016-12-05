@@ -8,9 +8,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
     public class MediaSearchController : UmbracoAuthorizedApiController
     {
-
+        // instantiate cache to reduce data queries
         ObjectCache cache = MemoryCache.Default;
-
         // create a list to store media
         List<Media> mediaList = new List<Media>();
 
@@ -39,8 +38,11 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
         public IEnumerable<Media> GetMediaRefresh()
         {
+            // clear the list
             mediaList.Clear();
+            // repopulate
             populateList();
+            // update the cache
             StoreInCache();
             return mediaList;
         }
@@ -52,19 +54,27 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
         private void populateList()
         {
+            // get all media at the root
             var rootMedia = UmbracoContext.Application.Services.MediaService.GetRootMedia();
+            // instantiate user service to find creator
             var userService = ApplicationContext.Services.UserService;
 
+            // for each node in the root
             foreach (var node in rootMedia)
             {
+                // get nodes descendants
                 var descendants = UmbracoContext.Application.Services.MediaService.GetDescendants(node.Id);
+                // get the nodes creator
                 var creator = userService.GetUserById(node.CreatorId);
-
+                // add node to the list
                 mediaList.Add(new Media(node.Name, node.ContentType.Name, node.CreateDate.ToString(), node.Id, creator.Name));
 
+                // for each child in descendants
                 foreach (var child in descendants)
                 {
+                    // get childs creator
                     var childCreator = userService.GetUserById(child.CreatorId);
+                    // add child to the list
                     mediaList.Add(new Media(child.Name, child.ContentType.Name, child.CreateDate.ToString(), child.Id, childCreator.Name));
                 }
             }
