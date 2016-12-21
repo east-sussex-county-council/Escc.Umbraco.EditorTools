@@ -1,15 +1,15 @@
 ﻿<script>
     // create a function to act as a controller for this view
-    function CurrentUsersController($scope, $routeParams) {
+    function DisabledUsersController($scope, $routeParams) {
         // on the dashboard of this view create a tab
-        $scope.content = { tabs: [{ id: 1, label: "Current Users" }] };
+        $scope.content = { tabs: [{ id: 1, label: "Disabled Users" }] };
         $scope.EditMode = function () {
             return $routeParams.create == 'true';
         };
     }
 </script>
 
-<div ng-controller="CurrentUsersController">
+<div ng-controller="DisabledUsersController">
     <form novalidate name="form" val-form-manager>
         <umb-panel>
             <umb-header tabs="content.tabs">
@@ -21,7 +21,7 @@
                 <umb-tab id="tab1" rel="svensson">
                     <div class="umb-pane">
                         <!--- Anything  here is the content of the tab Current Users -->
-                        <div ng-include="'/App_Plugins/EditorTools/CurrentUsers.html'"></div>
+                        <div ng-include="'/App_Plugins/EditorTools/DisabledUsers.html'"></div>
                     </div>
                 </umb-tab>
             </umb-tab-view>

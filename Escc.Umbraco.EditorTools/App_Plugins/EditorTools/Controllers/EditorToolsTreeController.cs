@@ -34,6 +34,9 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 route = string.Format("/EditorTools/EditorToolsTree/currentUsersView/currentUsers", "currentUsers");
                 nodes.Add(CreateTreeNode("currentUsers", id, queryStrings, "Current Users", "icon-users", false, route));
 
+                route = string.Format("/EditorTools/EditorToolsTree/disabledUsersView/disabledUsers", "disabledUsers");
+                nodes.Add(CreateTreeNode("disabledUsers", id, queryStrings, "Disabled Users", "icon-users-alt color-red", false, route));
+
                 route = string.Format("/EditorTools/EditorToolsTree/pageExpiryReportView/pageExpiryReport", "pageExpiryReport");
                 nodes.Add(CreateTreeNode("pageExpiryReport", id, queryStrings, "Page Expiry Report", "icon-timer", false, route));
 

@@ -27,8 +27,8 @@
 
         <div class="jumbotron" id="pageJumbotron" style="background-color:#97d9ed">
             <div class="container">
-                <h1>Current Users</h1>
-                <button class="btn btn-primary btn-lg" type="button" id="Disable">Disable Selected</button>
+                <h1>Disabled Users</h1>
+                <button class="btn btn-primary btn-lg" type="button" id="Enable">Enable Selected</button>
             </div>
         </div>
 
@@ -65,17 +65,18 @@
     <script>
         // the uri points to the controller for this page
         var uri = '/umbraco/backoffice/api/CurrentUsers';
+
         // hide the Table, Header and Refresh button until the script has completed
         $('#contentTable').hide();
         $('#header').hide();
         $('#refreshButton').hide();
-        getAllEnabled();
+        getDisabled();
 
-        function getAllEnabled() {
+        function getDisabled() {
             $(document).ready(function () {
                 // Send an AJAX request
-                // uri links to the method GetAllContent in the controller. passing the variables typeID and typeName
-                $.getJSON(uri + '/GetAllUsers')
+                // uri links to the method GetAllContent in the controller.
+                $.getJSON(uri + '/GetAllDisabledUsers')
                   .done(function (data) {
                       // On success, 'data' contains a list of nodes.
 
@@ -126,11 +127,11 @@
                               table.draw();
                           });
 
-                          // if the disable button is clicked, take all the selected rows, send the username to the controller and reload the page
-                          $('#Disable').click(function () {
+                          // if the enable button is clicked, take all the selected rows, send the username to the controller and reload the page
+                          $('#Enable').click(function () {
                               var rows_selected = table.rows('.selected').data();
                               $.each(rows_selected, function (key, item) {
-                                  $.getJSON(uri + '/GetDisableUser?userName=' + item[1]);
+                                  $.getJSON(uri + '/GetEnableUser?userName=' + item[1]);
                               });
                               location.reload();
                           });
@@ -159,5 +160,6 @@
             });
         };
     </script>
+
 </body>
 </html>

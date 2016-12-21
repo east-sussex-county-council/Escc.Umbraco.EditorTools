@@ -301,9 +301,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Plugins\EditorTools\backoffice\EditorToolsTree\disabledUsersView.html" />
     <Content Include="App_Plugins\EditorTools\backoffice\EditorToolsTree\mediaSearchView.html" />
     <Content Include="App_Plugins\EditorTools\backoffice\EditorToolsTree\pageExpiryReportView.html" />
     <Content Include="App_Plugins\EditorTools\backoffice\EditorToolsTree\exportToCSVView.html" />
+    <Content Include="App_Plugins\EditorTools\DisabledUsers.html" />
     <Content Include="App_Plugins\EditorTools\CurrentUsers.html" />
     <Content Include="App_Plugins\EditorTools\backoffice\EditorToolsTree\currentUsersView.html" />
     <Content Include="App_Plugins\EditorTools\backoffice\EditorToolsTree\documentTypeUsageView.html" />
