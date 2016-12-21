@@ -10,7 +10,7 @@ namespace Escc.Umbraco.EditorTools.Models
         public string Email { get; set; }
         public int Id { get; set; }
         public string UserName { get; set; }
-        public string Name { get; set; 
+        public string Name { get; set; }
 
         public User(int id, string name, string username, string userType, string email)
         {
