@@ -1,0 +1,20 @@
+﻿using Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.DataModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels
+{
+    public class PageExpiryViewModel
+    {
+        public TableModel NeverExpires { get; set; }
+        public TableModel Expiring { get; set; }
+
+        public PageExpiryViewModel()
+        {
+            NeverExpires = new TableModel("NeverExpiresTable");
+            Expiring = new TableModel("ExpiringTable");
+        }
+    }
+}

@@ -1,0 +1,39 @@
+﻿@{
+    Layout = "~/App_Plugins/EditorTools/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewBag.Title = "Document Types";
+}
+
+@model Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels.DocumentTypesViewModel
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> Document Types</div>
+    <div class="panel-body">
+        @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.DocumentTypes);}
+    </div>
+</div>
+
+
+@{
+
+    foreach (var item in Model.ModalTables)
+    {
+        <div class="modal fade" id="@item.Key" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", item.Value);}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+                            }
+}
