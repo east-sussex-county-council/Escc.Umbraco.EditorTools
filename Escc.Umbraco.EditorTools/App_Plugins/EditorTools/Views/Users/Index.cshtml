@@ -26,7 +26,16 @@
                                     <div class="panel panel-info">
                                         <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
                                         <div class="panel-body">
-                                            This tab displays all of Umbracos Active Users.                                        </div>
+                                            <div class="col-md-6">
+                                                This tab displays all of Umbracos Active Users.
+                                            </div>
+                                            <div class="col-md-4">
+                                                Data Cached on: @Model.CacheDate
+                                            </div>
+                                            <div class="col-md-2">
+                                                <p><a href="/umbraco/backoffice/Plugins/Users/RefreshCache" class="btn btn-primary" type="button" id="RefreshButton">Refresh <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a></p>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="panel panel-success">
                                         <div class="panel-heading">
@@ -43,7 +52,15 @@
                                     <div class="panel panel-info">
                                         <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
                                         <div class="panel-body">
-                                            This tab displays all of Umbracos Disabled Users.
+                                            <div class="col-md-6">
+                                                This tab displays all of Umbracos Disabled Users.
+                                            </div>
+                                            <div class="col-md-4">
+                                                Data Cached on: @Model.CacheDate
+                                            </div>
+                                            <div class="col-md-2">
+                                                <p><a href="/umbraco/backoffice/Plugins/Users/RefreshCache" class="btn btn-primary" type="button" id="RefreshButton">Refresh <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a></p>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="panel panel-danger">

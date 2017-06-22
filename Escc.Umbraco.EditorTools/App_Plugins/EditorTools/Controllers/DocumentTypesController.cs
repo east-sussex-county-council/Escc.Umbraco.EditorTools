@@ -27,6 +27,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             return View("~/App_Plugins/EditorTools/Views/DocumentTypes/Index.cshtml", model);
         }
 
+        #region Helpers
         private DocumentTypesViewModel CreateModel()
         {
             var model = new DocumentTypesViewModel();
@@ -91,6 +92,9 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             return table;
         }
 
+        #endregion
+
+        #region Cache Methods
         private void StoreInCache(DocumentTypesViewModel model)
         {
             cache.Add("DocumentTypesViewModel", model, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
@@ -102,6 +106,6 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             StoreInCache(model);
             return View("~/App_Plugins/EditorTools/Views/DocumentTypes/Index.cshtml", model);
         }
-
+        #endregion
     }
 }

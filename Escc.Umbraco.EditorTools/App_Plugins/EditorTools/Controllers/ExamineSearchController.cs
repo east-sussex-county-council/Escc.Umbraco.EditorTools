@@ -21,6 +21,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             return View("~/App_Plugins/EditorTools/Views/ExamineSearch/Index.cshtml", model);
         }
 
+        #region Helpers
         [HttpPost]
         public ActionResult GetResults(ExamineSearchViewModel PostModel)
         {
@@ -78,5 +79,6 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
             return View("~/App_Plugins/EditorTools/Views/ExamineSearch/Index.cshtml", model);
         }
+        #endregion
     }
 }

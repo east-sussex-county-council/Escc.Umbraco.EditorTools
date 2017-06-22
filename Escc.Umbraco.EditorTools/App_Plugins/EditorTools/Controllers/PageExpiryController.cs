@@ -24,13 +24,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             return View("~/App_Plugins/EditorTools/Views/PageExpiry/Index.cshtml", model);
         }
 
-        public ActionResult RefreshCache()
-        {
-            var model = CreateModel();
-            StoreInCache(model);
-            return View("~/App_Plugins/EditorTools/Views/PageExpiry/Index.cshtml", model);
-        }
-
+        #region Helpers
         public PageExpiryViewModel CreateModel()
         {
             PageExpiryViewModel model = new PageExpiryViewModel();
@@ -86,10 +80,20 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             }
             return model;
         }
+        #endregion
 
+        #region Cache Methods
         private void StoreInCache(PageExpiryViewModel model)
         {
             cache.Add("PageExpiryViewModel", model, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
         }
+
+        public ActionResult RefreshCache()
+        {
+            var model = CreateModel();
+            StoreInCache(model);
+            return View("~/App_Plugins/EditorTools/Views/PageExpiry/Index.cshtml", model);
+        }
+        #endregion
     }
 }

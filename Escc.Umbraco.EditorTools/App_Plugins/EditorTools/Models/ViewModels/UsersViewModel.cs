@@ -10,11 +10,13 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels
     {
         public TableModel ActiveUsers { get; set; }
         public TableModel DisabledUsers { get; set; }
+        public DateTime CacheDate { get; set; }
 
         public UsersViewModel()
         {
             ActiveUsers = new TableModel("ActiveUsersTable");
             DisabledUsers = new TableModel("DisabledUsersTable");
+            CacheDate = DateTime.Now;
         }
     }
 }

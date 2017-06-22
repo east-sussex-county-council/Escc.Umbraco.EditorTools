@@ -17,6 +17,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             return View("~/App_Plugins/EditorTools/Views/CSVExport/Index.cshtml", model);
         }
 
+        #region Helpers
         public void GetFile()
         {
             var CSVString = cache["CSVString"] as StringBuilder;
@@ -104,6 +105,9 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             sb.Append(string.Format("{0},{1},{2},{3},{4},{5}", name, template, docType, expiryDate, "/umbraco#/content/content/edit/" + node.Id, liveURL) + Environment.NewLine);
         }
 
+        #endregion
+
+        #region Cache Methods
         private void StoreInCache(StringBuilder CSVString)
         {
             cache.Add("CSVString", CSVString, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
@@ -118,5 +122,6 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             model.CacheDate = cache["CacheDate"] as string;
             return View("~/App_Plugins/EditorTools/Views/CSVExport/Index.cshtml", model);
         }
+        #endregion
     }
 }
