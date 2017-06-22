@@ -480,9 +480,6 @@
     <Content Include="App_Plugins\EditorTools\Content\DataTables\images\sort_desc.png" />
     <Content Include="App_Plugins\EditorTools\Content\DataTables\images\sort_desc_disabled.png" />
     <Content Include="App_Plugins\EditorTools\Content\DataTables\swf\flashExport.swf" />
-    <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.controller.js" />
-    <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.htm" />
-    <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.resource.js" />
     <Content Include="packages.config" />
     <Content Include="App_Plugins\EditorTools\Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="App_Plugins\EditorTools\Scripts\DataTables\autoFill.bootstrap.min.js" />
@@ -579,7 +576,6 @@
     <Content Include="App_Plugins\EditorTools\Views\EditorToolsHome\Help.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="App_Plugins\ModelsBuilder\package.manifest" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Plugins\EditorTools\App_Start\WebApiConfig.cs" />
