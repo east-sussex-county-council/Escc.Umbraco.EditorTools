@@ -8,15 +8,28 @@ using Umbraco.Web.Mvc;
 using UmbracoExamine;
 using Examine;
 using System;
+using System.Runtime.Caching;
 
 namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
     public class DocumentTypesController : UmbracoAuthorizedController
     {
+        ObjectCache cache = MemoryCache.Default;
         public ActionResult Index()
         {
-            var model = new DocumentTypesViewModel();
+            var model = cache["DocumentTypesViewModel"] as DocumentTypesViewModel;
 
+            if (model == null)
+            {
+                model = CreateModel();
+                StoreInCache(model);
+            }
+            return View("~/App_Plugins/EditorTools/Views/DocumentTypes/Index.cshtml", model);
+        }
+
+        private DocumentTypesViewModel CreateModel()
+        {
+            var model = new DocumentTypesViewModel();
             // instantiate the Examine searcher and give it a query
             var Searcher = Examine.ExamineManager.Instance.SearchProviderCollection["ExternalSearcher"];
             var criteria = Searcher.CreateSearchCriteria(IndexTypes.Content);
@@ -52,15 +65,14 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
                 var tableModel = new TableModel(document.Key + "Table");
 
-                tableModel.Table = CreateTable(searchResults, document.Key);
+                tableModel.Table = CreateModalTable(searchResults, document.Key);
                 model.ModalTables.Add(document.Key, tableModel);
             }
 
-
-            return View("~/App_Plugins/EditorTools/Views/DocumentTypes/Index.cshtml", model);
+            return model;
         }
 
-        private DataTable CreateTable(ISearchResults searchResults, string DocumentType)
+        private DataTable CreateModalTable(ISearchResults searchResults, string DocumentType)
         {
             var table = new DataTable();
             table.Columns.Add("ID", typeof(int));
@@ -70,14 +82,26 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
             foreach (var result in searchResults)
             {
-                if(result.Fields["__NodeTypeAlias"] == DocumentType)
+                if (result.Fields["__NodeTypeAlias"] == DocumentType)
                 {
                     var editURL = new HtmlString(string.Format("<a target=\"_top\" href=\"/umbraco#/content/content/edit/{0}\">edit</a>", result.Fields["__NodeId"]));
                     table.Rows.Add(result.Fields["__NodeId"], result.Fields["nodeName"], result.Fields["urlName"], editURL);
                 }
             }
-
             return table;
         }
+
+        private void StoreInCache(DocumentTypesViewModel model)
+        {
+            cache.Add("DocumentTypesViewModel", model, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
+        }
+
+        public ActionResult RefreshCache()
+        {
+            var model = CreateModel();
+            StoreInCache(model);
+            return View("~/App_Plugins/EditorTools/Views/DocumentTypes/Index.cshtml", model);
+        }
+
     }
 }
