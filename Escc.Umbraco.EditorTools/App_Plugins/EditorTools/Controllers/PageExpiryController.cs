@@ -1,6 +1,7 @@
 ﻿using Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels;
 using System;
 using System.Data;
+using System.Runtime.Caching;
 using System.Web;
 using System.Web.Mvc;
 using Umbraco.Web.Mvc;
@@ -10,18 +11,29 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
     public class PageExpiryController : UmbracoAuthorizedController
     {
+        ObjectCache cache = MemoryCache.Default;
         public ActionResult Index()
         {
-            var model = CreateModel();
+            var model = cache["PageExpiryViewModel"] as PageExpiryViewModel;
+
+            if (model == null)
+            {
+                model = CreateModel();
+                StoreInCache(model);
+            }
             return View("~/App_Plugins/EditorTools/Views/PageExpiry/Index.cshtml", model);
         }
 
+        public ActionResult RefreshCache()
+        {
+            var model = CreateModel();
+            StoreInCache(model);
+            return View("~/App_Plugins/EditorTools/Views/PageExpiry/Index.cshtml", model);
+        }
 
         public PageExpiryViewModel CreateModel()
         {
-            // instantiate the view model
-            var model = new PageExpiryViewModel();
-
+            PageExpiryViewModel model = new PageExpiryViewModel();
             // create the datatables and their columns
             model.Expiring.Table = new DataTable();
             model.Expiring.Table.Columns.Add("ID", typeof(int));
@@ -53,7 +65,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                     if (result.Fields["__IndexType"] == "content")
                     {
                         // Get the node from the conent service and check it for an expiry date
-                        var  contentNode = UmbracoContext.Application.Services.ContentService.GetById(int.Parse(result.Fields["__NodeId"]));
+                        var contentNode = UmbracoContext.Application.Services.ContentService.GetById(int.Parse(result.Fields["__NodeId"]));
 
                         // If it doesn't have one then its a never expire page
                         if (contentNode.ExpireDate == null)
@@ -73,6 +85,11 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 }
             }
             return model;
+        }
+
+        private void StoreInCache(PageExpiryViewModel model)
+        {
+            cache.Add("PageExpiryViewModel", model, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
         }
     }
 }
