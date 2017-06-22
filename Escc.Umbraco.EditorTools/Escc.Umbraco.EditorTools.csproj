@@ -626,7 +626,7 @@
     <Content Include="App_Plugins\EditorTools\Content\DataTables\css\mixins.scss" />
     <Content Include="App_Plugins\EditorTools\Content\DataTables\css\common.scss" />
     <Content Include="App_Plugins\EditorTools\Views\Shared\_Layout.cshtml" />
-    <Content Include="App_Plugins\EditorTools\Views\Home\Index.cshtml" />
+    <Content Include="App_Plugins\EditorTools\Views\EditorToolsHome\Index.cshtml" />
     <Content Include="App_Plugins\EditorTools\Views\Web.config" />
     <Content Include="App_Plugins\EditorTools\Views\CSVExport\Index.cshtml" />
     <Content Include="App_Plugins\EditorTools\Views\DocumentTypes\Index.cshtml" />
@@ -643,6 +643,8 @@
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="App_Plugins\EditorTools\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="App_Plugins\EditorTools\Views\EditorToolsHome\About.cshtml" />
+    <Content Include="App_Plugins\EditorTools\Views\EditorToolsHome\Help.cshtml" />
     <None Include="scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="scripts\jquery-3.1.1.js" />
     <Content Include="scripts\jquery-3.1.1.min.js" />
@@ -669,7 +671,7 @@
     <Compile Include="App_Plugins\EditorTools\Controllers\UsersController.cs" />
     <Compile Include="App_Plugins\EditorTools\EditorToolsSection.cs" />
     <Compile Include="App_Plugins\EditorTools\EditorToolsTree.cs" />
-    <Compile Include="App_Plugins\EditorTools\Controllers\HomeController.cs" />
+    <Compile Include="App_Plugins\EditorTools\Controllers\EditorToolsHomeController.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\DataModels\TableModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\CSVExportViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\DocumentTypesViewModel.cs" />

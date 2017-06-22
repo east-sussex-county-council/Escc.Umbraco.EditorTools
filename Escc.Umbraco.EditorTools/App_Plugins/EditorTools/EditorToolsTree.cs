@@ -28,7 +28,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
             IndexNode.NodeID = "0";
             IndexNode.NodeType = "Home";
             IndexNode.Text = "Home";
-            IndexNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/Home/Index');";
+            IndexNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/EditorToolsHome/Index');";
             IndexNode.Icon = "icon-home";
             IndexNode.HasChildren = false;
             IndexNode.Menu = new List<IAction>();
