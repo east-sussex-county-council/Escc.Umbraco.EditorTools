@@ -1,0 +1,76 @@
+﻿@{
+    Layout = "~/App_Plugins/EditorTools/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewBag.Title = "CSV Export";
+}
+@model Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels.CSVExportViewModel
+
+<link href="~/App_Plugins/EditorTools/Content/bootstrap.css" rel="stylesheet" />
+<link href="~/App_Plugins/EditorTools/Content/Site.css" rel="stylesheet" />
+<script src="~/App_Plugins/EditorTools/Scripts/jquery-3.1.1.js"></script>
+<script src="~/App_Plugins/EditorTools/Scripts/bootstrap.js"></script>
+
+<p></p>
+
+@{
+    if (Model.CacheDate == null)
+    {
+        <div class="jumbotron" id="PageLoadedJumbo">
+            <h1>Export To CSV</h1>
+            <p class="lead">Click Export to download a CSV file of the entire Umbraco content tree</p>
+            <p><a href="/umbraco/backoffice/Plugins/CSVExport/GetFile" class="btn btn-primary btn-lg" type="button" id="ExportButton">Export <span class="glyphicon glyphicon-save" aria-hidden="true"></span></a></p>
+        </div>
+    }
+    else
+    {
+        <div class="jumbotron" id="PageLoadedJumboCached">
+            <h1>Export To CSV</h1>
+            <p class="lead">Click Export to download a CSV file of the entire Umbraco content tree</p>
+            <p><a href="/umbraco/backoffice/Plugins/CSVExport/GetFile" class="btn btn-primary btn-lg" type="button" id="CachedExportButton">Export <span class="glyphicon glyphicon-save" aria-hidden="true"></span></a></p>
+        </div>
+
+        <div class="panel panel-info" id="CachedFileAvailable">
+            <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                       A cached file is available to download
+                    </div>
+                    <div class="col-md-4">
+                        Data Cached on: @Model.CacheDate
+                    </div>
+                    <div class="col-md-2">
+                        <p><a href="/umbraco/backoffice/Plugins/CSVExport/RefreshCache" class="btn btn-primary" type="button" id="RefreshButton">Refresh <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<div class="jumbotron" id="DownloadStartedJumbo">
+    <h1>Downloading...</h1>
+    <p class="lead">The CSV file is being generated, Please wait...</p>
+    <p>For big websites this can take a minimum of 30 seconds.</p>
+    <div class="progress progress-striped active">
+        <div class="progress-bar " role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+            <span class="sr-only">100% Complete</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#DownloadStartedJumbo').hide();
+
+    $('#ExportButton').on('click', function (event) {
+        $('#PageLoadedJumbo').hide();
+        $('#DownloadStartedJumbo').show();
+    });
+
+    $('#RefreshButton').on('click', function (event) {
+        $('#PageLoadedJumboCached').hide();
+        $('#CachedFileAvailable').hide();
+        $('#DownloadStartedJumbo').show();
+    });
+</script>

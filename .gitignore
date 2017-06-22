@@ -30,6 +30,7 @@ _ReSharper*/
 *.config
 !*/App_Plugins/EditorTools
 !*.example.config
+!*/App_Plugins/EditorTools/Views
 !packages.config
 *.scc
 Properties/PublishProfiles/*
@@ -49,7 +50,7 @@ Microsoft.CodeDom.Providers.DotNetCompilerPlatform.*
 [Uu]mbraco_Client/
 [Aa]pp_Data/
 [Aa]pp_Browsers/
-[Vv]iews
+Escc.Umbraco.EditorTools/[Vv]iews
 [Cc]onfig
 */App_Plugins/ModelsBuilder
 [Ii]nstall/
