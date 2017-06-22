@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels;
+using System;
+using System.Runtime.Caching;
 using System.Text;
 using System.Web.Mvc;
 using Umbraco.Web.Mvc;
@@ -7,34 +9,21 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
     public class CSVExportController : UmbracoAuthorizedController
     {
+        ObjectCache cache = MemoryCache.Default;
         public ActionResult Index()
         {
-            return View("~/App_Plugins/EditorTools/Views/CSVExport/Index.cshtml");
+            var model = new CSVExportViewModel();
+            model.CacheDate = cache["CacheDate"] as string;
+            return View("~/App_Plugins/EditorTools/Views/CSVExport/Index.cshtml", model);
         }
 
         public void GetFile()
         {
-            // instantiate a string builder for our csv file
-            var sb = new StringBuilder();
+            var CSVString = cache["CSVString"] as StringBuilder;
 
-            // append the first row of column names
-            sb.Append(string.Format("{0},{1},{2},{3},{4},{5}", "Header", "Template", "Document Type", "Expiry Date", "Edit Url", "Live Url") + Environment.NewLine);
-
-            // get all nodes at the root of the content tree
-            var root = ApplicationContext.Services.ContentService.GetRootContent();
-            foreach (var node in root)
+            if (CSVString == null)
             {
-                // get the descendants of the node
-                var descendants = ApplicationContext.Services.ContentService.GetDescendants(node.Id);
-
-                // append the node to the stringbuilder
-                AppendToBuilder(sb, node);
-
-                foreach (var child in descendants)
-                {
-                    //append the child to the stringbuilder
-                    AppendToBuilder(sb, child);
-                }
+                CSVString = BuildString();
             }
 
             // When not using an API controller to return a HTTPResonseMessage we must write directly to the HttpContext.Current.Response to return the file.
@@ -45,7 +34,35 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             System.Web.HttpContext.Current.Response.AddHeader("content-disposition", attachment);
             System.Web.HttpContext.Current.Response.ContentType = "text/csv";
             System.Web.HttpContext.Current.Response.AddHeader("Pragma", "public");
-            System.Web.HttpContext.Current.Response.Write(sb.ToString());
+            System.Web.HttpContext.Current.Response.Write(CSVString.ToString());
+        }
+
+        private StringBuilder BuildString()
+        {
+            // instantiate a string builder for our csv file
+            var CSVString = new StringBuilder();
+
+            // append the first row of column names
+            CSVString.Append(string.Format("{0},{1},{2},{3},{4},{5}", "Header", "Template", "Document Type", "Expiry Date", "Edit Url", "Live Url") + Environment.NewLine);
+
+            // get all nodes at the root of the content tree
+            var root = ApplicationContext.Services.ContentService.GetRootContent();
+            foreach (var node in root)
+            {
+                // get the descendants of the node
+                var descendants = ApplicationContext.Services.ContentService.GetDescendants(node.Id);
+
+                // append the node to the stringbuilder
+                AppendToBuilder(CSVString, node);
+
+                foreach (var child in descendants)
+                {
+                    //append the child to the stringbuilder
+                    AppendToBuilder(CSVString, child);
+                }
+            }
+            StoreInCache(CSVString);
+            return CSVString;
         }
 
         public void AppendToBuilder(StringBuilder sb, global::Umbraco.Core.Models.IContent node)
@@ -85,6 +102,21 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
             // append to the string builder
             sb.Append(string.Format("{0},{1},{2},{3},{4},{5}", name, template, docType, expiryDate, "/umbraco#/content/content/edit/" + node.Id, liveURL) + Environment.NewLine);
+        }
+
+        private void StoreInCache(StringBuilder CSVString)
+        {
+            cache.Add("CSVString", CSVString, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
+            cache.Add("CacheDate", DateTime.Now.ToString(), System.Web.Caching.Cache.NoAbsoluteExpiration, null);
+        }
+
+        public ActionResult RefreshCache()
+        {
+            BuildString();
+            GetFile();
+            var model = new CSVExportViewModel();
+            model.CacheDate = cache["CacheDate"] as string;
+            return View("~/App_Plugins/EditorTools/Views/CSVExport/Index.cshtml", model);
         }
     }
 }

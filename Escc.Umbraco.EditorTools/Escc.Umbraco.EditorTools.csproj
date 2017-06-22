@@ -642,6 +642,7 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="App_Plugins\EditorTools\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="scripts\jquery-3.1.1.js" />
     <Content Include="scripts\jquery-3.1.1.min.js" />
@@ -670,6 +671,7 @@
     <Compile Include="App_Plugins\EditorTools\EditorToolsTree.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\HomeController.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\DataModels\TableModel.cs" />
+    <Compile Include="App_Plugins\EditorTools\Models\ViewModels\CSVExportViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\DocumentTypesViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\ExamineSearchViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\PageExpiryViewModel.cs" />
