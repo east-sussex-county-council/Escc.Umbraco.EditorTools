@@ -44,10 +44,13 @@ Microsoft.CodeDom.Providers.DotNetCompilerPlatform.*
 *.nupkg
 
 # Umbraco files
+[Gg]lobal.asax
 [Uu]mbraco/
 [Uu]mbraco_Client/
 [Aa]pp_Data/
 [Aa]pp_Browsers/
+[Vv]iews
+[Cc]onfig
 */App_Plugins/ModelsBuilder
 [Ii]nstall/
 */[Cc]onfig/

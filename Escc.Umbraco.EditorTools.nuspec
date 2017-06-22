@@ -2,31 +2,52 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Escc.Umbraco.EditorTools</id>
-    <version>1.2.2</version>
-    <authors>ESCC</authors>
+    <version>2.0.0</version>
+    <authors>Cai Lehwald</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Umbraco Editor Tools</description>
 	 <frameworkAssemblies>
          <frameworkAssembly assemblyName="System" targetFramework="net452" />
 		 <frameworkAssembly assemblyName="System.Runtime.caching" targetFramework="net452" />
       </frameworkAssemblies>
-    <releaseNotes>First Full Release.</releaseNotes>
-    <copyright>Copyright 2016</copyright>
+    <releaseNotes>Version 2 Release.</releaseNotes>
+    <copyright>Copyright 2017</copyright>
 	<iconUrl>https://www.eastsussex.gov.uk/apple-touch-icon.png</iconUrl>
     <licenseUrl>http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/</licenseUrl>
     <projectUrl>https://github.com/east-sussex-county-council/Escc.Umbraco.EditorTools</projectUrl>
-    <dependencies>
-		<group targetFramework="net452">
-			<dependency id ="jquery.datatables" version="1.10.12"/>
-		</group>
-    </dependencies>
   </metadata>
   <files>
 	<file src="Escc.Umbraco.EditorTools\bin\Escc.Umbraco.EditorTools.dll" target="lib"/>
+	
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Content\*.css" target="content\App_Plugins\EditorTools\Content\"/>
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Content\*.map" target="content\App_Plugins\EditorTools\Content\"/>
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Content\DataTables\css\*.css" target="content\App_Plugins\EditorTools\Content\DataTables\css\"/>
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Content\DataTables\css\*.scss" target="content\App_Plugins\EditorTools\Content\DataTables\css\"/>
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Content\DataTables\images\*.png" target="content\App_Plugins\EditorTools\Content\DataTables\images\"/>
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Content\DataTables\swf\*.swf" target="content\App_Plugins\EditorTools\Content\DataTables\swf\"/>
+	
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\fonts\glyphicons-halflings-regular.eot" target="content\App_Plugins\EditorTools\fonts\glyphicons-halflings-regular.eot"/>
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\fonts\glyphicons-halflings-regular.svg" target="content\App_Plugins\EditorTools\fonts\glyphicons-halflings-regular.svg"/>
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\fonts\glyphicons-halflings-regular.ttf" target="content\App_Plugins\EditorTools\fonts\glyphicons-halflings-regular.ttf"/>
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\fonts\glyphicons-halflings-regular.woff" target="content\App_Plugins\EditorTools\fonts\glyphicons-halflings-regular.woff"/>
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\fonts\glyphicons-halflings-regular.woff2" target="content\App_Plugins\EditorTools\fonts\glyphicons-halflings-regular.woff2"/>
+	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\lang\en-US.xml" target="content\App_Plugins\EditorTools\lang\en-US.xml"/>
-		<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\lang\en.xml" target="content\App_Plugins\EditorTools\lang\en.xml"/>
-	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\*.html" target="content\App_Plugins\EditorTools\"/>	
-	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\backoffice\EditorToolsTree\*.html" target="content\App_Plugins\EditorTools\backoffice\EditorToolsTree\"/>	
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\lang\en.xml" target="content\App_Plugins\EditorTools\lang\en.xml"/>
+	
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Scripts\DataTables\*.js" target="content\App_Plugins\EditorTools\Scripts\DataTables\"/>	
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Scripts\*.js" target="content\App_Plugins\EditorTools\Scripts\"/>	
+	
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\CSVExport\*.cshtml" target="content\App_Plugins\EditorTools\Views\CSVExport\"/>	
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\DocumentTypes\*.cshtml" target="content\App_Plugins\EditorTools\Views\DocumentTypes\"/>	
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\EditorToolsHome\*.cshtml" target="content\App_Plugins\EditorTools\Views\EditorToolsHome\"/>	
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\ExamineSearch\*.cshtml" target="content\App_Plugins\EditorTools\Views\ExamineSearch\"/>	
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\PageExpiry\*.cshtml" target="content\App_Plugins\EditorTools\Views\PageExpiry\"/>	
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\Partials\*.cshtml" target="content\App_Plugins\EditorTools\Views\Partials\"/>	
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\Shared\*.cshtml" target="content\App_Plugins\EditorTools\Views\Shared\"/>	
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\Users\*.cshtml" target="content\App_Plugins\EditorTools\Views\Users\"/>	
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\Web.config" target="content\App_Plugins\EditorTools\Views\"/>								
+								
 	<file src="Escc.Umbraco.EditorTools.targets" target="build" />
   </files>
 </package>
