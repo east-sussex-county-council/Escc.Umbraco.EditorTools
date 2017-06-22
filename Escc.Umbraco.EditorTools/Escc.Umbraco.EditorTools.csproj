@@ -597,7 +597,9 @@
     <Content Include="App_Plugins\EditorTools\Views\Partials\_DataTable.cshtml" />
     <Content Include="App_Plugins\EditorTools\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="App_Plugins\EditorTools\Views\EditorToolsHome\About.cshtml" />
-    <Content Include="App_Plugins\EditorTools\Views\EditorToolsHome\Help.cshtml" />
+    <Content Include="App_Plugins\EditorTools\Views\EditorToolsHome\Help.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
