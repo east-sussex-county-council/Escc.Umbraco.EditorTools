@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Web;
@@ -40,6 +41,12 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
             var mediaFileTypeCount = new Dictionary<string, int>();
 
+            model.Media.Table = new DataTable();
+            model.Media.Table.Columns.Add("Name", typeof(string));
+            model.Media.Table.Columns.Add("Date Created", typeof(string));
+            model.Media.Table.Columns.Add("Created By", typeof(string));
+            model.Media.Table.Columns.Add("Edit Url", typeof(HtmlString));
+
             foreach (var item in searchResults)
             {
                 switch (item.Fields["__IndexType"])
@@ -65,8 +72,11 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                             {
                                 mediaFileTypeCount.Add(item.Fields["umbracoExtension"], 1);
                             }
+                            var editURL = new HtmlString(string.Format("<a target=\"_top\" href=\"/umbraco#/media/media/edit/{0}\">edit</a>", item.Fields["__NodeId"]));
+                            model.Media.Table.Rows.Add(item.Fields["__nodeName"], ParseLuceneDate(item.Fields["createDate"]).ToString(), item.Fields["writerName"], editURL);
                         }
                         break;
+                        
                 }
             }
 
@@ -90,6 +100,25 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             return model;
         }
 
+        public DateTime? ParseLuceneDate(string luceneDateTime)
+        {
+            if (String.IsNullOrEmpty(luceneDateTime) || luceneDateTime.Length < 14) return null;
+
+            try
+            {
+                return new DateTime(Int32.Parse(luceneDateTime.Substring(0, 4), CultureInfo.InvariantCulture),
+                                    Int32.Parse(luceneDateTime.Substring(4, 2), CultureInfo.InvariantCulture),
+                                    Int32.Parse(luceneDateTime.Substring(6, 2), CultureInfo.InvariantCulture),
+                                    Int32.Parse(luceneDateTime.Substring(8, 2), CultureInfo.InvariantCulture),
+                                    Int32.Parse(luceneDateTime.Substring(10, 2), CultureInfo.InvariantCulture),
+                                    Int32.Parse(luceneDateTime.Substring(12, 2), CultureInfo.InvariantCulture));
+
+            }
+            catch (FormatException ex)
+            {
+                return null;
+            }
+        }
         #endregion
 
         #region Cache Methods
