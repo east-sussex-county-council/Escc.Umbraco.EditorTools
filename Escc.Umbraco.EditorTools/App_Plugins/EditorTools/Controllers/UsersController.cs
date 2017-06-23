@@ -19,9 +19,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
             if (model == null)
             {
-                // instantiate the view model
-                model = CreateModel();
-                StoreInCache(model);
+                model = new UsersViewModel();
+                model.CachedDataAvailable = false;
             }
 
             // return a view and pass it the view model.

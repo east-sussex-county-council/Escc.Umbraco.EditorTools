@@ -21,8 +21,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
             if (model == null)
             {
-                model = CreateModel();
-                StoreInCache(model);
+                model = new ContentViewModel();
+                model.CachedDataAvailable = false;
             }
             return View("~/App_Plugins/EditorTools/Views/Content/Index.cshtml", model);
         }

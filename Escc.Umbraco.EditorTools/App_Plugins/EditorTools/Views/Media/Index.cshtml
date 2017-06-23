@@ -5,66 +5,71 @@
     ViewBag.Title = "Media";
 }
 @model Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels.MediaViewModel
-<p></p>
-<div id="Media">
-    <div class="list-group panel panel-info">
-        <a href="#MediaPanel" class="list-group-item" data-toggle="active" data-parent="#Media"><span class="glyphicon glyphicon-info-sign"></span> <b>Media</b></a>
-        <div class="active" id="MediaPanel">
-            <div class="thumbnail">
-                <p>  </p>
-                <div class="panel with-nav-tabs">
-                    <div class="panel-heading">
-                        <ul class="nav nav-tabs">
-                            <li class="active"><a href="#Media" data-toggle="tab"><b>Media</b></a></li>
-                            <li><a href="#Stats" data-toggle="tab"><b>Stats</b></a></li>
-                        </ul>
-                    </div>
-                    <div class="panel-body">
-                        <div class="tab-content">
-                            <div class="tab-pane fade in active" id="Media">
-                                <div class="row">
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-                                        <div class="panel-body">
-                                            <div class="col-md-6">
-                                                This tab displays all of Umbracos Media files.
-                                            </div>
-                                            <div class="col-md-4">
-                                                Data Cached on: @Model.CacheDate
-                                            </div>
-                                            <div class="col-md-2">
-                                                <p><a href="/umbraco/backoffice/Plugins/Media/RefreshCache" class="btn btn-primary" type="button" id="RefreshButton">Refresh <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="panel panel-success">
-                                        <div class="panel-heading">
-                                            <h3 class="panel-title">Media</h3>
-                                        </div>
-                                        <div class="panel-body">
-                                            @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.Media);}
-                                        </div>
-                                    </div>
-                                </div>
+@{
+    if (Model.CachedDataAvailable)
+    {
+        <p></p>
+        <div id="Media">
+            <div class="list-group panel panel-info">
+                <a href="#MediaPanel" class="list-group-item" data-toggle="active" data-parent="#Media"><span class="glyphicon glyphicon-info-sign"></span> <b>Media</b></a>
+                <div class="active" id="MediaPanel">
+                    <div class="thumbnail">
+                        <p>  </p>
+                        <div class="panel with-nav-tabs">
+                            <div class="panel-heading">
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#Media" data-toggle="tab"><b>Media</b></a></li>
+                                    <li><a href="#Stats" data-toggle="tab"><b>Stats</b></a></li>
+                                </ul>
                             </div>
-                            <div class="tab-pane fade" id="Stats">
-                                <div class="row">
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-                                        <div class="panel-body">
-                                            <h4>Total Media: <span class="label label-primary">@Model.TotalMediaFiles</span></h4>
-                                            <h4>Files: <span class="label label-info">@Model.TotalFiles</span></h4>
-                                            <h4>Images: <span class="label label-info">@Model.TotalImages</span></h4>
-                                            <h4>Folders: <span class="label label-info">@Model.TotalFolders</span></h4>
+                            <div class="panel-body">
+                                <div class="tab-content">
+                                    <div class="tab-pane fade in active" id="Media">
+                                        <div class="row">
+                                            <div class="panel panel-info">
+                                                <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
+                                                <div class="panel-body">
+                                                    <div class="col-md-6">
+                                                        This tab displays all of Umbracos Media files.
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        Data Cached on: @Model.CacheDate
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <p><a href="/umbraco/backoffice/Plugins/Media/RefreshCache" class="btn btn-primary" type="button" id="RefreshButton">Refresh <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel panel-success">
+                                                <div class="panel-heading">
+                                                    <h3 class="panel-title">Media</h3>
+                                                </div>
+                                                <div class="panel-body">
+                                                    @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.Media);}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="panel panel-primary">
-                                        <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> File Types</div>
-                                        <div class="panel-body">
-                                            <div class="row">
-                                                @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.MediaFileTypes);}
+                                    <div class="tab-pane fade" id="Stats">
+                                        <div class="row">
+                                            <div class="panel panel-info">
+                                                <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
+                                                <div class="panel-body">
+                                                    <h4>Total Media: <span class="label label-primary">@Model.TotalMediaFiles</span></h4>
+                                                    <h4>Files: <span class="label label-info">@Model.TotalFiles</span></h4>
+                                                    <h4>Images: <span class="label label-info">@Model.TotalImages</span></h4>
+                                                    <h4>Folders: <span class="label label-info">@Model.TotalFolders</span></h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="panel panel-primary">
+                                                <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> File Types</div>
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.MediaFileTypes);}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -75,5 +80,9 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
+                                                            }
+                                                            else
+                                                            {
+                                                                Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_NoCachedData.cshtml", "/umbraco/backoffice/Plugins/Media/RefreshCache");
+                                                            }
+}

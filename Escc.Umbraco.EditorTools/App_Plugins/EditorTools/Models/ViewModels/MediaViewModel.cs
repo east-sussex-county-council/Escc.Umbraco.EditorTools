@@ -15,9 +15,11 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels
         public TableModel Media { get; set; }
         public TableModel MediaFileTypes { get; set; }
         public DateTime CacheDate { get; set; }
+        public bool CachedDataAvailable { get; set; }
 
         public MediaViewModel()
         {
+            CachedDataAvailable = true;
             MediaFileTypes = new TableModel("MediaFileTypesTable");
             Media = new TableModel("MediaTable");
             CacheDate = DateTime.Now;

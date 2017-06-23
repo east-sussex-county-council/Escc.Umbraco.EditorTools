@@ -18,8 +18,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
             if (model == null)
             {
-                model = CreateModel();
-                StoreInCache(model);
+                model = new PageExpiryViewModel();
+                model.CachedDataAvailable = false;
             }
             return View("~/App_Plugins/EditorTools/Views/PageExpiry/Index.cshtml", model);
         }

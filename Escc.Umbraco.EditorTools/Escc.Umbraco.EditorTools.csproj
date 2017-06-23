@@ -530,7 +530,7 @@
     <Content Include="Content\DataTables\css\common.scss" />
     <Content Include="App_Plugins\EditorTools\Views\Media\Index.cshtml" />
     <Content Include="App_Plugins\EditorTools\Views\Content\Index.cshtml" />
-    <Content Include="App_Plugins\EditorTools\Views\Partials\_ProgressBar.cshtml" />
+    <Content Include="App_Plugins\EditorTools\Views\Partials\_NoCachedData.cshtml" />
     <Content Include="App_Plugins\ModelsBuilder\package.manifest" />
     <Content Include="Config\UrlRewriting.config" />
     <Content Include="Config\umbracoSettings.config" />

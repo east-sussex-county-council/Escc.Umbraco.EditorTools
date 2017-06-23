@@ -20,11 +20,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             var model = cache["MediaViewModel"] as MediaViewModel;
             if (model == null)
             {
-                // instantiate the view model
                 model = new MediaViewModel();
-                // populate the view models variables
-                model = CreateModel();
-                StoreInCache(model);
+                model.CachedDataAvailable = false;
             }
             return View("~/App_Plugins/EditorTools/Views/Media/Index.cshtml", model);
         }
