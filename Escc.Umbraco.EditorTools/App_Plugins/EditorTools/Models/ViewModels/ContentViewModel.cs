@@ -5,16 +5,23 @@ using System.Web;
 
 namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels
 {
-    public class DocumentTypesViewModel
+    public class ContentViewModel
     {
-        public TableModel DocumentTypes { get;set;}
+        public TableModel PublishedContent { get; set; }
+        public TableModel UnpublishedContent { get; set; }
+        public TableModel DocumentTypes { get; set; }
         public Dictionary<string, TableModel> ModalTables { get; set; }
         public DateTime CacheDate { get; set; }
+        public int PublishedPages { get; set; }
+        public int UnpublishedPages { get; set; }
+        public int TotalPages { get; set; }
 
-        public DocumentTypesViewModel()
+        public ContentViewModel()
         {
             ModalTables = new Dictionary<string, TableModel>();
             DocumentTypes = new TableModel("DocumentsOfTypeTable");
+            PublishedContent = new TableModel("PublishedContentTable");
+            UnpublishedContent = new TableModel("UnpublishedContentTable");
             CacheDate = DateTime.Now;
         }
     }

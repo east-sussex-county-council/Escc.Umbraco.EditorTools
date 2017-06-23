@@ -1,0 +1,52 @@
+﻿@{
+    Layout = "~/App_Plugins/EditorTools/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewBag.Title = "Media";
+}
+@model Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels.MediaViewModel
+<p></p>
+<div id="UmbracoStats">
+    <div class="list-group panel panel-info">
+        <a href="#UmbracoStatspanel" class="list-group-item" data-toggle="active" data-parent="#UmbracoStats"><span class="glyphicon glyphicon-info-sign"></span> <b>Media</b></a>
+        <div class="active" id="UmbracoStatspanel">
+            <div class="thumbnail">
+                <p>  </p>
+                <div class="panel with-nav-tabs">
+                    <div class="panel-heading">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#Stats" data-toggle="tab"><b>Stats</b></a></li>
+                        </ul>
+                    </div>
+                    <div class="panel-body">
+                        <div class="tab-content">
+                            <div class="tab-pane fade in active" id="Stats">
+                                <div class="row">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
+                                        <div class="panel-body">
+                                            <h3>Total Media: <span class="label label-primary">@Model.TotalMediaFiles</span></h3>
+                                            <h3>Files: <span class="label label-info">@Model.TotalFiles</span></h3>
+                                            <h3>Images: <span class="label label-info">@Model.TotalImages</span></h3>
+                                            <h3>Folders: <span class="label label-info">@Model.TotalFolders</span></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="panel panel-primary">
+                                        <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> File Types</div>
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.MediaFileTypes);}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

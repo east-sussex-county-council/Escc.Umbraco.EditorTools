@@ -20,10 +20,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             if (model == null)
             {
                 // instantiate the view model
-                model = new UsersViewModel();
-                // populate the view models variables
-                model.ActiveUsers.Table = CreateTable(true);
-                model.DisabledUsers.Table = CreateTable(false);
+                model = CreateModel();
                 StoreInCache(model);
             }
 
@@ -32,28 +29,62 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         }
 
         #region Helpers
-        public DataTable CreateTable(bool Active)
+        public UsersViewModel CreateModel()
         {
+            var model = new UsersViewModel();
             var userService = ApplicationContext.Services.UserService;
 
-            DataTable table = new DataTable();
-            table.Columns.Add("ID", typeof(int));
-            table.Columns.Add("Name", typeof(string));
-            table.Columns.Add("Username", typeof(string));
-            table.Columns.Add("User Type", typeof(string));
-            table.Columns.Add("Email", typeof(string));
+            model.ActiveUsers.Table = new DataTable();
+            model.ActiveUsers.Table.Columns.Add("ID", typeof(int));
+            model.ActiveUsers.Table.Columns.Add("Name", typeof(string));
+            model.ActiveUsers.Table.Columns.Add("Username", typeof(string));
+            model.ActiveUsers.Table.Columns.Add("User Type", typeof(string));
+            model.ActiveUsers.Table.Columns.Add("Email", typeof(string));
+
+            model.DisabledUsers.Table = new DataTable();
+            model.DisabledUsers.Table.Columns.Add("ID", typeof(int));
+            model.DisabledUsers.Table.Columns.Add("Name", typeof(string));
+            model.DisabledUsers.Table.Columns.Add("Username", typeof(string));
+            model.DisabledUsers.Table.Columns.Add("User Type", typeof(string));
+            model.DisabledUsers.Table.Columns.Add("Email", typeof(string));
 
             int totalRecords;
+            var UsersTypeCount = new Dictionary<string, int>();
             // for each user in the user service
             foreach (var user in userService.GetAll(0, int.MaxValue, out totalRecords))
             {
-                if (user.IsApproved == Active)
+                if (user.IsApproved)
                 {
-                    // add the users id, name , username, user type and email to the table
-                    table.Rows.Add(user.Id, user.Name, user.Username, user.UserType.Alias, user.Email);
+                    model.ActiveUsers.Table.Rows.Add(user.Id, user.Name, user.Username, user.UserType.Alias, user.Email);
+                }
+                else
+                {
+                    model.DisabledUsers.Table.Rows.Add(user.Id, user.Name, user.Username, user.UserType.Alias, user.Email);
+                }
+
+                model.TotalUsers++;
+                var Active = user.IsApproved ? model.ActiveUsersCount++ : model.DisabledUsersCount++;
+
+                if (UsersTypeCount.Keys.Contains(user.UserType.Alias))
+                {
+                    UsersTypeCount[user.UserType.Alias] += 1;
+                }
+                else
+                {
+                    UsersTypeCount.Add(user.UserType.Alias, 1);
                 }
             }
-            return table;
+
+            model.UserTypes.Table = new DataTable();
+            model.UserTypes.Table.Columns.Add("Type", typeof(string));
+            model.UserTypes.Table.Columns.Add("Count", typeof(int));
+
+            foreach (var item in UsersTypeCount)
+            {
+                model.UserTypes.Table.Rows.Add(item.Key, item.Value);
+            }
+
+            return model;
         }
         #endregion
 
@@ -66,10 +97,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         public ActionResult RefreshCache()
         {
             // instantiate the view model
-            var model = new UsersViewModel();
-            // populate the view models variables
-            model.ActiveUsers.Table = CreateTable(true);
-            model.DisabledUsers.Table = CreateTable(false);
+            var model = CreateModel();
             StoreInCache(model);
             return View("~/App_Plugins/EditorTools/Views/Users/Index.cshtml", model);
         }

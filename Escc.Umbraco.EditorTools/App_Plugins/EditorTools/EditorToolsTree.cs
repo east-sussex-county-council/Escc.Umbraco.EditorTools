@@ -54,38 +54,53 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
                 OnAfterNodeRender(ref tree, ref UsersNode, EventArgs.Empty);
             }
 
-            var DocumentTypesNode = XmlTreeNode.Create(this);
-            DocumentTypesNode.NodeID = "2";
-            DocumentTypesNode.NodeType = "DocumentTypes";
-            DocumentTypesNode.Text = "Document Types";
-            DocumentTypesNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/DocumentTypes/Index');";
-            DocumentTypesNode.Icon = "icon-document";
-            DocumentTypesNode.HasChildren = false;
-            DocumentTypesNode.Menu = new List<IAction>();
-            OnBeforeNodeRender(ref tree, ref DocumentTypesNode, EventArgs.Empty);
-            if (DocumentTypesNode != null)
+            var ContentToolsNode = XmlTreeNode.Create(this);
+            ContentToolsNode.NodeID = "2";
+            ContentToolsNode.NodeType = "ContentTools";
+            ContentToolsNode.Text = "Content";
+            ContentToolsNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/Content/Index');";
+            ContentToolsNode.Icon = "icon-document";
+            ContentToolsNode.HasChildren = false;
+            ContentToolsNode.Menu = new List<IAction>();
+            OnBeforeNodeRender(ref tree, ref ContentToolsNode, EventArgs.Empty);
+            if (ContentToolsNode != null)
             {
-                tree.Add(DocumentTypesNode);
-                OnAfterNodeRender(ref tree, ref DocumentTypesNode, EventArgs.Empty);
+                tree.Add(ContentToolsNode);
+                OnAfterNodeRender(ref tree, ref ContentToolsNode, EventArgs.Empty);
             }
 
-            var CSVExportNode = XmlTreeNode.Create(this);
-            CSVExportNode.NodeID = "3";
-            CSVExportNode.NodeType = "CSVExport";
-            CSVExportNode.Text = "CSV Export";
-            CSVExportNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/CSVExport/Index');";
-            CSVExportNode.Icon = "icon-download-alt";
-            CSVExportNode.HasChildren = false;
-            CSVExportNode.Menu = new List<IAction>();
-            OnBeforeNodeRender(ref tree, ref CSVExportNode, EventArgs.Empty);
-            if (CSVExportNode != null)
+            var MediaToolsNode = XmlTreeNode.Create(this);
+            MediaToolsNode.NodeID = "3";
+            MediaToolsNode.NodeType = "MediaTools";
+            MediaToolsNode.Text = "Media";
+            MediaToolsNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/Media/Index');";
+            MediaToolsNode.Icon = "icon-umb-media";
+            MediaToolsNode.HasChildren = false;
+            MediaToolsNode.Menu = new List<IAction>();
+            OnBeforeNodeRender(ref tree, ref MediaToolsNode, EventArgs.Empty);
+            if (MediaToolsNode != null)
             {
-                tree.Add(CSVExportNode);
-                OnAfterNodeRender(ref tree, ref CSVExportNode, EventArgs.Empty);
+                tree.Add(MediaToolsNode);
+                OnAfterNodeRender(ref tree, ref MediaToolsNode, EventArgs.Empty);
+            }
+
+            var PageExpiryNode = XmlTreeNode.Create(this);
+            PageExpiryNode.NodeID = "4";
+            PageExpiryNode.NodeType = "PageExpiry";
+            PageExpiryNode.Text = "Page Expiry";
+            PageExpiryNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/PageExpiry/Index');";
+            PageExpiryNode.Icon = "icon-timer";
+            PageExpiryNode.HasChildren = false;
+            PageExpiryNode.Menu = new List<IAction>();
+            OnBeforeNodeRender(ref tree, ref PageExpiryNode, EventArgs.Empty);
+            if (PageExpiryNode != null)
+            {
+                tree.Add(PageExpiryNode);
+                OnAfterNodeRender(ref tree, ref PageExpiryNode, EventArgs.Empty);
             }
 
             var ExamineSearchNode = XmlTreeNode.Create(this);
-            ExamineSearchNode.NodeID = "4";
+            ExamineSearchNode.NodeID = "5";
             ExamineSearchNode.NodeType = "ExamineSearch";
             ExamineSearchNode.Text = "Examine Search";
             ExamineSearchNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/ExamineSearch/Index');";
@@ -99,20 +114,21 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
                 OnAfterNodeRender(ref tree, ref ExamineSearchNode, EventArgs.Empty);
             }
 
-            var PageExpiryNode = XmlTreeNode.Create(this);
-            PageExpiryNode.NodeID = "5";
-            PageExpiryNode.NodeType = "PageExpiry";
-            PageExpiryNode.Text = "Page Expiry";
-            PageExpiryNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/PageExpiry/Index');";
-            PageExpiryNode.Icon = "icon-timer";
-            PageExpiryNode.HasChildren = false;
-            PageExpiryNode.Menu = new List<IAction>();
-            OnBeforeNodeRender(ref tree, ref PageExpiryNode, EventArgs.Empty);
-            if (PageExpiryNode != null)
+            var CSVExportNode = XmlTreeNode.Create(this);
+            CSVExportNode.NodeID = "6";
+            CSVExportNode.NodeType = "CSVExport";
+            CSVExportNode.Text = "CSV Export";
+            CSVExportNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/CSVExport/Index');";
+            CSVExportNode.Icon = "icon-download-alt";
+            CSVExportNode.HasChildren = false;
+            CSVExportNode.Menu = new List<IAction>();
+            OnBeforeNodeRender(ref tree, ref CSVExportNode, EventArgs.Empty);
+            if (CSVExportNode != null)
             {
-                tree.Add(PageExpiryNode);
-                OnAfterNodeRender(ref tree, ref PageExpiryNode, EventArgs.Empty);
+                tree.Add(CSVExportNode);
+                OnAfterNodeRender(ref tree, ref CSVExportNode, EventArgs.Empty);
             }
+
         }
 
         public override void RenderJS(ref System.Text.StringBuilder Javascript)

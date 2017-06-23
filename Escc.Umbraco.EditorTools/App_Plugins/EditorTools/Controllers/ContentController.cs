@@ -12,30 +12,47 @@ using System.Runtime.Caching;
 
 namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
-    public class DocumentTypesController : UmbracoAuthorizedController
+    public class ContentController : UmbracoAuthorizedController
     {
         ObjectCache cache = MemoryCache.Default;
         public ActionResult Index()
         {
-            var model = cache["DocumentTypesViewModel"] as DocumentTypesViewModel;
+            var model = cache["ContentViewModel"] as ContentViewModel;
 
             if (model == null)
             {
                 model = CreateModel();
                 StoreInCache(model);
             }
-            return View("~/App_Plugins/EditorTools/Views/DocumentTypes/Index.cshtml", model);
+            return View("~/App_Plugins/EditorTools/Views/Content/Index.cshtml", model);
         }
 
         #region Helpers
-        private DocumentTypesViewModel CreateModel()
+        private ContentViewModel CreateModel()
         {
-            var model = new DocumentTypesViewModel();
+            var model = new ContentViewModel();
             // instantiate the Examine searcher and give it a query
-            var Searcher = Examine.ExamineManager.Instance.SearchProviderCollection["ExternalSearcher"];
+            var Searcher = Examine.ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
             var criteria = Searcher.CreateSearchCriteria(IndexTypes.Content);
             var examineQuery = criteria.RawQuery("__NodeId:[0 TO 999999]");
             var searchResults = Searcher.Search(examineQuery);
+
+            model.PublishedContent.Table = new DataTable();
+            model.PublishedContent.Table.Columns.Add("ID", typeof(int));
+            model.PublishedContent.Table.Columns.Add("Name", typeof(string));
+            model.PublishedContent.Table.Columns.Add("Published Url", typeof(string));
+            model.PublishedContent.Table.Columns.Add("Edit", typeof(HtmlString));
+
+            model.UnpublishedContent.Table = new DataTable();
+            model.UnpublishedContent.Table.Columns.Add("ID", typeof(int));
+            model.UnpublishedContent.Table.Columns.Add("Name", typeof(string));
+            model.UnpublishedContent.Table.Columns.Add("Published Url", typeof(string));
+            model.UnpublishedContent.Table.Columns.Add("Edit", typeof(HtmlString));
+
+            model.DocumentTypes.Table = new DataTable();
+            model.DocumentTypes.Table.Columns.Add("Count", typeof(int));
+            model.DocumentTypes.Table.Columns.Add("Document Type", typeof(string));
+            model.DocumentTypes.Table.Columns.Add("View", typeof(HtmlString));
 
             var DocumentTypesDictionary = new Dictionary<string, int>();
             foreach (var node in searchResults)
@@ -43,6 +60,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 var key = node.Fields["__NodeTypeAlias"];
                 if (node.Fields["__IndexType"] == "content")
                 {
+                    var editURL = new HtmlString(string.Format("<a target=\"_top\" href=\"/umbraco#/content/content/edit/{0}\">edit</a>", node.Fields["__NodeId"]));
+                    model.TotalPages++;
                     if (DocumentTypesDictionary.ContainsKey(key))
                     {
                         DocumentTypesDictionary[key] = DocumentTypesDictionary[key] + 1;
@@ -51,13 +70,18 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                     {
                         DocumentTypesDictionary.Add(key, 1);
                     }
+                    if (UmbracoContext.Application.Services.ContentService.HasPublishedVersion(int.Parse(node.Fields["__NodeId"])))
+                    {
+                        model.PublishedPages++;
+                        model.PublishedContent.Table.Rows.Add(node.Fields["__NodeId"], node.Fields["nodeName"], node.Fields["urlName"], editURL);
+                    }
+                    else
+                    {
+                        model.UnpublishedPages++;
+                        model.UnpublishedContent.Table.Rows.Add(node.Fields["__NodeId"], node.Fields["nodeName"], node.Fields["urlName"], editURL);
+                    }
                 }
             }
-
-            model.DocumentTypes.Table = new DataTable();
-            model.DocumentTypes.Table.Columns.Add("Count", typeof(int));
-            model.DocumentTypes.Table.Columns.Add("Document Type", typeof(string));
-            model.DocumentTypes.Table.Columns.Add("View", typeof(HtmlString));
 
             foreach (var document in DocumentTypesDictionary)
             {
@@ -95,16 +119,16 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         #endregion
 
         #region Cache Methods
-        private void StoreInCache(DocumentTypesViewModel model)
+        private void StoreInCache(ContentViewModel model)
         {
-            cache.Add("DocumentTypesViewModel", model, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
+            cache.Add("ContentViewModel", model, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
         }
 
         public ActionResult RefreshCache()
         {
             var model = CreateModel();
             StoreInCache(model);
-            return View("~/App_Plugins/EditorTools/Views/DocumentTypes/Index.cshtml", model);
+            return View("~/App_Plugins/EditorTools/Views/Content/Index.cshtml", model);
         }
         #endregion
     }
