@@ -31,7 +31,7 @@ _ReSharper*/
 !*/App_Plugins/EditorTools
 !*.example.config
 !*/App_Plugins/EditorTools/Views
-!packages.config
+packages.config
 *.scc
 Properties/PublishProfiles/*
 packages

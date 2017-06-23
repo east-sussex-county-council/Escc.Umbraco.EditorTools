@@ -498,7 +498,9 @@
     <Content Include="Content\DataTables\images\sort_desc.png" />
     <Content Include="Content\DataTables\images\sort_desc_disabled.png" />
     <Content Include="Content\DataTables\swf\flashExport.swf" />
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Content\DataTables\css\semanticui.scss" />
     <Content Include="Content\DataTables\css\mixins.scss" />
     <Content Include="Content\DataTables\css\common.scss" />
@@ -584,12 +586,8 @@
     <Content Include="Scripts\jquery-3.1.1.slim.js" />
     <Content Include="Scripts\jquery-3.1.1.slim.min.js" />
     <Content Include="web.example.config" />
-    <Content Include="web.example.Debug.config">
-      <DependentUpon>web.example.config</DependentUpon>
-    </Content>
-    <Content Include="web.example.Release.config">
-      <DependentUpon>web.example.config</DependentUpon>
-    </Content>
+    <Content Include="Views\Web.config" />
+    <None Include="web.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="AutoMapper, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
