@@ -127,3 +127,13 @@
                                                             Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_NoCachedData.cshtml", "/umbraco/backoffice/Plugins/Users/RefreshCache");
                                                         }
 }
+
+<div id="Regenerate">
+    @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_RegeneratingCache.cshtml");}
+</div>
+<script>
+    $('#RefreshButton').on('click', function (event) {
+        $('#Users').hide();
+        $('#Regenerate').show();
+    });
+</script>

@@ -147,3 +147,12 @@
                                                                                 }
 
 }
+<div id="Regenerate">
+    @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_RegeneratingCache.cshtml");}
+</div>
+<script>
+    $('#RefreshButton').on('click', function (event) {
+        $('#Content').hide();
+        $('#Regenerate').show();
+    });
+</script>
