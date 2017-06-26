@@ -15,10 +15,11 @@
                     <div class="panel-heading">
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#Users" data-toggle="tab"><b>Users</b></a></li>
-                            <li><a href="#DocumentTypes" data-toggle="tab"><b>Document Types</b></a></li>
-                            <li><a href="#CSVExport" data-toggle="tab"><b>CSV Export</b></a></li>
-                            <li><a href="#ExamineSearch" data-toggle="tab"><b>Examine Search</b></a></li>
+                            <li><a href="#Content" data-toggle="tab"><b>Content</b></a></li>
+                            <li><a href="#Media" data-toggle="tab"><b>Media</b></a></li>
                             <li><a href="#PageExpiry" data-toggle="tab"><b>Page Expiry</b></a></li>
+                            <li><a href="#ExamineSearch" data-toggle="tab"><b>Examine Search</b></a></li>
+                            <li><a href="#CSVExport" data-toggle="tab"><b>CSV Export</b></a></li>
                         </ul>
                     </div>
                     <div class="panel-body">
@@ -35,30 +36,83 @@
                                                 This is particuly useful if a user is struggling to log in. For example they may have forgotten their username or believes their account to be disabled for some reason (Umbraco disables a user account after several failed login attempts). When not being used to troubleshoot login problems it is also a useful audit tool to see how many users you have.
                                             </p>
                                             <p>
-                                                The first time the users section is opened the data is loaded and cached. Simply click the refresh button if you believe the data to be out of date and the tables will be updated with the latest data from Umbraco's User Service.
-                                                Unless you have a seriously large amount of users the process should take no more than a few seconds.
+                                                If you visit the Stats tab you can see some basic statistics about your users, such as total users and a table of your user types.
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="DocumentTypes">
+                            <div class="tab-pane fade" id="Content">
                                 <div class="row">
                                     <div class="panel panel-info">
                                         <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
                                         <div class="panel-body">
                                             <p>
-                                                The 'Document Types' tool queries the examine indexes for your umbraco installation and counts all of your content pages and which document type each page falls under.
+                                                The 'Content' tool queries the examine indexes and the content service for your umbraco installation and creates a table of all of your published and unpublished content. This tool is particulary handy for audit purposes. If your site is particularly large the generation of data can take at least a minute, but is then cached for future use.
                                             </p>
                                             <p>
+                                                On each table for your content you are provided with the ID, Name, published url and a link to the edit page for each content node.
+                                            </p>
+                                            <p>
+                                                If you click on the Stats tab you can see some basic statistics about all your content pages such as your total pages and a table of your document types. 
                                                 The process then goes a step further and generates a table for each document type to allow you to quickly view all the pages that fall under that type. On each table you can view basic information such as the pages name, id and published url. Your also provided with a link to each pages edit page.
                                             </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="Media">
+                                <div class="row">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
+                                        <div class="panel-body">
                                             <p>
-                                                This tool is particulary handy for audit purposes or if your trying to track down a specific page of which you know the document type.
+                                                The 'Media' tool queries examine for all the media files it can find and returns them to you in a table.
                                             </p>
                                             <p>
-                                                The first time the document types section is opened the data is loaded and cached. Simply click the refresh button if you believe the data to be out of date and the tables will be updated with the latest data from the examine index.
-                                                Even with a large amount of pages this process shouldn't take very long.
+                                                You can view the name, date created, the creator and the edit link for media in this table.
+                                            </p>
+                                            <p>
+                                                If you goto the Stats tab you can view some basic statistics about your media files, such as the total media count and a table of your file types.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="PageExpiry">
+                                <div class="row">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
+                                        <div class="panel-body">
+                                            <p>
+                                                The 'Page Expiry' tool allows you to view all the pages in your umbraco installation that are published and have either an expiry date or are set never to expire (they have no expiry date).
+                                            </p>
+                                            <p>
+                                                The first time the tool is opened it might take some time to load as the tool queries the content service to find expiry dates. However, once loaded, the data is cached to avoid having to do the query again. If you believe the tables to out of date you can click refresh to update the cache.
+                                            </p>
+                                            <p>
+                                                This tool is particuly useful for audit purposes and to quickly find out what pages are expiring and when or which pages will never expire.
+                                            </p>
+                                            <p>
+                                                Developers: This tool also makes use of Examine, so if you wish to speed up this tool you can add an "unpublishAt" UmbracoProperty to your document types that copies the ExpiryDate and allows it to be indexed by Examine. If a result returned by examine doesn't have this property the process then queries the content service which causes an overall slow down.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="ExamineSearch">
+                                <div class="row">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
+                                        <div class="panel-body">
+                                            <p>
+                                                The 'Examine Search' tool takes your search terms and queries the Examine indexes for your umbraco installation.
+                                            </p>
+                                            <p>
+                                                Using the drop down list you can choose to either search for media files or content pages. The results are then returned to you in a table which containts the closest results that examine could find.
+                                            </p>
+                                            <p>
+                                                Both queries for either media or content allow for multiple search terms and will score the results returned to you.
                                             </p>
                                         </div>
                                     </div>
@@ -80,45 +134,6 @@
                                             </p>
                                             <p>
                                                 The CSV file contains the following properties for each page: Header, Template, Document Type, Expiry Date, Edit URL and Live URL.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="ExamineSearch">
-                                <div class="row">
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-                                        <div class="panel-body">
-                                            <p>
-                                                The 'Examine Search' tool takes your search terms and queries the Examine indexes for your umbraco installation. At the moment the query can not handle split terms or wildcards (To be added).
-                                            </p>
-                                            <p>
-                                                Using the drop down list you can choose to either search for media files or content pages. The results are then returned to you in a table which containts the closest results that examine could find.
-                                            </p>
-                                            <p>
-                                                When searching for media you can search for a name or use an ID. Currently when searching for content you should only search for the url of a page (To be improved).
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="PageExpiry">
-                                <div class="row">
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-                                        <div class="panel-body">
-                                            <p>
-                                                The 'Page Expiry' tool allows you to view all the pages in your umbraco installation that are published and have either an expiry date or are set never to expire (they have no expiry date).
-                                            </p>
-                                            <p>
-                                                The first time the tool is opened it might take some time to load as the tool queries the content service to find expiry dates. However, once loaded, the data is cached to avoid having to do the query again. If you believe the tables to out of date you can click refresh to update the cache.
-                                            </p>
-                                            <p>
-                                                This tool is particuly useful for audit purposes and to quickly find out what pages are expiring and when or which pages will never expire.
-                                            </p>
-                                            <p>
-                                                Developers: This tool also makes use of Examine, so if you wish to speed up this tool you can add an "unpublishAt" UmbracoProperty to your document types that copies the ExpiryDate and allows it to be indexed by Examine.
                                             </p>
                                         </div>
                                     </div>
