@@ -31,48 +31,99 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             switch (PostModel.SearchType)
             {
                 case "Media":
+                    // instantiate the examine search and its criteria type
                     var MediaSearcher = Examine.ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
-                    var MediaCriteria = MediaSearcher.CreateSearchCriteria(IndexTypes.Content);
+                    var MediaCriteria = MediaSearcher.CreateSearchCriteria(IndexTypes.Media);
+                    // create a query to look for media with the umbracofile property and look for our search term after /media
                     var MediaExamineQuery = MediaCriteria.RawQuery(string.Format("umbracoFile:/media*{0}*", PostModel.Query));
                     var MediaResults = MediaSearcher.Search(MediaExamineQuery);
 
+                    // if the search returned any results, set HasMediaResults to true
                     if (MediaResults.TotalItemCount > 0) model.HasMediaResults = true;
 
+                    // instantiate the media results datatable
                     model.MediaTable.Table = new DataTable();
                     model.MediaTable.Table.Columns.Add("ID", typeof(string));
                     model.MediaTable.Table.Columns.Add("Name", typeof(string));
                     model.MediaTable.Table.Columns.Add("Type", typeof(string));
                     model.MediaTable.Table.Columns.Add("Edit", typeof(HtmlString));
 
+                    // for each result, add a new row to the table
                     foreach (var media in MediaResults)
                     {
+                        // split the umbracoFileProperty to get the medias ID
                         var umbracoFileName = media.Fields["umbracoFile"];
                         var splitFileName = umbracoFileName.Split('/');
                         var id = splitFileName[2];
-
+      
                         var edit = new HtmlString(string.Format("<a target=\"_top\" href=\"/umbraco#/media/media/edit/{0}\">edit</a>", media.Fields["__NodeId"]));
                         model.MediaTable.Table.Rows.Add(id,media.Fields["nodeName"], media.Fields["umbracoExtension"], edit);
                     }              
                     break;
                 case "Content":
-                    var ContentSearcher = Examine.ExamineManager.Instance.SearchProviderCollection["ExternalSearcher"];
+                    // Create a dictionary to store the results and their value
+                    var ContentResultsDictionary = new Dictionary<SearchResult, int>();
+
+                    // instantiate the examine searcher and its criteria type.
+                    var ContentSearcher = Examine.ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
                     var ContentCriteria = ContentSearcher.CreateSearchCriteria(IndexTypes.Content);
 
-                    var ContentExamineQuery = ContentCriteria.RawQuery(string.Format("urlName:{0}", PostModel.Query));
-                    var ContentResults = ContentSearcher.Search(ContentExamineQuery);
+                    // Start with a query for the whole phrase
+                    var ContentPhraseExamineQuery = ContentCriteria.RawQuery(string.Format("urlName:{0}*", PostModel.Query));
+                    var ContentResults = ContentSearcher.Search(ContentPhraseExamineQuery);
 
-                    if (ContentResults.TotalItemCount > 0) model.HasContentResults = true;
+                    foreach (var result in ContentResults)
+                    {
+                        // Add each result to the dictionary and give it an initial value of 1.
+                        ContentResultsDictionary[result] += 1;
+                        // if our query exactly matched the urlName or the nodeName, Increase the results value to push the result to the top of the list
+                        if (result.Fields["urlName"].ToLower() == PostModel.Query.ToLower()) ContentResultsDictionary[result] += 5;
+                        if (result.Fields["nodeName"].ToLower() == PostModel.Query.ToLower()) ContentResultsDictionary[result] += 5;
+                    }
 
+                    // Split the query by its white space
+                    var splitTerm = PostModel.Query.Split(' ');
+                    // for each word in the query
+                    foreach (var term in splitTerm)
+                    {
+                        // do another search for the word
+                        var ContentSplitExamineQuery = ContentCriteria.RawQuery(string.Format("urlName:{0}*", term));
+                        var TermContentResults = ContentSearcher.Search(ContentSplitExamineQuery);
+                        foreach (var result in TermContentResults)
+                        {
+                            // if the dictionary doesn't already contain the result, add it and give it an initial value of 1.
+                            if (!ContentResultsDictionary.Keys.Contains(result))
+                            {
+                                ContentResultsDictionary.Add(result, 1);
+                            }
+                            else
+                            {
+                                // if the dicionary did already contain the result, increase its value by 1.
+                                ContentResultsDictionary[result] += 1;
+                            }
+                        }
+                    }
+
+                    // create a new dictionary ordered by the results value
+                    var OrderedContentResultsDictionary = ContentResultsDictionary.OrderByDescending(x => x.Value);
+
+                    // if we have some results, set HasContentResults to true
+                    if (OrderedContentResultsDictionary.Count() > 0) model.HasContentResults = true;
+
+                    // instantiate the results datatable
                     model.ContentTable.Table = new DataTable();
+                    model.ContentTable.Table.Columns.Add("Score", typeof(int));
                     model.ContentTable.Table.Columns.Add("ID", typeof(int));
                     model.ContentTable.Table.Columns.Add("Name", typeof(string));
                     model.ContentTable.Table.Columns.Add("Published Url", typeof(string));
                     model.ContentTable.Table.Columns.Add("Edit", typeof(HtmlString));
 
-                    foreach (var content in ContentResults)
+                    // for each results, add a new row for the result to the table.
+                    foreach (var result in OrderedContentResultsDictionary)
                     {
+                        var content = result.Key;
                         var editURL = new HtmlString(string.Format("<a target=\"_top\" href=\"/umbraco#/content/content/edit/{0}\">edit</a>", content.Fields["__NodeId"]));
-                        model.ContentTable.Table.Rows.Add(content.Fields["__NodeId"], content.Fields["nodeName"], content.Fields["urlName"], editURL);
+                        model.ContentTable.Table.Rows.Add(result.Value, content.Fields["__NodeId"], content.Fields["nodeName"], content.Fields["urlName"], editURL);
                     }
                     break;
             }
