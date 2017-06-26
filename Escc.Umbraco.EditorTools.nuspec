@@ -38,10 +38,11 @@
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Scripts\DataTables\*.js" target="content\App_Plugins\EditorTools\Scripts\DataTables\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Scripts\*.js" target="content\App_Plugins\EditorTools\Scripts\"/>	
 	
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\Content\*.cshtml" target="content\App_Plugins\EditorTools\Views\Content\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\CSVExport\*.cshtml" target="content\App_Plugins\EditorTools\Views\CSVExport\"/>	
-	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\DocumentTypes\*.cshtml" target="content\App_Plugins\EditorTools\Views\DocumentTypes\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\EditorToolsHome\*.cshtml" target="content\App_Plugins\EditorTools\Views\EditorToolsHome\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\ExamineSearch\*.cshtml" target="content\App_Plugins\EditorTools\Views\ExamineSearch\"/>	
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\Media\*.cshtml" target="content\App_Plugins\EditorTools\Views\Media\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\PageExpiry\*.cshtml" target="content\App_Plugins\EditorTools\Views\PageExpiry\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\Partials\*.cshtml" target="content\App_Plugins\EditorTools\Views\Partials\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\Shared\*.cshtml" target="content\App_Plugins\EditorTools\Views\Shared\"/>	
