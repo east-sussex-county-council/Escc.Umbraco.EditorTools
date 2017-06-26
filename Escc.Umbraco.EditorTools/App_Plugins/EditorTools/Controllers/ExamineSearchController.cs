@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using Umbraco.Web.Mvc;
@@ -31,36 +32,84 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             switch (PostModel.SearchType)
             {
                 case "Media":
+                    // Create a dictionary to store the results and their value
+                    var MediaResultsDictionary = new Dictionary<SearchResult, int>();
                     // instantiate the examine search and its criteria type
                     var MediaSearcher = Examine.ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
                     var MediaCriteria = MediaSearcher.CreateSearchCriteria(IndexTypes.Media);
-                    // create a query to look for media with the umbracofile property and look for our search term after /media
-                    var MediaExamineQuery = MediaCriteria.RawQuery(string.Format("umbracoFile:/media*{0}*", PostModel.Query));
-                    var MediaResults = MediaSearcher.Search(MediaExamineQuery);
+
+                    // Create a query to get all media nodes and then filter by results that contain the umbracoFile property
+                    var MediaExamineQuery = MediaCriteria.RawQuery(string.Format("__NodeId:[0 TO 999999]"));
+                    var MediaResults = MediaSearcher.Search(MediaExamineQuery).Where(x => x.Fields.ContainsKey("umbracoFile"));
+
+                    // Check each result for the search terms and assign a value rating that result
+                    foreach (var result in MediaResults)
+                    {
+                        // if the umbracoFile property contains the search  term
+                        if(CleanString(result.Fields["umbracoFile"]).Contains(PostModel.Query.ToLower()))
+                        {
+                            CheckMediaDictionary(MediaResultsDictionary, result);
+                        }
+                        // if the nodeName contains the seach term
+                        if (CleanString(result.Fields["nodeName"]).ToLower().Contains(PostModel.Query.ToLower()))
+                        {
+                            CheckMediaDictionary(MediaResultsDictionary, result);
+                        }
+                        // if the nodeName exactly equals the seach term
+                        if (CleanString(result.Fields["nodeName"]).ToLower() == PostModel.Query.ToLower())
+                        {
+                            CheckMediaDictionary(MediaResultsDictionary, result);
+                        }
+                        // if the search term matches the media id in the umbracoFile property
+                        if (getMediaID(result) == PostModel.Query)
+                        {
+                            CheckMediaDictionary(MediaResultsDictionary, result);
+                        }
+                        var splitMediaQuery = PostModel.Query.Split(' ');
+                        // for each word in the query
+                        foreach (var term in splitMediaQuery)
+                        {
+                            // if the term is found in the the umbracoFile property
+                            if (CleanString(result.Fields["umbracoFile"].ToLower()).Contains(term.ToLower()))
+                            {
+                                CheckMediaDictionary(MediaResultsDictionary, result);
+                            }
+                            // if the term is found in the nodeName property
+                            if (CleanString(result.Fields["nodeName"].ToLower()).Contains(term.ToLower()))
+                            {
+                                CheckMediaDictionary(MediaResultsDictionary, result);
+                            }
+                        }
+                    }
+
+                    // create a new dictionary ordered by the results value
+                    var OrderedMediaResultsDictionary = MediaResultsDictionary.OrderByDescending(x => x.Value);
 
                     // if the search returned any results, set HasMediaResults to true
-                    if (MediaResults.TotalItemCount > 0) model.HasMediaResults = true;
+                    if (OrderedMediaResultsDictionary.Count() > 0) model.HasMediaResults = true;
 
                     // instantiate the media results datatable
                     model.MediaTable.Table = new DataTable();
+                    model.MediaTable.Table.Columns.Add("Score", typeof(string));
                     model.MediaTable.Table.Columns.Add("ID", typeof(string));
                     model.MediaTable.Table.Columns.Add("Name", typeof(string));
                     model.MediaTable.Table.Columns.Add("Type", typeof(string));
                     model.MediaTable.Table.Columns.Add("Edit", typeof(HtmlString));
 
                     // for each result, add a new row to the table
-                    foreach (var media in MediaResults)
+                    foreach (var result in OrderedMediaResultsDictionary)
                     {
-                        // split the umbracoFileProperty to get the medias ID
-                        var umbracoFileName = media.Fields["umbracoFile"];
-                        var splitFileName = umbracoFileName.Split('/');
-                        var id = splitFileName[2];
-      
+                        var media = result.Key;
+                        var id = getMediaID(result.Key);
+
                         var edit = new HtmlString(string.Format("<a target=\"_top\" href=\"/umbraco#/media/media/edit/{0}\">edit</a>", media.Fields["__NodeId"]));
-                        model.MediaTable.Table.Rows.Add(id,media.Fields["nodeName"], media.Fields["umbracoExtension"], edit);
+                        model.MediaTable.Table.Rows.Add(result.Value, id,media.Fields["nodeName"], media.Fields["umbracoExtension"], edit);
                     }              
                     break;
+
                 case "Content":
+                    // Clean out any reserved characters from the query
+                    PostModel.Query = CleanString(PostModel.Query);
                     // Create a dictionary to store the results and their value
                     var ContentResultsDictionary = new Dictionary<SearchResult, int>();
 
@@ -75,10 +124,10 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                     foreach (var result in ContentResults)
                     {
                         // Add each result to the dictionary and give it an initial value of 1.
-                        ContentResultsDictionary[result] += 1;
+                        ContentResultsDictionary.Add(result, 1);
                         // if our query exactly matched the urlName or the nodeName, Increase the results value to push the result to the top of the list
-                        if (result.Fields["urlName"].ToLower() == PostModel.Query.ToLower()) ContentResultsDictionary[result] += 5;
-                        if (result.Fields["nodeName"].ToLower() == PostModel.Query.ToLower()) ContentResultsDictionary[result] += 5;
+                        if (CleanString(result.Fields["urlName"].ToLower()) == PostModel.Query.ToLower()) ContentResultsDictionary[result] += 5;
+                        if (CleanString(result.Fields["nodeName"].ToLower()) == PostModel.Query.ToLower()) ContentResultsDictionary[result] += 5;
                     }
 
                     // Split the query by its white space
@@ -130,6 +179,35 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
             return View("~/App_Plugins/EditorTools/Views/ExamineSearch/Index.cshtml", model);
         }
+
+        private static void CheckMediaDictionary(Dictionary<SearchResult, int> MediaResultsDictionary, SearchResult result)
+        {
+            // Check the media results dictionary and either add a new entry or add to the results value
+            if (!MediaResultsDictionary.Keys.Contains(result))
+            {
+                MediaResultsDictionary.Add(result, 1);
+            }
+            else
+            {
+                MediaResultsDictionary[result] += 5;
+            }
+        }
+
+        public string getMediaID(SearchResult result)
+        {
+            //Split the UmbracoFile property to get the media ID 
+            var umbracoFileName = result.Fields["umbracoFile"];
+            var splitFileName = umbracoFileName.Split('/');
+            var id = splitFileName[2];
+            return id;
+        }
+
+        public string CleanString (string text)
+        {
+            var regex = new Regex(@"[^\w\s-]");
+            return regex.Replace(text, "");
+        }
+
         #endregion
     }
 }
