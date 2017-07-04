@@ -121,7 +121,14 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         #region Cache Methods
         private void StoreInCache(ContentViewModel model)
         {
-            cache.Add("ContentViewModel", model, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
+            if (cache.Contains("ContentViewModel"))
+            {
+                cache["ContentViewModel"] = model;
+            }
+            else
+            {
+                cache.Add("ContentViewModel", model, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
+            }
         }
 
         public ActionResult RefreshCache()

@@ -85,7 +85,14 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         #region Cache Methods
         private void StoreInCache(PageExpiryViewModel model)
         {
-            cache.Add("PageExpiryViewModel", model, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
+            if (cache.Contains("PageExpiryViewModel"))
+            {
+                cache["PageExpiryViewModel"] = model;
+            }
+            else
+            {
+                cache.Add("PageExpiryViewModel", model, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
+            }
         }
 
         public ActionResult RefreshCache()

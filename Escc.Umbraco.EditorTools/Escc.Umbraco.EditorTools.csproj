@@ -324,16 +324,19 @@
     <Compile Include="App_Plugins\EditorTools\Controllers\ContentController.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\CSVExportController.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\ExamineSearchController.cs" />
+    <Compile Include="App_Plugins\EditorTools\Controllers\InBoundLinkCheckerController.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\MediaController.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\PageExpiryController.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\UsersController.cs" />
     <Compile Include="App_Plugins\EditorTools\EditorToolsSection.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\EditorToolsHomeController.cs" />
     <Compile Include="App_Plugins\EditorTools\EditorToolsTree.cs" />
+    <Compile Include="App_Plugins\EditorTools\Models\DataModels\ContentModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\DataModels\TableModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\CSVExportViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\ContentViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\ExamineSearchViewModel.cs" />
+    <Compile Include="App_Plugins\EditorTools\Models\ViewModels\InBoundLinkCheckerViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\PageExpiryViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\MediaViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\UsersViewModel.cs" />
@@ -550,6 +553,7 @@
     <Content Include="Config\applications.config" />
     <Content Include="Config\404handlers.config" />
     <Content Include="App_Plugins\EditorTools\Views\Partials\_RegeneratingCache.cshtml" />
+    <Content Include="App_Plugins\EditorTools\Views\InBoundLinkChecker\Index.cshtml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
@@ -842,6 +846,7 @@
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="TidyNet, Version=1.0.0.0, Culture=neutral">
       <HintPath>..\packages\UmbracoCms.Core.7.4.3\lib\TidyNet.dll</HintPath>
       <Private>True</Private>
@@ -895,6 +900,7 @@
     <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.1.1.min.map" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

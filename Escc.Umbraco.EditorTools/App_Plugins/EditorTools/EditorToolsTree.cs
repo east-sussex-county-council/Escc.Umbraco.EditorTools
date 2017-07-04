@@ -129,6 +129,21 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
                 OnAfterNodeRender(ref tree, ref CSVExportNode, EventArgs.Empty);
             }
 
+            var InBoundLinkCheckerNode = XmlTreeNode.Create(this);
+            InBoundLinkCheckerNode.NodeID = "7";
+            InBoundLinkCheckerNode.NodeType = "InBoundLinkChecker";
+            InBoundLinkCheckerNode.Text = "InBound Link Checker";
+            InBoundLinkCheckerNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/InBoundLinkChecker/Index');";
+            InBoundLinkCheckerNode.Icon = "icon-return-to-top";
+            InBoundLinkCheckerNode.HasChildren = false;
+            InBoundLinkCheckerNode.Menu = new List<IAction>();
+            OnBeforeNodeRender(ref tree, ref InBoundLinkCheckerNode, EventArgs.Empty);
+            if (InBoundLinkCheckerNode != null)
+            {
+                tree.Add(InBoundLinkCheckerNode);
+                OnAfterNodeRender(ref tree, ref InBoundLinkCheckerNode, EventArgs.Empty);
+            }
+
         }
 
         public override void RenderJS(ref System.Text.StringBuilder Javascript)

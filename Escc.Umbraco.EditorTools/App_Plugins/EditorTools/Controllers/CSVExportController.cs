@@ -110,8 +110,22 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         #region Cache Methods
         private void StoreInCache(StringBuilder CSVString)
         {
-            cache.Add("CSVString", CSVString, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
-            cache.Add("CacheDate", DateTime.Now.ToString(), System.Web.Caching.Cache.NoAbsoluteExpiration, null);
+            if (cache.Contains("CSVString"))
+            {
+                cache["CSVString"] = CSVString;
+            }
+            else
+            {
+                cache.Add("CSVString", CSVString, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
+            }
+            if (cache.Contains("CacheDate"))
+            {
+                cache["CacheDate"] = DateTime.Now.ToString();
+            }
+            else
+            {
+                cache.Add("CacheDate", DateTime.Now.ToString(), System.Web.Caching.Cache.NoAbsoluteExpiration, null);
+            }
         }
 
         public ActionResult RefreshCache()

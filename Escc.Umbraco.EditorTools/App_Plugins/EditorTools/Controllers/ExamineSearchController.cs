@@ -28,7 +28,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         {
             var model = new ExamineSearchViewModel();
             model.Query = PostModel.Query;
-
+            var cleanQuery = CleanString(PostModel.Query);
             switch (PostModel.SearchType)
             {
                 case "Media":
@@ -39,24 +39,24 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                     var MediaCriteria = MediaSearcher.CreateSearchCriteria(IndexTypes.Media);
 
                     // Create a query to get all media nodes and then filter by results that contain the umbracoFile property
-                    var MediaExamineQuery = MediaCriteria.RawQuery(string.Format("__NodeId:[0 TO 999999]"));
+                    var MediaExamineQuery = MediaCriteria.RawQuery(string.Format("__IndexType:media"));
                     var MediaResults = MediaSearcher.Search(MediaExamineQuery).Where(x => x.Fields.ContainsKey("umbracoFile"));
 
                     // Check each result for the search terms and assign a value rating that result
                     foreach (var result in MediaResults)
                     {
                         // if the umbracoFile property contains the search  term
-                        if(CleanString(result.Fields["umbracoFile"]).Contains(PostModel.Query.ToLower()))
+                        if(CleanString(result.Fields["umbracoFile"]).Contains(cleanQuery.ToLower()))
                         {
                             CheckMediaDictionary(MediaResultsDictionary, result);
                         }
                         // if the nodeName contains the seach term
-                        if (CleanString(result.Fields["nodeName"]).ToLower().Contains(PostModel.Query.ToLower()))
+                        if (CleanString(result.Fields["nodeName"]).ToLower().Contains(cleanQuery.ToLower()))
                         {
                             CheckMediaDictionary(MediaResultsDictionary, result);
                         }
                         // if the nodeName exactly equals the seach term
-                        if (CleanString(result.Fields["nodeName"]).ToLower() == PostModel.Query.ToLower())
+                        if (CleanString(result.Fields["nodeName"]).ToLower() == cleanQuery.ToLower())
                         {
                             CheckMediaDictionary(MediaResultsDictionary, result);
                         }
@@ -65,7 +65,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                         {
                             CheckMediaDictionary(MediaResultsDictionary, result);
                         }
-                        var splitMediaQuery = PostModel.Query.Split(' ');
+                        var splitMediaQuery = cleanQuery.Split(' ');
                         // for each word in the query
                         foreach (var term in splitMediaQuery)
                         {
@@ -189,7 +189,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             }
             else
             {
-                MediaResultsDictionary[result] += 5;
+                MediaResultsDictionary[result] += 1;
             }
         }
 
