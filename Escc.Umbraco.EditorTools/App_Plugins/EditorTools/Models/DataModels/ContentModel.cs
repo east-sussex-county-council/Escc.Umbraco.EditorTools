@@ -9,15 +9,12 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.DataModels
     {
         public int NodeID { get; set; }
         public string NodeName { get; set; }
-        public string NodeType { get; set; }
         public string URL { get; set; }
         public List<string> LinksOnNode { get; set; }
 
-        public ContentModel(int nodeID , string nodeName, string nodeType, string url)
+        public ContentModel(string nodeName, string url)
         {
-            NodeID = nodeID;
             NodeName = nodeName;
-            NodeType = nodeType;
             URL = url;
             LinksOnNode = new List<string>();
         }

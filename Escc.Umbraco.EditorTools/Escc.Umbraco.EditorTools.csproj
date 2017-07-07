@@ -331,7 +331,9 @@
     <Compile Include="App_Plugins\EditorTools\EditorToolsSection.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\EditorToolsHomeController.cs" />
     <Compile Include="App_Plugins\EditorTools\EditorToolsTree.cs" />
+    <Compile Include="App_Plugins\EditorTools\Models\DataModels\BrokenPageModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\DataModels\ContentModel.cs" />
+    <Compile Include="App_Plugins\EditorTools\Models\DataModels\CrawlerModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\DataModels\TableModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\CSVExportViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\ContentViewModel.cs" />
@@ -534,6 +536,8 @@
     <Content Include="App_Plugins\EditorTools\Views\Media\Index.cshtml" />
     <Content Include="App_Plugins\EditorTools\Views\Content\Index.cshtml" />
     <Content Include="App_Plugins\EditorTools\Views\Partials\_NoCachedData.cshtml" />
+    <Content Include="App_Plugins\EditorTools\Views\Partials\_RegeneratingCache.cshtml" />
+    <Content Include="App_Plugins\EditorTools\Views\InBoundLinkChecker\Index.cshtml" />
     <Content Include="App_Plugins\ModelsBuilder\package.manifest" />
     <Content Include="Config\UrlRewriting.config" />
     <Content Include="Config\umbracoSettings.config" />
@@ -552,8 +556,6 @@
     <Content Include="Config\BaseRestExtensions.config" />
     <Content Include="Config\applications.config" />
     <Content Include="Config\404handlers.config" />
-    <Content Include="App_Plugins\EditorTools\Views\Partials\_RegeneratingCache.cshtml" />
-    <Content Include="App_Plugins\EditorTools\Views\InBoundLinkChecker\Index.cshtml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
@@ -645,7 +647,9 @@
     <Content Include="Views\Partials\Grid\Editors\Base.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap3.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
-    <None Include="web.config" />
+    <None Include="web.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="AutoMapper, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">

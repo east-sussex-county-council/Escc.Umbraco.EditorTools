@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Escc.Umbraco.EditorTools</id>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
     <authors>Cai Lehwald</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Umbraco Editor Tools</description>
@@ -42,6 +42,7 @@
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\CSVExport\*.cshtml" target="content\App_Plugins\EditorTools\Views\CSVExport\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\EditorToolsHome\*.cshtml" target="content\App_Plugins\EditorTools\Views\EditorToolsHome\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\ExamineSearch\*.cshtml" target="content\App_Plugins\EditorTools\Views\ExamineSearch\"/>	
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\InBoundLinkChecker\*.cshtml" target="content\App_Plugins\EditorTools\Views\InBoundLinkChecker\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\Media\*.cshtml" target="content\App_Plugins\EditorTools\Views\Media\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\PageExpiry\*.cshtml" target="content\App_Plugins\EditorTools\Views\PageExpiry\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\Partials\*.cshtml" target="content\App_Plugins\EditorTools\Views\Partials\"/>	
