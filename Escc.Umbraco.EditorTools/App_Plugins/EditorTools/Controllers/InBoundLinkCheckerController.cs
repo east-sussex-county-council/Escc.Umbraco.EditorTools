@@ -62,7 +62,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         public ActionResult SearchForInBoundLinks(InBoundLinkCheckerViewModel PostModel)
         {
             // If nothing has been entered for the query, just return the index page.
-            if(PostModel.Query == null || PostModel.Query == "")
+            if (PostModel.Query == null || PostModel.Query == "")
             {
                 Index();
             }
@@ -210,7 +210,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 {
                     // While there are less than 8 async tasks running and at least 1 page to crawl.
                     while (TaskCount < 8 && PublishedPages.Count > 0)
-                    { 
+                    {
                         TaskCount++;
                         TaskID++;
                         TaskList.Add(TaskID, Task.Run(() => ProcessPage(model, PublishedPages.Take(1).ToList())));
@@ -322,7 +322,10 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                     model.DataBeingGenerated = false;
                     model.CachedDataAvailable = true;
                     StoreModelInCache(model);
-                    Index();
+                    break;
+
+                    // TO DO 
+                    // Log the exception
                 }
             }
 
@@ -352,21 +355,48 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 // Almost all the time the urlName is different from the published url
                 // search for IPublishedContent to get the published url (this process is significantly slower but much more accurate)
                 var TypedContent = new UmbracoHelper(context).TypedContent(int.Parse(node.Fields["__NodeId"]));
+
                 try
                 {
-                    doc.LoadHtml(client.DownloadString(string.Format("{0}{1}", model.SiteUri, TypedContent.Url())));
-                    if (!CrawlModel.ResultsDictionary.Keys.Contains(string.Format("{0}{1}", model.SiteUri, TypedContent.Url())))
+                    if (TypedContent != null)
                     {
-                        CrawlModel.ResultsDictionary.Add(string.Format("{0}{1}", model.SiteUri, TypedContent.Url()), new ContentModel(node.Fields["nodeName"], string.Format("{0}{1}", model.SiteUri, TypedContent.Url())));
+                        doc.LoadHtml(client.DownloadString(string.Format("{0}{1}", model.SiteUri, TypedContent.Url())));
+                        if (!CrawlModel.ResultsDictionary.Keys.Contains(string.Format("{0}{1}", model.SiteUri, TypedContent.Url())))
+                        {
+                            CrawlModel.ResultsDictionary.Add(string.Format("{0}{1}", model.SiteUri, TypedContent.Url()), new ContentModel(node.Fields["nodeName"], string.Format("{0}{1}", model.SiteUri, TypedContent.Url())));
+                        }
                     }
+                    else // if there is no typed Content available, then use the url name, This is needed in case of the bug where content is published but has no typed content or the umbraco cache has not been updated properly.
+                    {
+                        doc.LoadHtml(client.DownloadString(string.Format("{0}/{1}", model.SiteUri, node.Fields["urlName"])));
+                        if (!CrawlModel.ResultsDictionary.Keys.Contains(string.Format("{0}/{1}", model.SiteUri, node.Fields["urlName"])))
+                        {
+                            CrawlModel.ResultsDictionary.Add(string.Format("{0}/{1}", model.SiteUri, node.Fields["urlName"]), new ContentModel(node.Fields["nodeName"], string.Format("{0}/{1}", model.SiteUri, node.Fields["urlName"])));
+                        }
+                    }
+
                 }
                 catch (Exception e)
                 {
                     // this shouldn't happen but if it does then the node is invalid or the link is broken and should be skipped
-                    CrawlModel.BrokenLinks.Add(new BrokenPageModel(string.Format("{0}{1}", model.SiteUri, TypedContent.Url()), "Internal Crawl", e.Message));
+                    if (TypedContent != null)
+                    {
+                        CrawlModel.BrokenLinks.Add(new BrokenPageModel(string.Format("{0}{1}", model.SiteUri, TypedContent.Url()), "Internal Crawl", e.Message));
+                    }
+                    else // if there is no typed Content available, then use the url name
+                    {
+                        CrawlModel.BrokenLinks.Add(new BrokenPageModel(string.Format("{0}/{1}", model.SiteUri, node.Fields["urlName"]), "Internal Crawl", e.Message));
+                    }
                     continue;
                 }
-                CrawlModel = GetLinksOnPage(doc.DocumentNode.InnerHtml, string.Format("{0}{1}", model.SiteUri, TypedContent.Url()), CrawlModel);
+                if (TypedContent != null)
+                {
+                    CrawlModel = GetLinksOnPage(doc.DocumentNode.InnerHtml, string.Format("{0}{1}", model.SiteUri, TypedContent.Url()), CrawlModel);
+                }
+                else // if there is no typed Content available, then use the url name
+                {
+                    CrawlModel = GetLinksOnPage(doc.DocumentNode.InnerHtml, string.Format("{0}/{1}", model.SiteUri, node.Fields["urlName"]), CrawlModel);
+                }
             }
             return CrawlModel;
         }
