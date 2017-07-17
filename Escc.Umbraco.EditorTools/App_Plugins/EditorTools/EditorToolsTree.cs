@@ -132,7 +132,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
             var InBoundLinkCheckerNode = XmlTreeNode.Create(this);
             InBoundLinkCheckerNode.NodeID = "7";
             InBoundLinkCheckerNode.NodeType = "InBoundLinkChecker";
-            InBoundLinkCheckerNode.Text = "Link Checker";
+            InBoundLinkCheckerNode.Text = "What Links Where?";
             InBoundLinkCheckerNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/InBoundLinkChecker/Index');";
             InBoundLinkCheckerNode.Icon = "icon-return-to-top";
             InBoundLinkCheckerNode.HasChildren = false;

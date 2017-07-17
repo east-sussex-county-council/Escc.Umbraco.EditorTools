@@ -1,5 +1,6 @@
 ﻿using Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.DataModels;
 using Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels;
+using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -47,7 +48,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             }
             else
             {
-                // if a crawl has been done and their is cached data avialable, then prepare the viewmodel.
+                // if a crawl has been done and cached data is available, then prepare the viewmodel.
                 if (model.CachedDataAvailable)
                 {
                     model = PrepareViewModel(model);
@@ -60,30 +61,46 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
         public ActionResult SearchForInBoundLinks(InBoundLinkCheckerViewModel PostModel)
         {
+            // If nothing has been entered for the query, just return the index page.
+            if(PostModel.Query == null || PostModel.Query == "")
+            {
+                Index();
+            }
+
+            // Get the current ViewModel from the cache
             var model = cache["InBoundLinkCheckerViewModel"] as InBoundLinkCheckerViewModel;
-            model.Query = PostModel.Query;
+            // Remove any trailing / characters from the query
+            model.Query = PostModel.Query.TrimEnd('/');
             model.HasInBoundLinks = false;
+            // Get the ValidatedPages from the cache
             var results = cache["ResultsDictionary"] as Dictionary<string, ContentModel>;
 
+            // instantiate the datatable to store the results of the query
             model.InBoundLinks.Table = new DataTable();
-            model.InBoundLinks.Table.Columns.Add("ID", typeof(string));
             model.InBoundLinks.Table.Columns.Add("Name", typeof(string));
             model.InBoundLinks.Table.Columns.Add("Url", typeof(string));
             model.InBoundLinks.Table.Columns.Add("Edit", typeof(HtmlString));
 
+            // Create a list to store the results of the query
             var PagesWithLink = new List<ContentModel>();
+            // for each validated page
             foreach (var node in results)
             {
+                // for each link found on that page
                 foreach (var link in node.Value.LinksOnNode)
                 {
-                    if (model.Query == link)
+                    // if the link matches the query
+                    if (model.Query == link.TrimEnd('/'))
                     {
+                        // if that page has not already been added to the list
                         if (!PagesWithLink.Contains(node.Value))
                         {
+                            // add the page to list
                             PagesWithLink.Add(node.Value);
                         }
                     }
-                    else if (model.Query.Replace("www", "new") == link)
+                    // purely for ESCC, some east sussex pages have new instead of www.
+                    else if (model.Query.Replace("www", "new") == link.TrimEnd('/'))
                     {
                         if (!PagesWithLink.Contains(node.Value))
                         {
@@ -93,13 +110,18 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 }
 
             }
+
+            // If some results have been found
             if (PagesWithLink.Count > 0)
             {
+                // set the boolean to let the view know there are results
                 model.HasInBoundLinks = true;
+                // for each result found
                 foreach (var page in PagesWithLink)
                 {
+                    // create its edit url and add the page to the datatable
                     var editURL = new HtmlString(string.Format("<a target=\"_top\" href=\"/umbraco#/content/content/edit/{0}\">edit</a>", page.NodeID));
-                    model.InBoundLinks.Table.Rows.Add(page.NodeID, page.NodeName, page.URL, editURL);
+                    model.InBoundLinks.Table.Rows.Add(page.NodeName, page.URL, editURL);
                 }
             }
             return View("~/App_Plugins/EditorTools/Views/InBoundLinkChecker/Index.cshtml", model);
@@ -119,160 +141,131 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             model.DataBeingGenerated = true;
             StoreModelInCache(model);
 
-            Task.Run(() => ManageCrawl(model, Results.ToList()));
-
-            this.HttpContext.Response.AddHeader("refresh", "2; url=" + Url.Action("Index"));
-            return View("~/App_Plugins/EditorTools/Views/InBoundLinkChecker/Index.cshtml", model);
-        }
-
-        public async Task<ActionResult> StartExternalCrawl(InBoundLinkCheckerViewModel Postmodel)
-        {
-            var model = cache["InBoundLinkCheckerViewModel"] as InBoundLinkCheckerViewModel;
-            model.ExternalDataBeingGenerated = true;
-            StoreModelInCache(model);
-
             // run async so as not to present the user with a long loading screen and to return the index view.
-            Task.Run(() => GatherExternalPageLinks(model));
+            Task.Run(() => ManageInternalCrawl(model, Results.ToList()));
+
+            this.HttpContext.Response.AddHeader("refresh", "5; url=" + Url.Action("Index"));
             return View("~/App_Plugins/EditorTools/Views/InBoundLinkChecker/Index.cshtml", model);
         }
-
         #endregion
 
         #region Helpers
-
-        public async Task ManageCrawl(InBoundLinkCheckerViewModel model, List<Examine.SearchResult> Results)
+        public InBoundLinkCheckerViewModel PrepareViewModel(InBoundLinkCheckerViewModel ViewModel)
         {
-            var count = 1;
-            while (Results.Count > 0)
+            // Gather data from the cache
+            var ResultsDictionary = cache["ResultsDictionary"] as Dictionary<string, ContentModel>;
+            var LinksFound = cache["LinksFound"] as List<string>;
+            var BrokenLinks = cache["BrokenLinks"] as List<BrokenPageModel>;
+            var Domains = cache["Domains"] as List<string>;
+
+            // Instantiate the view models DataTables
+            ViewModel.IndexedLinks.Table = new DataTable();
+            ViewModel.IndexedLinks.Table.Columns.Add("Name", typeof(string));
+            ViewModel.IndexedLinks.Table.Columns.Add("Published Url", typeof(string));
+
+            ViewModel.BrokenLinks.Table = new DataTable();
+            ViewModel.BrokenLinks.Table.Columns.Add("URL", typeof(string));
+            ViewModel.BrokenLinks.Table.Columns.Add("Found On", typeof(string));
+            ViewModel.BrokenLinks.Table.Columns.Add("Exception", typeof(string));
+
+            ViewModel.LinksFoundTable.Table = new DataTable();
+            ViewModel.LinksFoundTable.Table.Columns.Add("Link", typeof(string));
+
+            ViewModel.Domains.Table = new DataTable();
+            ViewModel.Domains.Table.Columns.Add("Domain", typeof(string));
+
+            // Populate the DataTables using the cached data
+            foreach (var item in ResultsDictionary)
+            {
+                ViewModel.IndexedLinks.Table.Rows.Add(item.Value.NodeName, item.Value.URL);
+            }
+            foreach (var item in LinksFound)
+            {
+                ViewModel.LinksFoundTable.Table.Rows.Add(item);
+            }
+            foreach (var item in BrokenLinks)
+            {
+                ViewModel.BrokenLinks.Table.Rows.Add(item.URL, item.FoundOn, item.Exception);
+            }
+            foreach (var item in Domains)
+            {
+                ViewModel.Domains.Table.Rows.Add(item);
+            }
+            return ViewModel;
+        }
+
+        public async Task ManageInternalCrawl(InBoundLinkCheckerViewModel model, List<Examine.SearchResult> PublishedPages)
+        {
+            // Instantiate Crawler Variables
+            var LinksAvailableToCrawl = true;
+            var TaskCount = 0;
+            var TaskID = 0;
+            var TaskStatus = new Dictionary<int, string>();
+            var TaskList = new Dictionary<int, Task<CrawlerModel>>();
+
+            // Keep going while there are still umbraco pages to crawl
+            while (LinksAvailableToCrawl)
             {
                 try
                 {
-                    var Results1 = Results.Take(1).ToList();
-                    var Results2 = new List<Examine.SearchResult>();
-                    var Results3 = new List<Examine.SearchResult>();
-                    var Results4 = new List<Examine.SearchResult>();
-                    var Results5 = new List<Examine.SearchResult>();
-                    var Results6 = new List<Examine.SearchResult>();
-                    var Results7 = new List<Examine.SearchResult>();
-                    var Results8 = new List<Examine.SearchResult>();
-                    var Results9 = new List<Examine.SearchResult>();
-                    var Results10 = new List<Examine.SearchResult>();
-
-                    if (Results.Count > 1) { Results2 = Results.Skip(1).Take(1).ToList(); }
-                    if (Results.Count > 2) { Results3 = Results.Skip(2).Take(1).ToList(); }
-                    if (Results.Count > 3) { Results4 = Results.Skip(3).Take(1).ToList(); }
-                    if (Results.Count > 4) { Results5 = Results.Skip(4).Take(1).ToList(); }
-                    if (Results.Count > 5) { Results6 = Results.Skip(5).Take(1).ToList(); }
-                    if (Results.Count > 6) { Results7 = Results.Skip(6).Take(1).ToList(); }
-                    if (Results.Count > 7) { Results8 = Results.Skip(7).Take(1).ToList(); }
-                    if (Results.Count > 8) { Results9 = Results.Skip(8).Take(1).ToList(); }
-                    if (Results.Count > 9) { Results10 = Results.Skip(9).Take(1).ToList(); }
-
-                    if(Results.Count < 10)
-                    {
-                        Results.RemoveRange(0, Results.Count);
-                    } 
-                    else
-                    {
-                        Results.RemoveRange(0, 10);
+                    // While there are less than 8 async tasks running and at least 1 page to crawl.
+                    while (TaskCount < 8 && PublishedPages.Count > 0)
+                    { 
+                        TaskCount++;
+                        TaskID++;
+                        TaskList.Add(TaskID, Task.Run(() => ProcessPage(model, PublishedPages.Take(1).ToList())));
+                        PublishedPages.RemoveRange(0, 1);
+                        TaskStatus.Add(TaskID, "Started");
                     }
-                   
+                    // If there are no pages left to crawl after assigning tasks, set LinksAvailableToCrawl to false to end the while loop after this iteration
+                    if (PublishedPages.Count() <= 0) LinksAvailableToCrawl = false;
 
-                    // run async so as not to present the user with a long loading screen and to return the index view.
-                    var Thread1 = Task.Run(() => GatherPageLinks(model, Results1));
-                    var Thread2 = Results.Count > 1 ? Task.Run(() => GatherPageLinks(model, Results2)) : null;
-                    var Thread3 = Results.Count > 2 ? Task.Run(() => GatherPageLinks(model, Results3)) : null;
-                    var Thread4 = Results.Count > 3 ? Task.Run(() => GatherPageLinks(model, Results4)) : null;
-                    var Thread5 = Results.Count > 4 ? Task.Run(() => GatherPageLinks(model, Results5)) : null;
-                    var Thread6 = Results.Count > 5 ? Task.Run(() => GatherPageLinks(model, Results6)) : null;
-                    var Thread7 = Results.Count > 6 ? Task.Run(() => GatherPageLinks(model, Results7)) : null;
-                    var Thread8 = Results.Count > 7 ? Task.Run(() => GatherPageLinks(model, Results8)) : null;
-                    var Thread9 = Results.Count > 8 ? Task.Run(() => GatherPageLinks(model, Results9)) : null;
-                    var Thread10 = Results.Count > 9 ? Task.Run(() => GatherPageLinks(model, Results10)) : null;
+                    // Instantiate a List to store the results of the aysnc tasks.
+                    var ResultsModelList = new List<CrawlerModel>();
 
-                    CrawlerModel Result1 = await Thread1;
-                    model.CrawledLinks += Result1.CrawledLinks;
-                    StoreModelInCache(model);
-
-                    CrawlerModel Result2 = Thread2 == null ? null : await Thread2;
-                    if (Result2 != null)
+                    // Foreach task in the list, if one is completed, gather its result and log its status as completed.
+                    foreach (var Task in TaskList)
                     {
-                        model.CrawledLinks += Result2.CrawledLinks;
-                        StoreModelInCache(model);
+                        if (Task.Value.IsCompleted)
+                        {
+                            ResultsModelList.Add(Task.Value.Result);
+                            TaskStatus[Task.Key] = "Completed";
+                        }
                     }
 
-                    CrawlerModel Result3 = Thread3 == null ? null : await Thread3;
-                    if (Result3 != null)
+                    // Create a tempory list to log which task keys should be removed.
+                    var KeysToRemove = new List<int>();
+                    // Foreach task in the status list, if it is logged as completed, remove the task from the task list and add its key to the keystoremove list.
+                    foreach (var Task in TaskStatus)
                     {
-                        model.CrawledLinks += Result3.CrawledLinks;
-                        StoreModelInCache(model);
+                        if (Task.Value == "Completed")
+                        {
+                            TaskList.Remove(Task.Key);
+                            TaskCount--;
+                            KeysToRemove.Add(Task.Key);
+                        }
+                    }
+                    foreach (var Key in KeysToRemove)
+                    {
+                        TaskStatus.Remove(Key);
                     }
 
-                    CrawlerModel Result4 = Thread4 == null ? null : await Thread4;
-                    if (Result4 != null)
-                    {
-                        model.CrawledLinks += Result4.CrawledLinks;
-                        StoreModelInCache(model);
-                    }
-
-                    CrawlerModel Result5 = Thread5 == null ? null : await Thread5;
-                    if (Result5 != null)
-                    {
-                        model.CrawledLinks += Result5.CrawledLinks;
-                        StoreModelInCache(model);
-                    }
-
-                    CrawlerModel Result6 = Thread6 == null ? null : await Thread6;
-                    if (Result6 != null)
-                    {
-                        model.CrawledLinks += Result6.CrawledLinks;
-                        StoreModelInCache(model);
-                    }
-
-                    CrawlerModel Result7 = Thread7 == null ? null : await Thread7;
-                    if (Result7 != null)
-                    {
-                        model.CrawledLinks += Result7.CrawledLinks;
-                        StoreModelInCache(model);
-                    }
-
-                    CrawlerModel Result8 = Thread8 == null ? null : await Thread8;
-                    if (Result8 != null)
-                    {
-                        model.CrawledLinks += Result8.CrawledLinks;
-                        StoreModelInCache(model);
-                    }
-
-                    CrawlerModel Result9 = Thread9 == null ? null : await Thread9;
-                    if (Result9 != null)
-                    {
-                        model.CrawledLinks += Result9.CrawledLinks;
-                        StoreModelInCache(model);
-                    }
-
-                    CrawlerModel Result10 = Thread10 == null ? null : await Thread10;
-                    if (Result10 != null)
-                    {
-                        model.CrawledLinks += Result10.CrawledLinks;
-                        StoreModelInCache(model);
-                    }
-
-                    var ResultsModelList = new List<CrawlerModel>(new CrawlerModel[] { Result1, Result2, Result3, Result4, Result5, Result6, Result7, Result8, Result9, Result10 });
-
+                    // Instantiate the Collections to store results in.
                     var ResultsDictionary = cache["ResultsDictionary"] as Dictionary<string, ContentModel>;
                     if (ResultsDictionary == null)
                     {
                         ResultsDictionary = new Dictionary<string, ContentModel>();
                     }
-                    var LinksFound = cache["LinksFound"] as List<string>;
-                    if (LinksFound == null)
-                    {
-                        LinksFound = new List<string>();
-                    }
+
                     var BrokenLinks = cache["BrokenLinks"] as List<BrokenPageModel>;
                     if (BrokenLinks == null)
                     {
                         BrokenLinks = new List<BrokenPageModel>();
+                    }
+                    var LinksFound = cache["LinksFound"] as List<string>;
+                    if (LinksFound == null)
+                    {
+                        LinksFound = new List<string>();
                     }
                     var Domains = cache["Domains"] as List<string>;
                     if (Domains == null)
@@ -280,10 +273,12 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                         Domains = new List<string>();
                     }
 
+                    // For each result model in the resultmodellist, if it is not null, process the models results into the results collections.
                     foreach (var ResultModel in ResultsModelList)
                     {
                         if (ResultModel != null)
                         {
+                            model.CrawledLinks += ResultModel.CrawledLinks;
                             foreach (var item in ResultModel.BrokenLinks)
                             {
                                 if (!BrokenLinks.Contains(item))
@@ -291,18 +286,18 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                                     BrokenLinks.Add(item);
                                 }
                             }
-                            foreach (var item in ResultModel.LinksFound)
-                            {
-                                if (!LinksFound.Contains(item))
-                                {
-                                    LinksFound.Add(item);
-                                }
-                            }
                             foreach (var item in ResultModel.ResultsDictionary)
                             {
                                 if (!ResultsDictionary.Keys.Contains(item.Key))
                                 {
                                     ResultsDictionary.Add(item.Key, item.Value);
+                                }
+                            }
+                            foreach (var item in ResultModel.LinksFound)
+                            {
+                                if (!LinksFound.Contains(item))
+                                {
+                                    LinksFound.Add(item);
                                 }
                             }
                             foreach (var item in ResultModel.Domains)
@@ -314,6 +309,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                             }
                         }
                     }
+
+                    // make a note of the number of pages that have been crawled and verified.
                     model.IndexedPagesTotal = ResultsDictionary.Count();
                     StoreModelInCache(model);
                     // store the results in the cache
@@ -321,27 +318,31 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 }
                 catch (Exception ex)
                 {
-                    throw;
+                    // If an Exception occurs then stop the crawl and store the results up till now.
+                    model.DataBeingGenerated = false;
+                    model.CachedDataAvailable = true;
+                    StoreModelInCache(model);
+                    Index();
                 }
             }
+
+            // Now the Crawl has ended, set the view model booleans to let the view know that data is no longer being generated, and their is cached data to view.
             model.DataBeingGenerated = false;
             model.CachedDataAvailable = true;
             StoreModelInCache(model);
         }
 
-        public CrawlerModel GatherPageLinks(InBoundLinkCheckerViewModel model, List<Examine.SearchResult> Results)
+        public CrawlerModel ProcessPage(InBoundLinkCheckerViewModel model, List<Examine.SearchResult> Results)
         {
             var CrawlModel = new CrawlerModel();
             if (!model.SiteUri.Contains("http"))
             {
                 model.SiteUri = string.Format("{0}{1}", "https://", model.SiteUri);
             }
-
             // ensure that the we have the current umbraco context ( needed for async methods )
             var context = GetUmbracoContext();
 
-            HtmlAgilityPack.HtmlWeb web = new HtmlAgilityPack.HtmlWeb();
-
+            // Potential to be passed several results.
             foreach (var node in Results)
             {
                 CrawlModel.CrawledLinks++;
@@ -370,119 +371,17 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             return CrawlModel;
         }
 
-        public InBoundLinkCheckerViewModel PrepareViewModel(InBoundLinkCheckerViewModel model)
-        {
-            var ResultsDictionary = cache["ResultsDictionary"] as Dictionary<string, ContentModel>;
-            var LinksFound = cache["LinksFound"] as List<string>;
-            var BrokenLinks = cache["BrokenLinks"] as List<BrokenPageModel>;
-            var Domains = cache["Domains"] as List<string>;
-
-            model.IndexedLinks.Table = new DataTable();
-            model.IndexedLinks.Table.Columns.Add("Name", typeof(string));
-            model.IndexedLinks.Table.Columns.Add("Published Url", typeof(string));
-
-            model.BrokenLinks.Table = new DataTable();
-            model.BrokenLinks.Table.Columns.Add("URL", typeof(string));
-            model.BrokenLinks.Table.Columns.Add("Found On", typeof(string));
-            model.BrokenLinks.Table.Columns.Add("Exception", typeof(string));
-
-            model.LinksFoundTable.Table = new DataTable();
-            model.LinksFoundTable.Table.Columns.Add("Link", typeof(string));
-
-            model.Domains.Table = new DataTable();
-            model.Domains.Table.Columns.Add("Domain", typeof(string));
-
-
-            foreach (var item in ResultsDictionary)
-            {
-                model.IndexedLinks.Table.Rows.Add(item.Value.NodeName, item.Value.URL);
-            }
-            foreach (var item in LinksFound)
-            {
-                model.LinksFoundTable.Table.Rows.Add(item);
-            }
-            foreach (var item in BrokenLinks)
-            {
-                model.BrokenLinks.Table.Rows.Add(item.URL, item.FoundOn, item.Exception);
-            }
-            foreach (var item in Domains)
-            {
-                model.Domains.Table.Rows.Add(item);
-            }
-            return model;
-        }
-
-
-        public void GatherExternalPageLinks(InBoundLinkCheckerViewModel model)
-        {
-
-            var ResultsDictionary = cache["ResultsDictionary"] as Dictionary<string, ContentModel>;
-            var LinksFound = cache["LinksFound"] as List<string>;
-            var BrokenLinks = cache["BrokenLinks"] as List<BrokenPageModel>;
-
-            HtmlAgilityPack.HtmlWeb web = new HtmlAgilityPack.HtmlWeb();
-            WebClient client = new WebClient();
-            var doc = new HtmlAgilityPack.HtmlDocument();
-
-            var ResultsCopy = ResultsDictionary.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
-
-
-            try
-            {
-                model.TotalExternalToCrawl = 0;
-                foreach (var item in ResultsDictionary)
-                {
-                    model.TotalExternalToCrawl += item.Value.LinksOnNode.Count();
-                }
-
-                model.CrawledExternalLinks = 0;
-                foreach (var Result in ResultsCopy)
-                {
-                    foreach (var link in Result.Value.LinksOnNode)
-                    {
-                        model.CrawledExternalLinks++;
-                        StoreModelInCache(model);
-                        // if the link isnt already in the results dictionary
-                        if (!ResultsDictionary.Keys.Contains(link))
-                        {
-                            // try to load the page and gather the links on that page.
-                            try
-                            {
-                                doc.LoadHtml(client.DownloadString(link));
-                                ResultsDictionary.Add(link, new ContentModel("ExternalPage", link));
-                            }
-                            catch (Exception ex)
-                            {
-                                // this shouldn't happen but if it does then the node is invalid or the link is broken and should be skipped
-                                BrokenLinks.Add(new BrokenPageModel(link, Result.Value.URL, ex.Message));
-                                continue;
-                            }
-                            StoreModelInCache(model);
-                            // StoreResultsInCache(ResultsDictionary, LinksFound, BrokenLinks);
-                            // GetLinksOnPage(doc.DocumentNode.InnerHtml, link);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-
-
-            model.ExternalDataBeingGenerated = false;
-            model.CachedExternalDataAvailable = true;
-            model.IndexedPagesTotal = ResultsDictionary.Count();
-            StoreModelInCache(model);
-            // store the results in the cache
-            //  StoreResultsInCache(ResultsDictionary, LinksFound, BrokenLinks);
-        }
-
-
-
         private CrawlerModel GetLinksOnPage(string InnerHtml, string Url, CrawlerModel CrawlModel)
         {
+            // if possible, only grab data after a body tag
+            try
+            {
+                InnerHtml = InnerHtml.Substring(InnerHtml.IndexOf("<body>"));
+            }
+            catch (Exception)
+            {
+
+            }
             // split the html string into lines by its white space
             var SplitHtml = InnerHtml.Split(' ');
             var HtmlWithLinks = SplitHtml.Where(x => x.Contains("http"));
@@ -534,7 +433,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
         public UmbracoContext GetUmbracoContext()
         {
-            // Ensures the UmbracoContext is available to Async methods.
+            // Ensures the UmbracoContext is available to Async methods that need access.
             var context = new HttpContextWrapper(new HttpContext(new SimpleWorkerRequest("/", string.Empty, new StringWriter())));
 
             UmbracoContext.EnsureContext(
@@ -600,6 +499,198 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 cache.Add("InBoundLinkCheckerViewModel", model, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
             }
         }
+        #endregion
+
+        #region Validation Crawl
+        // The following was meant to mimic the internal crawl but validate the links found on each page instead of just gather them.
+        // The code is unstable and returns mixed results when trying to validate links to external pages.
+        /*
+        public async Task StartValidationCrawl(InBoundLinkCheckerViewModel model)
+        {
+            var ResultsDictionary = cache["ResultsDictionary"] as Dictionary<string, ContentModel>;
+
+            model.TotalToCrawl = ResultsDictionary.Count();
+            model.CrawledLinks = 0;
+            model.LinksBeingValidated = true;
+            StoreModelInCache(model);
+
+            // run async so as not to present the user with a long loading screen and to return the index view.
+            Task.Run(() => ManageValidationCrawl(model));
+
+            Index();
+        }
+
+
+        public async Task ManageValidationCrawl(InBoundLinkCheckerViewModel model)
+        {
+            var PagesToValidate = new List<ContentModel>();
+            var Results = cache["ResultsDictionary"] as Dictionary<string, ContentModel>;
+            foreach (var item in Results)
+            {
+                PagesToValidate.Add(item.Value);
+            }
+
+            foreach (var Page in PagesToValidate)
+            {
+                var LinksOnPage = Page.LinksOnNode.ToList();
+                var LinksAvailableToCrawl = true;
+                var ThreadCount = 0;
+                var ThreadID = 0;
+                var ThreadStatus = new Dictionary<int, string>();
+                var ThreadList = new Dictionary<int, Task<CrawlerModel>>();
+                var ResultsModelList = new List<CrawlerModel>();
+
+                while (LinksAvailableToCrawl)
+                {
+                    var ResultsDictionary = cache["ResultsDictionary"] as Dictionary<string, ContentModel>;
+                    if (ResultsDictionary == null)
+                    {
+                        ResultsDictionary = new Dictionary<string, ContentModel>();
+                    }
+
+                    var ValidatedLinks = new List<string>();
+                    foreach (var item in ResultsDictionary)
+                    {
+                        ValidatedLinks.Add(item.Key);
+                    }
+
+                    var BrokenLinks = cache["BrokenLinks"] as List<BrokenPageModel>;
+                    if (BrokenLinks == null)
+                    {
+                        BrokenLinks = new List<BrokenPageModel>();
+                    }
+                    var LinksFound = cache["LinksFound"] as List<string>;
+                    if (LinksFound == null)
+                    {
+                        LinksFound = new List<string>();
+                    }
+                    var Domains = cache["Domains"] as List<string>;
+                    if (Domains == null)
+                    {
+                        Domains = new List<string>();
+                    }
+
+                    try
+                    {
+                        while (ThreadCount < 8 && LinksOnPage.Count > 0)
+                        {
+                            ThreadCount++;
+                            ThreadID++;
+                            ThreadList.Add(ThreadID, Task.Run(() => ValidatePageLink(LinksOnPage[0], Page.URL, ValidatedLinks, BrokenLinks)));
+                            LinksOnPage.RemoveRange(0, 1);
+                            ThreadStatus.Add(ThreadID, "Started");
+                        }
+                        if (LinksOnPage.Count() <= 0) LinksAvailableToCrawl = false;
+
+                        foreach (var Thread in ThreadList)
+                        {
+                            if (Thread.Value.IsCompleted)
+                            {
+                                ResultsModelList.Add(Thread.Value.Result);
+                                ThreadStatus[Thread.Key] = "Completed";
+                            }
+                        }
+
+                        var KeysToRemove = new List<int>();
+                        foreach (var Thread in ThreadStatus)
+                        {
+                            if (Thread.Value == "Completed")
+                            {
+                                ThreadList.Remove(Thread.Key);
+                                ThreadCount--;
+                                KeysToRemove.Add(Thread.Key);
+                            }
+                        }
+                        foreach (var Key in KeysToRemove)
+                        {
+                            ThreadStatus.Remove(Key);
+                        }
+
+                        if (LinksAvailableToCrawl == false)
+                        {
+                            foreach (var ResultModel in ResultsModelList)
+                            {
+                                if (ResultModel != null)
+                                {
+
+                                    foreach (var item in ResultModel.BrokenLinks)
+                                    {
+                                        if (!BrokenLinks.Contains(item))
+                                        {
+                                            BrokenLinks.Add(item);
+                                        }
+                                    }
+                                    foreach (var item in ResultModel.ResultsDictionary)
+                                    {
+                                        if (!ResultsDictionary.Keys.Contains(item.Key))
+                                        {
+                                            ResultsDictionary.Add(item.Key, item.Value);
+                                        }
+                                    }
+                                    foreach (var item in ResultModel.Domains)
+                                    {
+                                        if (!Domains.Contains(item))
+                                        {
+                                            Domains.Add(item);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        model.IndexedPagesTotal = ResultsDictionary.Count();
+                        StoreModelInCache(model);
+                        // store the results in the cache
+                        StoreResultsInCache(ResultsDictionary, LinksFound, BrokenLinks, Domains);
+                    }
+                    catch (Exception ex)
+                    {
+                        model.DataBeingGenerated = false;
+                        model.CachedDataAvailable = true;
+                        StoreModelInCache(model);
+                    }
+                }
+                model.CrawledLinks++;
+            }
+
+            model.LinksBeingValidated = false;
+            StoreModelInCache(model);
+        }
+
+        private CrawlerModel ValidatePageLink(string URL, string FoundOn, List<string> ValidatedLinks, List<BrokenPageModel> BrokenLinks)
+        {
+            var CrawlModel = new CrawlerModel();
+            WebClient client = new WebClient();
+            var doc = new HtmlDocument();
+            try
+            {
+
+                var AlreadyBroken = BrokenLinks.FirstOrDefault(x => x.URL == URL);
+
+                if (AlreadyBroken == null)
+                {
+                    if (!CrawlModel.ResultsDictionary.Keys.Contains(URL) && !ValidatedLinks.Contains(URL))
+                    {
+                        doc.LoadHtml(client.DownloadString(URL));
+                        CrawlModel.ResultsDictionary.Add((URL), new ContentModel("External Page", URL));
+                    }
+                }
+                else
+                {
+                    if (AlreadyBroken.FoundOn != FoundOn)
+                    {
+                        CrawlModel.BrokenLinks.Add(new BrokenPageModel(URL, FoundOn, AlreadyBroken.Exception));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                // this shouldn't happen but if it does then the node is invalid or the link is broken and should be skipped
+                CrawlModel.BrokenLinks.Add(new BrokenPageModel(URL, FoundOn, e.Message));
+            }
+            return CrawlModel;
+        }
+        */
         #endregion
     }
 }

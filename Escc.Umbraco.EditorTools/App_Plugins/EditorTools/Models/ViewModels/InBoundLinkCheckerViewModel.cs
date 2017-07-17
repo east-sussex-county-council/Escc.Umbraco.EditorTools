@@ -9,23 +9,15 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels
     public class InBoundLinkCheckerViewModel
     {
         public bool CachedDataAvailable { get; set; }
-        public bool CachedExternalDataAvailable { get; set; }
         public bool DataBeingGenerated { get; set; }
-        public bool ExternalDataBeingGenerated { get; set; }
         public bool HasInBoundLinks { get; set; }
 
         public int CrawledLinks { get; set; }
         public int TotalToCrawl { get; set; }
-
-        public int CrawledExternalLinks { get; set; }
-        public int TotalExternalToCrawl { get; set; }
         public int IndexedPagesTotal { get; set; }
         
         public string Query { get; set; }
         public string SiteUri { get; set; }
-
-
-        public string ExternalDomain { get; set; }
 
         public TableModel Domains { get; set; }
         public TableModel BrokenLinks { get; set; }
