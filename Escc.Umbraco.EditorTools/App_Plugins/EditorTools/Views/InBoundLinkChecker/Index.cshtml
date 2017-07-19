@@ -6,6 +6,16 @@
 
 <div id="InboundLinkChecker">
 
+    @if (Model.ErrorOccured != null)
+    {
+        <p> </p>
+        <div class="panel panel-danger">
+            <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Link Checker</div>
+            <div class="panel-body">
+                <p>@Model.ErrorOccured</p>
+            </div>
+        </div>
+    }
     <p> </p>
     <div class="panel panel-info">
         <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Link Checker</div>
@@ -25,9 +35,9 @@
                             @if (Model.CachedDataAvailable)
                             {
                                 <li class="active"><a href="#InboundLinks" data-toggle="tab"><b>Search</b></a></li>
-                                <li><a href="#VerifiedLinks" data-toggle="tab"><b>Verified Links</b></a></li>
-                                <li><a href="#BrokenPageLinks" data-toggle="tab"><b>Broken Links</b></a></li>
-                                <li><a href="#LinksFound" data-toggle="tab"><b>Links Found</b></a></li>
+                                <li><a href="#VerifiedLinks" data-toggle="tab"><b>Verified Pages</b></a></li>
+                                <li><a href="#BrokenPageLinks" data-toggle="tab"><b>Broken Pages</b></a></li>
+                                <li><a href="#LinksFound" data-toggle="tab"><b>Unique Links</b></a></li>
                                 <li><a href="#Crawl" data-toggle="tab"><b>Crawler</b></a></li>
                             }
                             else
@@ -93,7 +103,7 @@
                                 </div>
                                 <div class="tab-pane fade" id="VerifiedLinks">
                                     <div class="panel panel-success">
-                                        <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"> Verified Pages</span></div>
+                                        <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Verified Pages</div>
                                         <div class="panel-body">
                                             @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.IndexedLinks);}
                                         </div>
@@ -101,7 +111,7 @@
                                 </div>
                                 <div class="tab-pane fade" id="BrokenPageLinks">
                                     <div class="panel panel-danger">
-                                        <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"> Broken Pages</span></div>
+                                        <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Broken Pages</div>
                                         <div class="panel-body">
                                             @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.BrokenLinks);}
                                         </div>
@@ -109,7 +119,7 @@
                                 </div>
                                 <div class="tab-pane fade" id="LinksFound">
                                     <div class="panel panel-info">
-                                        <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"> Unique Links Found On Pages</span></div>
+                                        <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>  Unique Links Found On Pages</div>
                                         <div class="panel-body">
                                             @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.LinksFoundTable);}
                                         </div>

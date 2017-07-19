@@ -321,11 +321,9 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                     // If an Exception occurs then stop the crawl and store the results up till now.
                     model.DataBeingGenerated = false;
                     model.CachedDataAvailable = true;
+                    model.ErrorOccured = ex.InnerException.Message;
                     StoreModelInCache(model);
                     break;
-
-                    // TO DO 
-                    // Log the exception
                 }
             }
 
@@ -366,7 +364,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                             CrawlModel.ResultsDictionary.Add(string.Format("{0}{1}", model.SiteUri, TypedContent.Url()), new ContentModel(node.Fields["nodeName"], string.Format("{0}{1}", model.SiteUri, TypedContent.Url())));
                         }
                     }
-                    else // if there is no typed Content available, then use the url name, This is needed in case of the bug where content is published but has no typed content or the umbraco cache has not been updated properly.
+                    else
                     {
                         doc.LoadHtml(client.DownloadString(string.Format("{0}/{1}", model.SiteUri, node.Fields["urlName"])));
                         if (!CrawlModel.ResultsDictionary.Keys.Contains(string.Format("{0}/{1}", model.SiteUri, node.Fields["urlName"])))
@@ -383,7 +381,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                     {
                         CrawlModel.BrokenLinks.Add(new BrokenPageModel(string.Format("{0}{1}", model.SiteUri, TypedContent.Url()), "Internal Crawl", e.Message));
                     }
-                    else // if there is no typed Content available, then use the url name
+                    else 
                     {
                         CrawlModel.BrokenLinks.Add(new BrokenPageModel(string.Format("{0}/{1}", model.SiteUri, node.Fields["urlName"]), "Internal Crawl", e.Message));
                     }
@@ -393,7 +391,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 {
                     CrawlModel = GetLinksOnPage(doc.DocumentNode.InnerHtml, string.Format("{0}{1}", model.SiteUri, TypedContent.Url()), CrawlModel);
                 }
-                else // if there is no typed Content available, then use the url name
+                else
                 {
                     CrawlModel = GetLinksOnPage(doc.DocumentNode.InnerHtml, string.Format("{0}/{1}", model.SiteUri, node.Fields["urlName"]), CrawlModel);
                 }

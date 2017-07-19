@@ -15,6 +15,9 @@
 	<iconUrl>https://www.eastsussex.gov.uk/apple-touch-icon.png</iconUrl>
     <licenseUrl>http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/</licenseUrl>
     <projectUrl>https://github.com/east-sussex-county-council/Escc.Umbraco.EditorTools</projectUrl>
+	  <dependencies>
+		<dependency id="HtmlAgilityPack" version="[1.4.9.5]" />
+	</dependencies>
   </metadata>
   <files>
 	<file src="Escc.Umbraco.EditorTools\bin\Escc.Umbraco.EditorTools.dll" target="lib"/>

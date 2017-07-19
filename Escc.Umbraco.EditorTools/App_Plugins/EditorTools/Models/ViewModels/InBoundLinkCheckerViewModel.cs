@@ -19,6 +19,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels
         public string Query { get; set; }
         public string SiteUri { get; set; }
 
+        public string ErrorOccured { get; set; }
+
         public TableModel Domains { get; set; }
         public TableModel BrokenLinks { get; set; }
         public TableModel IndexedLinks { get; set; }
