@@ -34,10 +34,10 @@
                         <ul class="nav nav-tabs">
                             @if (Model.CachedDataAvailable)
                             {
-                                <li class="active"><a href="#InboundLinks" data-toggle="tab"><b>Search</b></a></li>
-                                <li><a href="#VerifiedLinks" data-toggle="tab"><b>Verified Pages</b></a></li>
-                                <li><a href="#BrokenPageLinks" data-toggle="tab"><b>Broken Pages</b></a></li>
-                                <li><a href="#LinksFound" data-toggle="tab"><b>Unique Links</b></a></li>
+                                <li class="active"><a href="#InboundLinks" data-toggle="tab"><b>Search For Links</b></a></li>
+                                <li><a href="#VerifiedLinks" data-toggle="tab"><b>Verified Published Pages</b></a></li>
+                                <li><a href="#BrokenPageLinks" data-toggle="tab"><b>Broken Published Pages</b></a></li>
+                                <li><a href="#LinksFound" data-toggle="tab"><b>Unique Links Found</b></a></li>
                                 <li><a href="#Crawl" data-toggle="tab"><b>Crawler</b></a></li>
                             }
                             else
@@ -135,7 +135,7 @@
                                             <div class="panel panel-success">
                                                 <div class="panel-heading">Internal Crawl</div>
                                                 <div class="panel-body">
-                                                    <p>Data has been cached for your internal umbraco site. You can choose to crawl again below. (This will refresh the cached data)</p>
+                                                    <p>Data has been cached for your umbraco site. You can enter your root url and choose to crawl again below. (This will refresh the cached data)</p>
                                                     <div class="row">
                                                         @using (Html.BeginForm("StartCrawl", "InBoundLinkChecker", FormMethod.Post))
                                                         {
@@ -200,7 +200,7 @@
                                                                                 <div class="panel panel-warning">
                                                                                     <div class="panel-heading">No Data</div>
                                                                                     <div class="panel-body">
-                                                                                        <p>There is no cached data available. Enter the url for your Umbraco site and click 'Crawl' to get started.</p>
+                                                                                        <p>There is no cached data available. Enter the root url for your Umbraco site and click 'Crawl' to get started.</p>
                                                                                         <div class="row">
                                                                                             @using (Html.BeginForm("StartCrawl", "InBoundLinkChecker", FormMethod.Post))
                                                                                             {

@@ -136,6 +136,15 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             var ExamineQuery = Criteria.RawQuery(string.Format("__IndexType:content"));
             var Results = Searcher.Search(ExamineQuery);
 
+
+            // Ensure that the collections are new and empty before crawling.
+            var ResultsDictionary = new Dictionary<string, ContentModel>();
+            var LinksFound = new List<string>();
+            var BrokenLinks = new List<BrokenPageModel>();
+            var Domains = new List<string>();
+
+            StoreResultsInCache(ResultsDictionary, LinksFound, BrokenLinks, Domains);
+
             model.TotalToCrawl = Results.Count();
             model.CrawledLinks = 0;
             model.DataBeingGenerated = true;
@@ -218,7 +227,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                         TaskStatus.Add(TaskID, "Started");
                     }
                     // If there are no pages left to crawl after assigning tasks, set LinksAvailableToCrawl to false to end the while loop after this iteration
-                    if (PublishedPages.Count() <= 0) LinksAvailableToCrawl = false;
+                    if (PublishedPages.Count() <= 0 && TaskCount == 0) LinksAvailableToCrawl = false;
 
                     // Instantiate a List to store the results of the aysnc tasks.
                     var ResultsModelList = new List<CrawlerModel>();
@@ -361,7 +370,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                         doc.LoadHtml(client.DownloadString(string.Format("{0}{1}", model.SiteUri, TypedContent.Url())));
                         if (!CrawlModel.ResultsDictionary.Keys.Contains(string.Format("{0}{1}", model.SiteUri, TypedContent.Url())))
                         {
-                            CrawlModel.ResultsDictionary.Add(string.Format("{0}{1}", model.SiteUri, TypedContent.Url()), new ContentModel(node.Fields["nodeName"], string.Format("{0}{1}", model.SiteUri, TypedContent.Url())));
+                            CrawlModel.ResultsDictionary.Add(string.Format("{0}{1}", model.SiteUri, TypedContent.Url()), new ContentModel(node.Fields["nodeName"], string.Format("{0}{1}", model.SiteUri, TypedContent.Url()), int.Parse(node.Fields["__NodeId"])));
                         }
                     }
                     else
@@ -369,7 +378,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                         doc.LoadHtml(client.DownloadString(string.Format("{0}/{1}", model.SiteUri, node.Fields["urlName"])));
                         if (!CrawlModel.ResultsDictionary.Keys.Contains(string.Format("{0}/{1}", model.SiteUri, node.Fields["urlName"])))
                         {
-                            CrawlModel.ResultsDictionary.Add(string.Format("{0}/{1}", model.SiteUri, node.Fields["urlName"]), new ContentModel(node.Fields["nodeName"], string.Format("{0}/{1}", model.SiteUri, node.Fields["urlName"])));
+                            CrawlModel.ResultsDictionary.Add(string.Format("{0}/{1}", model.SiteUri, node.Fields["urlName"]), new ContentModel(node.Fields["nodeName"], string.Format("{0}/{1}", model.SiteUri, node.Fields["urlName"]), int.Parse(node.Fields["__NodeId"])));
                         }
                     }
 
