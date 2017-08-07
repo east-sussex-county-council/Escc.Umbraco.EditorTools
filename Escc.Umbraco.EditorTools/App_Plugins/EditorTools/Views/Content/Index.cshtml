@@ -18,7 +18,6 @@
                                 <ul class="nav nav-tabs">
                                     <li class="active"><a href="#Published" data-toggle="tab"><b>Published</b></a></li>
                                     <li><a href="#Unpublished" data-toggle="tab"><b>Unpublished</b></a></li>
-                                    <li><a href="#ContentStats" data-toggle="tab"><b>Stats</b></a></li>
                                 </ul>
                             </div>
                             <div class="panel-body">
@@ -75,42 +74,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="ContentStats">
-                                        <div class="row">
-                                            <div class="panel panel-info">
-                                                <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-                                                <div class="panel-body">
-                                                    <div class="col-md-6">
-                                                        This tab displays statistics about your content.
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        Data Cached on: @Model.CacheDate
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <p><a href="/umbraco/backoffice/Plugins/Content/RefreshCache" class="btn btn-primary" type="button" id="RefreshButton">Refresh <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a></p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="panel panel-primary">
-                                                <div class="panel-heading">
-                                                    <h3 class="panel-title">Statistics</h3>
-                                                </div>
-                                                <div class="panel-body">
-                                                    <h3>Total Pages: <span class="label label-primary">@Model.TotalPages</span></h3>
-                                                    <h3>Published Pages: <span class="label label-success">@Model.PublishedPages</span></h3>
-                                                    <h3>Unpublished Pages: <span class="label label-danger">@Model.UnpublishedPages</span></h3>
-                                                </div>
-                                            </div>
-                                            <div class="panel panel-danger">
-                                                <div class="panel-heading">
-                                                    <h3 class="panel-title">Document Types</h3>
-                                                </div>
-                                                <div class="panel-body">
-                                                    @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.DocumentTypes);}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -120,31 +83,14 @@
         </div>
 
 
-                                                        foreach (var item in Model.ModalTables)
+
+
+
+                                                        }
+                                                        else
                                                         {
-                                                            <div class="modal fade" id="@item.Key" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                                                                <div class="modal-dialog modal-lg" role="document">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", item.Value);}
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                                                    }
-
-
-                                                                                }
-                                                                                else
-                                                                                {
-                                                                                    Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_NoCachedData.cshtml", "/umbraco/backoffice/Plugins/Content/RefreshCache");
-                                                                                }
+                                                            Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_NoCachedData.cshtml", "/umbraco/backoffice/Plugins/Content/RefreshCache");
+                                                        }
 
 }
 <div id="Regenerate">

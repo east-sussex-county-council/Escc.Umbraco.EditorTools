@@ -19,7 +19,6 @@
                             <div class="panel-heading">
                                 <ul class="nav nav-tabs">
                                     <li class="active"><a href="#Media" data-toggle="tab"><b>Media</b></a></li>
-                                    <li><a href="#Stats" data-toggle="tab"><b>Stats</b></a></li>
                                 </ul>
                             </div>
                             <div class="panel-body">
@@ -46,29 +45,6 @@
                                                 </div>
                                                 <div class="panel-body">
                                                     @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.Media);}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="Stats">
-                                        <div class="row">
-                                            <div class="panel panel-info">
-                                                <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-                                                <div class="panel-body">
-                                                    <h4>Total Media: <span class="label label-primary">@Model.TotalMediaFiles</span></h4>
-                                                    <h4>Files: <span class="label label-info">@Model.TotalFiles</span></h4>
-                                                    <h4>Images: <span class="label label-info">@Model.TotalImages</span></h4>
-                                                    <h4>Folders: <span class="label label-info">@Model.TotalFolders</span></h4>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="panel panel-primary">
-                                                <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> File Types</div>
-                                                <div class="panel-body">
-                                                    <div class="row">
-                                                        @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.MediaFileTypes);}
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

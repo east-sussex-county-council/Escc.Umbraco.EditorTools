@@ -144,6 +144,21 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
                 OnAfterNodeRender(ref tree, ref InBoundLinkCheckerNode, EventArgs.Empty);
             }
 
+            var StatsNode = XmlTreeNode.Create(this);
+            StatsNode.NodeID = "8";
+            StatsNode.NodeType = "Stats";
+            StatsNode.Text = "Stats";
+            StatsNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/Stats/Index');";
+            StatsNode.Icon = "icon-info";
+            StatsNode.HasChildren = false;
+            StatsNode.Menu = new List<IAction>();
+            OnBeforeNodeRender(ref tree, ref StatsNode, EventArgs.Empty);
+            if (InBoundLinkCheckerNode != null)
+            {
+                tree.Add(StatsNode);
+                OnAfterNodeRender(ref tree, ref StatsNode, EventArgs.Empty);
+            }
+
         }
 
         public override void RenderJS(ref System.Text.StringBuilder Javascript)

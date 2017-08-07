@@ -46,14 +46,13 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 // if a crawl is in progress, add a header to refresh the page periodically to update the views progress bar.
                 this.HttpContext.Response.AddHeader("refresh", "5; url=" + Url.Action("Index"));
             }
-            else
+
+            // if a crawl has been done and cached data is available, then prepare the viewmodel.
+            if (model.CachedDataAvailable)
             {
-                // if a crawl has been done and cached data is available, then prepare the viewmodel.
-                if (model.CachedDataAvailable)
-                {
-                    model = PrepareViewModel(model);
-                }
+                model = PrepareViewModel(model);
             }
+
 
 
             return View("~/App_Plugins/EditorTools/Views/InBoundLinkChecker/Index.cshtml", model);
@@ -200,6 +199,13 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             {
                 ViewModel.Domains.Table.Rows.Add(item);
             }
+
+            ViewModel.TotalBrokenLinks = ViewModel.BrokenLinks.Table.Rows.Count;
+            ViewModel.TotalDomainsFound = ViewModel.Domains.Table.Rows.Count;
+            ViewModel.TotalUniqueLinks = ViewModel.LinksFoundTable.Table.Rows.Count;
+            ViewModel.TotalVerified = ViewModel.IndexedLinks.Table.Rows.Count;
+
+            StoreModelInCache(ViewModel);
             return ViewModel;
         }
 
@@ -390,7 +396,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                     {
                         CrawlModel.BrokenLinks.Add(new BrokenPageModel(string.Format("{0}{1}", model.SiteUri, TypedContent.Url()), "Internal Crawl", e.Message));
                     }
-                    else 
+                    else
                     {
                         CrawlModel.BrokenLinks.Add(new BrokenPageModel(string.Format("{0}/{1}", model.SiteUri, node.Fields["urlName"]), "Internal Crawl", e.Message));
                     }

@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Escc.Umbraco.EditorTools</id>
-    <version>2.1.1</version>
+    <version>2.2.0</version>
     <authors>Cai Lehwald</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Umbraco Editor Tools</description>
@@ -10,7 +10,7 @@
          <frameworkAssembly assemblyName="System" targetFramework="net452" />
 		 <frameworkAssembly assemblyName="System.Runtime.caching" targetFramework="net452" />
       </frameworkAssemblies>
-    <releaseNotes>What Links Where?</releaseNotes>
+    <releaseNotes>Stats</releaseNotes>
     <copyright>Copyright 2017</copyright>
 	<iconUrl>https://www.eastsussex.gov.uk/apple-touch-icon.png</iconUrl>
     <licenseUrl>http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/</licenseUrl>
@@ -50,6 +50,7 @@
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\PageExpiry\*.cshtml" target="content\App_Plugins\EditorTools\Views\PageExpiry\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\Partials\*.cshtml" target="content\App_Plugins\EditorTools\Views\Partials\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\Shared\*.cshtml" target="content\App_Plugins\EditorTools\Views\Shared\"/>	
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\Stats\*.cshtml" target="content\App_Plugins\EditorTools\Views\Stats\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\Users\*.cshtml" target="content\App_Plugins\EditorTools\Views\Users\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\Web.config" target="content\App_Plugins\EditorTools\Views\"/>								
 								

@@ -21,7 +21,6 @@
                                 <ul class="nav nav-tabs">
                                     <li class="active"><a href="#ActiveUsers" data-toggle="tab"><b>Active Users</b></a></li>
                                     <li><a href="#DisabledUsers" data-toggle="tab"><b>Disabled Users</b></a></li>
-                                    <li><a href="#UsersStats" data-toggle="tab"><b>Stats</b></a></li>
                                 </ul>
                             </div>
                             <div class="panel-body">
@@ -78,42 +77,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="UsersStats">
-                                        <div class="row">
-                                            <div class="panel panel-info">
-                                                <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-                                                <div class="panel-body">
-                                                    <div class="col-md-6">
-                                                        This tab displays statistics about your users.
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        Data Cached on: @Model.CacheDate
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <p><a href="/umbraco/backoffice/Plugins/Users/RefreshCache" class="btn btn-primary" type="button" id="RefreshButton">Refresh <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a></p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="panel panel-primary">
-                                                <div class="panel-heading">
-                                                    <h3 class="panel-title">Statistics</h3>
-                                                </div>
-                                                <div class="panel-body">
-                                                    <h3>Total Users: <span class="label label-primary">@Model.TotalUsers</span></h3>
-                                                    <h3>Active Users: <span class="label label-success">@Model.ActiveUsersCount</span></h3>
-                                                    <h3>Disabled Users: <span class="label label-danger">@Model.DisabledUsersCount</span></h3>
-                                                </div>
-                                            </div>
-                                            <div class="panel panel-danger">
-                                                <div class="panel-heading">
-                                                    <h3 class="panel-title">User Types</h3>
-                                                </div>
-                                                <div class="panel-body">
-                                                    @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.UserTypes);}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>

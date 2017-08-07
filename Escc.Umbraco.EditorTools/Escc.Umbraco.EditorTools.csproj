@@ -327,6 +327,7 @@
     <Compile Include="App_Plugins\EditorTools\Controllers\InBoundLinkCheckerController.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\MediaController.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\PageExpiryController.cs" />
+    <Compile Include="App_Plugins\EditorTools\Controllers\StatsController.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\UsersController.cs" />
     <Compile Include="App_Plugins\EditorTools\EditorToolsSection.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\EditorToolsHomeController.cs" />
@@ -341,6 +342,7 @@
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\InBoundLinkCheckerViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\PageExpiryViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\MediaViewModel.cs" />
+    <Compile Include="App_Plugins\EditorTools\Models\ViewModels\StatsViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\UsersViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\StartUpHandlers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -556,6 +558,7 @@
     <Content Include="Config\BaseRestExtensions.config" />
     <Content Include="Config\applications.config" />
     <Content Include="Config\404handlers.config" />
+    <Content Include="App_Plugins\EditorTools\Views\Stats\Index.cshtml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />

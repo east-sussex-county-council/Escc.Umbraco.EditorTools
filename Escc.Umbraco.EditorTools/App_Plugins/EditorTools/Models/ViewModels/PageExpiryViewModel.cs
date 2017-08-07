@@ -10,6 +10,11 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels
     {
         public TableModel NeverExpires { get; set; }
         public TableModel Expiring { get; set; }
+
+        public int TotalExpiring { get; set; }
+        public int TotalNeverExpires { get; set; }
+        public int TotalExpiresIn14Days { get; set; }
+
         public DateTime CacheDate { get; set; }
         public bool CachedDataAvailable { get; set; }
 

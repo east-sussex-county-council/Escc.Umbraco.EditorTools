@@ -27,6 +27,12 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels
         public TableModel InBoundLinks { get; set; }
         public TableModel LinksFoundTable { get; set; }
 
+        public int TotalUniqueLinks { get; set; }
+        public int TotalDomainsFound { get; set; }
+        public int TotalBrokenLinks { get; set; }
+        public int TotalVerified { get; set; }
+
+
 
         public InBoundLinkCheckerViewModel()
         {

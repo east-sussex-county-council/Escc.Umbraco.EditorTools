@@ -69,6 +69,10 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                         else // if it does then its an expiring page
                         {
                             model.Expiring.Table.Rows.Add(result.Fields["__NodeId"], result.Fields["nodeName"], result.Fields["urlName"], editURL, contentNode.ExpireDate);
+                            if (contentNode.ExpireDate < DateTime.Now.AddDays(14))
+                            {
+                                model.TotalExpiresIn14Days++;                              
+                            }
                         }
                     }
                 }
@@ -78,6 +82,9 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                     model.Expiring.Table.Rows.Add(result.Fields["__NodeId"], result.Fields["nodeName"], result.Fields["urlName"], editURL, result.Fields["unpublishAt"]);
                 }
             }
+            model.TotalExpiring = model.Expiring.Table.Rows.Count;
+            model.TotalNeverExpires = model.NeverExpires.Table.Rows.Count;
+        
             return model;
         }
         #endregion
