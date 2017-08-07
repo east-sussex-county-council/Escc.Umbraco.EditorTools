@@ -20,24 +20,35 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             if(Model.Users == null)
             {
                 Model.UsersStatsAvailable = false;
-                Model.Users.ActiveUsers.Table = new DataTable();
-                Model.Users.DisabledUsers.Table = new DataTable();
             }
             else
             {
-                Model.UsersStatsAvailable = true;
+                if(Model.Users.ActiveUsers.Table == null || Model.Users.DisabledUsers.Table == null)
+                {
+                    Model.UsersStatsAvailable = false;
+                }
+                else
+                {
+                    Model.UsersStatsAvailable = true;
+                }
             }
 
             Model.Content = cache["ContentViewModel"] as ContentViewModel;
             if (Model.Content == null)
             {
                 Model.ContentStatsAvailable = false;
-                Model.Content.PublishedContent.Table = new DataTable();
-                Model.Content.UnpublishedContent.Table = new DataTable();
             }
             else
             {
-                Model.ContentStatsAvailable = true;
+                if (Model.Content.DocumentTypes.Table == null || Model.Content.PublishedContent.Table == null || Model.Content.UnpublishedContent.Table == null)
+                {
+                    Model.ContentStatsAvailable = false;
+                }
+                else
+                {
+                    Model.ContentStatsAvailable = true;
+                }
+
             }
 
             Model.Media = cache["MediaViewModel"] as MediaViewModel;
@@ -47,7 +58,14 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             }
             else
             {
-                Model.MediaStatsAvailable = true;
+                if (Model.Media.Media.Table == null)
+                {
+                    Model.MediaStatsAvailable = false;
+                }
+                else
+                {
+                    Model.MediaStatsAvailable = true;
+                }
             }
 
             Model.PageExpiry = cache["PageExpiryViewModel"] as PageExpiryViewModel;
@@ -57,7 +75,14 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             }
             else
             {
-                Model.PageExpiryStatsAvailable = true;
+                if (Model.PageExpiry.Expiring.Table == null || Model.PageExpiry.NeverExpires.Table == null)
+                {
+                    Model.PageExpiryStatsAvailable = false;
+                }
+                else
+                {
+                    Model.PageExpiryStatsAvailable = true;
+                }
             }
 
             Model.Crawler = cache["InBoundLinkCheckerViewModel"] as InBoundLinkCheckerViewModel;
@@ -67,7 +92,14 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             }
             else
             {
-                Model.CrawlerStatsAvailable = true;
+                if (Model.Crawler.BrokenLinks.Table == null || Model.Crawler.InBoundLinks.Table == null || Model.Crawler.Domains.Table == null || Model.Crawler.LinksFoundTable.Table == null)
+                {
+                    Model.CrawlerStatsAvailable = false;
+                }
+                else
+                {
+                    Model.CrawlerStatsAvailable = true;
+                }
             }
 
 

@@ -153,7 +153,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
             StatsNode.HasChildren = false;
             StatsNode.Menu = new List<IAction>();
             OnBeforeNodeRender(ref tree, ref StatsNode, EventArgs.Empty);
-            if (InBoundLinkCheckerNode != null)
+            if (StatsNode != null)
             {
                 tree.Add(StatsNode);
                 OnAfterNodeRender(ref tree, ref StatsNode, EventArgs.Empty);
