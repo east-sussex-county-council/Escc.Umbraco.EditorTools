@@ -92,7 +92,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             }
             else
             {
-                if (Model.Crawler.BrokenLinks.Table == null || Model.Crawler.InBoundLinks.Table == null || Model.Crawler.Domains.Table == null || Model.Crawler.LinksFoundTable.Table == null)
+                if (Model.Crawler.BrokenLinks.Table == null || Model.Crawler.IndexedLinks.Table == null || Model.Crawler.Domains.Table == null || Model.Crawler.LinksFoundTable.Table == null)
                 {
                     Model.CrawlerStatsAvailable = false;
                 }
