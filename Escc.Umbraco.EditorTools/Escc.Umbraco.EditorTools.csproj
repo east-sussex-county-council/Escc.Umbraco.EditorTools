@@ -326,6 +326,7 @@
     <Compile Include="App_Plugins\EditorTools\Controllers\ExamineSearchController.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\InBoundLinkCheckerController.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\MediaController.cs" />
+    <Compile Include="App_Plugins\EditorTools\Controllers\MultiMoveController.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\PageExpiryController.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\StatsController.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\UsersController.cs" />
@@ -335,11 +336,14 @@
     <Compile Include="App_Plugins\EditorTools\Models\DataModels\BrokenPageModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\DataModels\ContentModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\DataModels\CrawlerModel.cs" />
+    <Compile Include="App_Plugins\EditorTools\Models\DataModels\MultiMoveContentModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\DataModels\TableModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\CSVExportViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\ContentViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\ExamineSearchViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\InBoundLinkCheckerViewModel.cs" />
+    <Compile Include="App_Plugins\EditorTools\Models\ViewModels\MultiMoveConfirmSelectedViewModel.cs" />
+    <Compile Include="App_Plugins\EditorTools\Models\ViewModels\MultiMoveViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\PageExpiryViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\MediaViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\StatsViewModel.cs" />
@@ -559,6 +563,10 @@
     <Content Include="Config\applications.config" />
     <Content Include="Config\404handlers.config" />
     <Content Include="App_Plugins\EditorTools\Views\Stats\Index.cshtml" />
+    <Content Include="App_Plugins\EditorTools\Views\MultiMove\Index.cshtml" />
+    <Content Include="App_Plugins\EditorTools\Views\Partials\_MultiMoveChildren.cshtml" />
+    <Content Include="App_Plugins\EditorTools\Views\MultiMove\ConfirmSelected.cshtml" />
+    <Content Include="App_Plugins\EditorTools\Views\Partials\_MultiMoveConfirmSelectedChildren.cshtml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />

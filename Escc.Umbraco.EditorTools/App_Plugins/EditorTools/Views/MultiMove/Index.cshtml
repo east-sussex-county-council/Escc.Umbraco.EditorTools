@@ -1,0 +1,89 @@
+﻿@model Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels.MultiMoveViewModel
+@using Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.DataModels
+
+@{
+    Layout = "~/App_Plugins/EditorTools/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewBag.Title = "MultiMove";
+}
+
+@if (Model.Message != "")
+{
+    <p></p>
+    <div class="alert alert-info alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong>@Model.Message</strong>
+    </div>
+}
+
+<p></p>
+@using (Html.BeginForm("ConfirmMoveSelected", "MultiMove", FormMethod.Post))
+{
+    <div class="form-group">
+
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> Multi Mover</h3>
+            </div>
+            <div class="panel-body">
+                <div class="col-lg-9 col-sm-9 col-md-9">
+                    <p>Welcome to the multi mover tool!
+                    First select some pages you wish to move. Any page you select will also have its children moved with it.</p>
+                    <p><b>To select a page, simply tick the checkbox next to its name.</b></p>
+                </div>
+                <div class="pull-right">
+                    <input type="submit" class="btn btn-primary" value="Move Selected" />
+                </div>
+            </div>
+        </div>
+        @Html.Hidden("Content", Model.Content)
+        <p></p>
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            @foreach (var item in Model.Content)
+            {
+                if (item.Level == 1)
+                {
+                    <div class="panel panel-success">
+                        <div class="panel-heading" role="tab" id="@Model.Content.SingleOrDefault(x => x.ID == item.ID).Name.Replace(" ", "")">
+                            <h4 class="panel-title">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#@item.ID" aria-expanded="true" aria-controls="@item.ID">
+                                    @item.Name
+                                    @if (item.Children.Count > 0)
+                                    {
+                                        <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                    }
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="@item.ID" class="panel-collapse collapse" role="tabpanel" aria-labelledby="@item.ID">
+                            <div class="panel-body">
+                                <div class="well">
+                                    @item.Description
+                                </div>
+
+                                @if (item.Children.Count > 0)
+                        {
+                            // show partial
+                            List<MultiMoveContentModel> Children = new List<MultiMoveContentModel>();
+
+                            foreach (var child in item.Children)
+                            {
+                                Children.Add(Model.Content.Single(x => x.ID == child));
+                            }
+
+                            var PartialModel = new Dictionary<string, List<MultiMoveContentModel>>();
+                            PartialModel.Add("Children", Children);
+                            PartialModel.Add("Content", Model.Content);
+
+
+                            Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_MultiMoveChildren.cshtml", PartialModel);
+                        }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+}

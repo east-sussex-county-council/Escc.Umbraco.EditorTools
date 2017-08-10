@@ -1,0 +1,98 @@
+﻿@using Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.DataModels
+
+@model Dictionary<string, List<MultiMoveContentModel>>
+
+@{
+    var children = Model["Children"];
+    var content = Model["Content"];
+}
+
+
+
+
+@foreach (var item in children)
+{
+    if (item.Level % 2 == 0)
+    {
+        <div class="panel panel-info">
+            <div class="panel-heading" role="tab" id="@item.Name">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#@item.ParentID" href="#@item.ID" aria-expanded="true" aria-controls="child">
+                        @item.Name
+                        @if (item.Children.Count > 0)
+                        {
+                            <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                        }
+                    </a>
+                    @Html.CheckBox("MoveContent", false, new { Value = string.Format("{0},{1}", item.ID, item.Name) })
+                </h4>
+            </div>
+            <div id="@item.ID" class="panel-collapse collapse" role="tabpanel" aria-labelledby="@item.ID">
+                <div class="panel-body">
+                    <div class="row well">
+                        @item.Description
+                    </div>
+                    @if (item.Children.Count > 0)
+                    {
+                        // show partial
+                        List<MultiMoveContentModel> Children = new List<MultiMoveContentModel>();
+
+                        foreach (var child in item.Children)
+                        {
+                            Children.Add(content.Single(x => x.ID == child));
+                        }
+
+                        var PartialModel = new Dictionary<string, List<MultiMoveContentModel>>();
+                        PartialModel.Add("Children", Children);
+                        PartialModel.Add("Content", content);
+
+
+                        Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_MultiMoveChildren.cshtml", PartialModel);
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="panel panel-warning">
+            <div class="panel-heading" role="tab" id="@item.Name">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#@item.ParentID" href="#@item.ID" aria-expanded="true" aria-controls="child">
+                        @item.Name
+                        @if (item.Children.Count > 0)
+                    {
+                            <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                        }
+                    </a>
+                    @Html.CheckBox("MoveContent", false, new { Value = string.Format("{0},{1}", item.ID, item.Name) })
+                </h4>
+            </div>
+            <div id="@item.ID" class="panel-collapse collapse" role="tabpanel" aria-labelledby="@item.ID">
+                <div class="panel-body">
+                    <div class="row well">
+                        @item.Description
+                    </div>
+  
+                    @if (item.Children.Count > 0)
+                    {
+                        // show partial
+                        List<MultiMoveContentModel> Children = new List<MultiMoveContentModel>();
+
+                        foreach (var child in item.Children)
+                        {
+                            Children.Add(content.Single(x => x.ID == child));
+                        }
+
+                        var PartialModel = new Dictionary<string, List<MultiMoveContentModel>>();
+                        PartialModel.Add("Children", Children);
+                        PartialModel.Add("Content", content);
+
+
+                        Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_MultiMoveChildren.cshtml", PartialModel);
+                    }
+                </div>
+            </div>
+        </div>
+    }
+}

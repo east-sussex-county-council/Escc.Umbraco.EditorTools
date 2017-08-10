@@ -1,0 +1,132 @@
+﻿@{
+    Layout = "~/App_Plugins/EditorTools/Views/Shared/_Layout.cshtml";
+}
+@using Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.DataModels
+
+@model Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels.MultiMoveConfirmSelectedViewModel
+@{
+    ViewBag.Title = "ConfirmSelected";
+}
+
+<p></p>
+@using (Html.BeginForm("MoveContent", "MultiMove", FormMethod.Post))
+{
+    <div class="form-group">
+
+        @foreach (var item in Model.Selected)
+        {
+            @Html.Hidden("Selected", item.Key)
+        }
+
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> Multi Mover</h3>
+            </div>
+            <div class="panel-body">
+                <div class="col-lg-9 col-sm-9 col-md-9">
+                    <p>
+                        Now select a page as the parent destination. All of your selected pages and their children will be moved to be under the selected parent.
+                    </p>
+                    <p><b>To select a parent, simply select a radio button next to a pages name.</b></p>
+                </div>
+                <div class="pull-right">
+                    <p><a href="/umbraco/backoffice/Plugins/MultiMove/Index" class="btn btn-warning" type="button">Back</a></p>
+                    <p></p>
+                    <input type="submit" class="btn btn-primary" value="Move To Selected" />
+                </div>
+            </div>
+        </div>
+
+        <p></p>
+        <div id="Confirm">
+            <div class="list-group panel panel-info">
+                <a href="#ConfirmPanel" class="list-group-item" data-toggle="active" data-parent="#Confirm"><span class="glyphicon glyphicon-file"></span> <b>Choose a destination</b></a>
+                <div class="active" id="ConfirmPanel">
+                    <div class="thumbnail">
+                        <p>  </p>
+                        <div class="panel with-nav-tabs panel">
+                            <div class="panel-heading">
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#Destination" data-toggle="tab"><b>Destination</b></a></li>
+                                    <li><a href="#SelectedPages" data-toggle="tab"><b>Selected</b></a></li>
+                                </ul>
+                            </div>
+                            <div class="panel-body">
+                                <div class="tab-content">
+                                    <div class="tab-pane fade in active" id="Destination">
+                                        <div class="row">
+                                            <div class="panel panel-info">
+                                                <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
+                                                <div class="panel-body">
+                                                    <div class="panel-group" id="accordion2" role="tablist" aria-multiselectable="true">
+                                                        @foreach (var item in Model.Content)
+                                                        {
+                                                            if (item.Level == 1)
+                                                            {
+                                                                <div class="panel panel-success">
+                                                                    <div class="panel-heading" role="tab" id="@Model.Content.SingleOrDefault(x => x.ID == item.ID).Name.Replace(" ", "")">
+                                                                        <h4 class="panel-title">
+                                                                            <a role="button" data-toggle="collapse" data-parent="#accordion2" href="#@item.ID" aria-expanded="true" aria-controls="@item.ID">
+                                                                                @item.Name
+                                                                                @if (item.Children.Count > 0)
+                                                                                {
+                                                                                    <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                                                                }
+                                                                            </a>
+                                                                            @Html.RadioButton("ParentID", item.ID)
+                                                                        </h4>
+                                                                    </div>
+                                                                    <div id="@item.ID" class="panel-collapse collapse" role="tabpanel" aria-labelledby="@item.ID">
+                                                                        <div class="panel-body">
+                                                                            <div class="well">
+                                                                                @item.Description
+                                                                            </div>
+                                                                            @if (item.Children.Count > 0)
+                                                                            {
+                                                                                // show partial
+                                                                                List<MultiMoveContentModel> Children = new List<MultiMoveContentModel>();
+
+                                                                                foreach (var child in item.Children)
+                                                                                {
+                                                                                    Children.Add(Model.Content.Single(x => x.ID == child));
+                                                                                }
+
+                                                                                var PartialModel = new Dictionary<string, List<MultiMoveContentModel>>();
+                                                                                PartialModel.Add("Children", Children);
+                                                                                PartialModel.Add("Content", Model.Content);
+
+
+                                                                                Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_MultiMoveConfirmSelectedChildren.cshtml", PartialModel);
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="SelectedPages">
+                                        <div class="row">
+                                            <div class="panel panel-info">
+                                                <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
+                                                <div class="panel-body">
+                                                    @foreach (var item in Model.Selected)
+                {
+                                                        <p><span class="label label-primary">ID</span> @item.Key    <span class="label label-info">Name</span> @item.Value </p>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -159,6 +159,21 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
                 OnAfterNodeRender(ref tree, ref StatsNode, EventArgs.Empty);
             }
 
+            var MultiMoveNode = XmlTreeNode.Create(this);
+            MultiMoveNode.NodeID = "9";
+            MultiMoveNode.NodeType = "MultiMove";
+            MultiMoveNode.Text = "Multi Move";
+            MultiMoveNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/MultiMove/Index');";
+            MultiMoveNode.Icon = "icon-nodes";
+            MultiMoveNode.HasChildren = false;
+            MultiMoveNode.Menu = new List<IAction>();
+            OnBeforeNodeRender(ref tree, ref MultiMoveNode, EventArgs.Empty);
+            if (MultiMoveNode != null)
+            {
+                tree.Add(MultiMoveNode);
+                OnAfterNodeRender(ref tree, ref MultiMoveNode, EventArgs.Empty);
+            }
+
         }
 
         public override void RenderJS(ref System.Text.StringBuilder Javascript)
