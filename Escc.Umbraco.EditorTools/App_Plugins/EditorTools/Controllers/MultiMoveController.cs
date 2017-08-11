@@ -117,7 +117,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 }
                 umbraco.library.RefreshContent();
                 ExamineManager.Instance.IndexProviderCollection["InternalIndexer"].RebuildIndex();
-                return Index("Move Successful!");
+                return Index("Move Successful! If you don't notice the change straight away try refreshing the page.");
             }
             catch (Exception ex)
             {
