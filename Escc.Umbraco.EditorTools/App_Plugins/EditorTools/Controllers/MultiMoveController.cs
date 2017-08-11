@@ -13,10 +13,12 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
     public class MultiMoveController : UmbracoAuthorizedController
     {
-        public ActionResult Index(string message = "")
+        public ActionResult Index(string SuccessMessage = "", string WarningMessage = "", string ErrorMessage = "")
         {
             MultiMoveViewModel model = PrepareIndexViewModel();
-            model.Message = message;
+            model.SuccessMessage = SuccessMessage;
+            model.WarningMessage = WarningMessage;
+            model.ErrorMessage = ErrorMessage;
 
             return View("~/App_Plugins/EditorTools/Views/MultiMove/Index.cshtml", model);
         }
@@ -90,7 +92,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
             if (ViewModel.Selected.Count == 0)
             {
-                return Index("You did not select any pages.");
+                return Index("", "You did not select any pages.");
             }
             else
             {
@@ -101,19 +103,28 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         [HttpPost]
         public ActionResult MoveContent(List<int> Selected, int? ParentID)
         {
-            if(ParentID == null)
+            try
             {
-                return Index("You did not select a parent! Move cancelled.");
+                if (ParentID == null)
+                {
+                    return Index("", "You did not select a parent! Move cancelled.");
+                }
+                foreach (var item in Selected)
+                {
+                    var node = Umbraco.UmbracoContext.Application.Services.ContentService.GetById(item);
+                    node.ParentId = (int)ParentID;
+                    Umbraco.UmbracoContext.Application.Services.ContentService.Save(node, 0, false);
+                }
+                umbraco.library.RefreshContent();
+                ExamineManager.Instance.IndexProviderCollection["InternalIndexer"].RebuildIndex();
+                return Index("Move Successful!");
             }
-            foreach (var item in Selected)
+            catch (Exception ex)
             {
-                var node = Umbraco.UmbracoContext.Application.Services.ContentService.GetById(item);
-                node.ParentId = (int)ParentID;
-                Umbraco.UmbracoContext.Application.Services.ContentService.Save(node, 0, false);
+                return Index("", "", string.Format("Error during move. Exception: {0}", ex.Message));
+                throw;
             }
-            umbraco.library.RefreshContent();
-            ExamineManager.Instance.IndexProviderCollection["InternalIndexer"].RebuildIndex();
-            return Index("Move Successful!");
+
         }
     }
 }

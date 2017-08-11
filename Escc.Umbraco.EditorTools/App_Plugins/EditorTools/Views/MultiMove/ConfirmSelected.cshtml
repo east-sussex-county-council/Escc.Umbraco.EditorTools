@@ -2,7 +2,7 @@
     Layout = "~/App_Plugins/EditorTools/Views/Shared/_Layout.cshtml";
 }
 @using Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.DataModels
-
+<script src="~/App_Plugins/EditorTools/Scripts/jquery-3.1.1.js"></script>
 @model Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels.MultiMoveConfirmSelectedViewModel
 @{
     ViewBag.Title = "ConfirmSelected";
@@ -32,7 +32,17 @@
                 <div class="pull-right">
                     <p><a href="/umbraco/backoffice/Plugins/MultiMove/Index" class="btn btn-warning" type="button">Back</a></p>
                     <p></p>
-                    <input type="submit" class="btn btn-primary" value="Move To Selected" />
+                    <input type="submit" class="btn btn-primary" value="Move To Selected" id="SubmitButton" />
+                </div>
+            </div>
+        </div>
+
+
+        <div id="ProgressBar" class="well">
+            <p><b>Processing... Moving children can take a minute or two, Please be patient.</b></p>
+            <div class="progress progress-striped active">
+                <div class="progress-bar " role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                    <span class="sr-only">100% Complete</span>
                 </div>
             </div>
         </div>
@@ -130,3 +140,11 @@
         </div>
     </div>
 }
+
+<script>
+    $('#ProgressBar').hide();
+
+    $('#SubmitButton').on('click', function (event) {
+        $('#ProgressBar').show();
+    });
+</script>

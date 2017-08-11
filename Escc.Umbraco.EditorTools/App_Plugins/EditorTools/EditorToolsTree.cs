@@ -102,7 +102,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
             var ExamineSearchNode = XmlTreeNode.Create(this);
             ExamineSearchNode.NodeID = "5";
             ExamineSearchNode.NodeType = "ExamineSearch";
-            ExamineSearchNode.Text = "Examine Search";
+            ExamineSearchNode.Text = "Search";
             ExamineSearchNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/ExamineSearch/Index');";
             ExamineSearchNode.Icon = "icon-search";
             ExamineSearchNode.HasChildren = false;
@@ -144,25 +144,12 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
                 OnAfterNodeRender(ref tree, ref InBoundLinkCheckerNode, EventArgs.Empty);
             }
 
-            var StatsNode = XmlTreeNode.Create(this);
-            StatsNode.NodeID = "8";
-            StatsNode.NodeType = "Stats";
-            StatsNode.Text = "Stats";
-            StatsNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/Stats/Index');";
-            StatsNode.Icon = "icon-info";
-            StatsNode.HasChildren = false;
-            StatsNode.Menu = new List<IAction>();
-            OnBeforeNodeRender(ref tree, ref StatsNode, EventArgs.Empty);
-            if (StatsNode != null)
-            {
-                tree.Add(StatsNode);
-                OnAfterNodeRender(ref tree, ref StatsNode, EventArgs.Empty);
-            }
+        
 
             var MultiMoveNode = XmlTreeNode.Create(this);
-            MultiMoveNode.NodeID = "9";
+            MultiMoveNode.NodeID = "8";
             MultiMoveNode.NodeType = "MultiMove";
-            MultiMoveNode.Text = "Multi Move";
+            MultiMoveNode.Text = "Multi Page Mover";
             MultiMoveNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/MultiMove/Index');";
             MultiMoveNode.Icon = "icon-nodes";
             MultiMoveNode.HasChildren = false;
@@ -172,6 +159,21 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
             {
                 tree.Add(MultiMoveNode);
                 OnAfterNodeRender(ref tree, ref MultiMoveNode, EventArgs.Empty);
+            }
+
+            var StatsNode = XmlTreeNode.Create(this);
+            StatsNode.NodeID = "9";
+            StatsNode.NodeType = "Stats";
+            StatsNode.Text = "Statistics";
+            StatsNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/Stats/Index');";
+            StatsNode.Icon = "icon-info";
+            StatsNode.HasChildren = false;
+            StatsNode.Menu = new List<IAction>();
+            OnBeforeNodeRender(ref tree, ref StatsNode, EventArgs.Empty);
+            if (StatsNode != null)
+            {
+                tree.Add(StatsNode);
+                OnAfterNodeRender(ref tree, ref StatsNode, EventArgs.Empty);
             }
 
         }

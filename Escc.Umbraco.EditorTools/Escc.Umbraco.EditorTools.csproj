@@ -567,6 +567,7 @@
     <Content Include="App_Plugins\EditorTools\Views\Partials\_MultiMoveChildren.cshtml" />
     <Content Include="App_Plugins\EditorTools\Views\MultiMove\ConfirmSelected.cshtml" />
     <Content Include="App_Plugins\EditorTools\Views\Partials\_MultiMoveConfirmSelectedChildren.cshtml" />
+    <Content Include="App_Plugins\EditorTools\Views\Partials\_Processing.cshtml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />

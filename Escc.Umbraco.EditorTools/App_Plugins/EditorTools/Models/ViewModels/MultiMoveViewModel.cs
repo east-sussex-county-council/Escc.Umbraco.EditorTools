@@ -10,7 +10,9 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels
     {
         public List<MultiMoveContentModel> Content { get; set; }
         public Dictionary<int, int> ContentLevel { get; set; }
-        public string Message { get; set; }
+        public string SuccessMessage { get; set; }
+        public string WarningMessage { get; set; }
+        public string ErrorMessage { get; set; }
 
         public MultiMoveViewModel()
         {
