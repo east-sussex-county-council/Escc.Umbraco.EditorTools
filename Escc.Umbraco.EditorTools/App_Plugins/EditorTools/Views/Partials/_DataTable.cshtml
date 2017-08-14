@@ -2,9 +2,6 @@
 @model Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.DataModels.TableModel
 @using System.Data
 
-<script src="~/App_Plugins/EditorTools/Scripts/jquery-3.1.1.js"></script>
-<link href="~/App_Plugins/EditorTools/Content/DataTables/css/jquery.dataTables.css" rel="stylesheet" />
-<script src="~/App_Plugins/EditorTools/Scripts/DataTables/jquery.dataTables.js"></script>
 
 <div class="dt-rowReorder-noOverflow">
     <div class="table-responsive">
@@ -31,13 +28,33 @@
         </table>
     </div>
 </div>
-<script>
-    $('#@Model.ID').DataTable({
-        aLengthMenu: [
-            [10, 25, 50, 100, -1],
-            [10, 25, 50, 100, "All"]
-        ],
-        iDisplayLength: 10,
-        "order": [[0, "desc"]]
-    });
-</script>
+@if (Model.ID == "SelectedTable")
+{
+    <script>
+        $(document).ready(function () {
+            $('#@Model.ID').DataTable({
+                aLengthMenu: [
+                    [-1],
+                    ["All"]
+                ],
+                iDisplayLength: -1,
+                "order": [[0, "desc"]]
+            });
+        });
+    </script>
+}
+else
+{
+    <script>
+        $(document).ready(function () {
+            $('#@Model.ID').DataTable({
+                aLengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    [10, 25, 50, 100, "All"]
+                ],
+                iDisplayLength: 10,
+                "order": [[0, "desc"]]
+            });
+        });
+    </script>
+}

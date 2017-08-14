@@ -72,7 +72,6 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 }
             }
 
-
             model.ContentLevel = ContentLevel.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
             return model;
         }
@@ -112,8 +111,16 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 foreach (var item in Selected)
                 {
                     var node = Umbraco.UmbracoContext.Application.Services.ContentService.GetById(item);
-                    node.ParentId = (int)ParentID;
+                    var children = Umbraco.UmbracoContext.Application.Services.ContentService.GetDescendants(node.Id);
+                    node.ParentId = (int)ParentID;           
                     Umbraco.UmbracoContext.Application.Services.ContentService.Save(node, 0, false);
+
+                    // Even though the parent ID doesn't change make sure to to update the children and save so their Path properties are valid.
+                    foreach (var child in children)
+                    {
+                        child.ParentId = child.ParentId;
+                        Umbraco.UmbracoContext.Application.Services.ContentService.Save(child, 0, false);
+                    }
                 }
                 umbraco.library.RefreshContent();
                 ExamineManager.Instance.IndexProviderCollection["InternalIndexer"].RebuildIndex();

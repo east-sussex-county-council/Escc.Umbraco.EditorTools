@@ -1,0 +1,126 @@
+﻿@model Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels.ExpiryBulkUpdateViewModel
+@using Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.DataModels
+<script src="~/App_Plugins/EditorTools/Scripts/jquery-3.1.1.js"></script>
+@{
+    Layout = "~/App_Plugins/EditorTools/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewBag.Title = "ExpiryBulkUpdate";
+}
+
+@if (Model.SuccessMessage != "")
+{
+    <p></p>
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong>@Model.SuccessMessage</strong>
+    </div>
+}
+
+@if (Model.WarningMessage != "")
+{
+    <p></p>
+    <div class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong>@Model.WarningMessage</strong>
+    </div>
+}
+
+@if (Model.ErrorMessage != "")
+{
+    <p></p>
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong>@Model.ErrorMessage</strong>
+    </div>
+}
+
+<p></p>
+@using (Html.BeginForm("BrowseSelected", "ExpiryBulkUpdate", FormMethod.Post))
+{
+    <div class="form-group">
+
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> Bulk Update Expiry Dates</h3>
+            </div>
+            <div class="panel-body">
+                <div class="col-lg-9 col-sm-9 col-md-9">
+                    <p>
+                        Welcome to the 'Bulk Update Expiry Dates' tool.
+                        First select a section you wish to update. You will then be able to choose which pages under that section to update.
+                    </p>
+                    <p><b>To select a section, simply select a radio button next to its name.</b></p>
+                </div>
+                <div class="pull-right">
+                    <input type="submit" class="btn btn-primary" value="Browse Section" id="SubmitButton" />
+                </div>
+            </div>
+        </div>
+
+        <div id="ProgressBar" class="well">
+            <div class="progress progress-striped active">
+                <div class="progress-bar " role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                    <span class="sr-only">100% Complete</span>
+                </div>
+            </div>
+        </div>
+
+        @Html.Hidden("Content", Model.Content)
+        <p></p>
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            @foreach (var item in Model.Content)
+            {
+                if (item.Level == 1)
+                {
+                    <div class="panel panel-success">
+                        <div class="panel-heading" role="tab" id="@Model.Content.SingleOrDefault(x => x.ID == item.ID).Name.Replace(" ", "")">
+                            <h4 class="panel-title">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#@item.ID" aria-expanded="true" aria-controls="@item.ID">
+                                    @item.Name
+                                    @if (item.Children.Count > 0)
+                                    {
+                                        <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                    }
+                                </a>
+                                @Html.RadioButton("Selected", item.ID)
+                            </h4>
+                        </div>
+                        <div id="@item.ID" class="panel-collapse collapse" role="tabpanel" aria-labelledby="@item.ID">
+                            <div class="panel-body">
+                                <div class="well">
+                                    @item.Description
+                                </div>
+
+                                @if (item.Children.Count > 0)
+                        {
+                            // show partial
+                            List<MultiMoveContentModel> Children = new List<MultiMoveContentModel>();
+
+                            foreach (var child in item.Children)
+                            {
+                                Children.Add(Model.Content.Single(x => x.ID == child));
+                            }
+
+                            var PartialModel = new Dictionary<string, List<MultiMoveContentModel>>();
+                            PartialModel.Add("Children", Children);
+                            PartialModel.Add("Content", Model.Content);
+
+
+                            Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_ExpiryBulkUpdateChildren.cshtml", PartialModel);
+                        }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+}
+<script>
+    $('#ProgressBar').hide();
+
+    $('#SubmitButton').on('click', function (event) {
+        $('#ProgressBar').show();
+    });
+</script>
