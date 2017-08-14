@@ -45,6 +45,7 @@
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\CSVExport\*.cshtml" target="content\App_Plugins\EditorTools\Views\CSVExport\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\EditorToolsHome\*.cshtml" target="content\App_Plugins\EditorTools\Views\EditorToolsHome\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\ExamineSearch\*.cshtml" target="content\App_Plugins\EditorTools\Views\ExamineSearch\"/>	
+	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\ExpiryBulkUpdate\*.cshtml" target="content\App_Plugins\EditorTools\Views\ExpiryBulkUpdate\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\InBoundLinkChecker\*.cshtml" target="content\App_Plugins\EditorTools\Views\InBoundLinkChecker\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\Media\*.cshtml" target="content\App_Plugins\EditorTools\Views\Media\"/>	
 	<file src="Escc.Umbraco.EditorTools\App_Plugins\EditorTools\Views\MultiMove\*.cshtml" target="content\App_Plugins\EditorTools\Views\MultiMove\"/>	
