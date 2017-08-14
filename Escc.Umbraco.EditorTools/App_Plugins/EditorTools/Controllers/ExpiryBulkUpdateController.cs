@@ -27,7 +27,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         }
 
         [HttpPost]
-        public ActionResult BrowseSelected(string Selected)
+        public ActionResult BrowseSelected(int? Selected)
         {
             if (Selected == null)
             {
@@ -41,12 +41,10 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             SelectedTable.Table.Columns.Add("Expire Date", typeof(DateTime));
             SelectedTable.Table.Columns.Add("Update", typeof(HtmlString));
 
-            var node = Umbraco.UmbracoContext.Application.Services.ContentService.GetById(int.Parse(Selected));
+            var node = Umbraco.UmbracoContext.Application.Services.ContentService.GetById((int)Selected);
 
             SelectedTable.Table.Rows.Add(node.Id, node.Name, node.ExpireDate, new HtmlString(string.Format("<div class=\"checkbox\"><label><input type = \"checkbox\" value=\"{0}\" name=\"ToUpdate\"></label></div>", node.Id)));
             var children = Umbraco.UmbracoContext.Application.Services.ContentService.GetDescendants(node.Id);
-            var test = Umbraco.UmbracoContext.ContentCache.GetById(int.Parse(Selected));
-            var childt = UmbracoContext.Application.Services.ContentService.GetDescendants(test.Id);
 
             foreach (var child in children)
             {
