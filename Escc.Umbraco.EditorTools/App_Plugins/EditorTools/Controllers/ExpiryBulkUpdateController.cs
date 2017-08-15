@@ -4,11 +4,17 @@ using Examine;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Mvc;
+using Umbraco.Core;
+using Umbraco.Core.Configuration;
+using Umbraco.Web;
 using Umbraco.Web.Mvc;
+using Umbraco.Web.Routing;
+using Umbraco.Web.Security;
 using UmbracoExamine;
 
 namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
@@ -41,16 +47,34 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             SelectedTable.Table.Columns.Add("Expire Date", typeof(DateTime));
             SelectedTable.Table.Columns.Add("Update", typeof(HtmlString));
 
-            var node = Umbraco.UmbracoContext.Application.Services.ContentService.GetById((int)Selected);
+            var context = GetUmbracoContext();
+
+            var node = context.Application.Services.ContentService.GetById((int)Selected);
 
             SelectedTable.Table.Rows.Add(node.Id, node.Name, node.ExpireDate, new HtmlString(string.Format("<div class=\"checkbox\"><label><input type = \"checkbox\" value=\"{0}\" name=\"ToUpdate\"></label></div>", node.Id)));
-            var children = Umbraco.UmbracoContext.Application.Services.ContentService.GetDescendants(node.Id);
+            var children = context.Application.Services.ContentService.GetDescendants(node.Id);
 
             foreach (var child in children)
             {
                 SelectedTable.Table.Rows.Add(child.Id, child.Name, child.ExpireDate, new HtmlString(string.Format("<div class=\"checkbox\"><label><input type = \"checkbox\" value=\"{0}\" name=\"ToUpdate\"></label></div>", child.Id)));
             }
             return View("~/App_Plugins/EditorTools/Views/ExpiryBulkUpdate/BrowseSelected.cshtml", SelectedTable);
+        }
+
+        public UmbracoContext GetUmbracoContext()
+        {
+            // Ensures the UmbracoContext is available to Async methods that need access.
+            var context = new HttpContextWrapper(new HttpContext(new SimpleWorkerRequest("/", string.Empty, new StringWriter())));
+
+            UmbracoContext.EnsureContext(
+            context,
+            ApplicationContext.Current,
+            new WebSecurity(context, ApplicationContext.Current),
+            UmbracoConfig.For.UmbracoSettings(),
+            UrlProviderResolver.Current.Providers,
+            false);
+
+            return UmbracoContext.Current;
         }
 
         [HttpPost]
