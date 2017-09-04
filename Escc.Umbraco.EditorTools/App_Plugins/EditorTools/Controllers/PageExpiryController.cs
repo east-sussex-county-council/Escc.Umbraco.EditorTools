@@ -1,10 +1,17 @@
 ﻿using Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels;
 using System;
 using System.Data;
+using System.IO;
 using System.Runtime.Caching;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Mvc;
+using Umbraco.Core;
+using Umbraco.Core.Configuration;
+using Umbraco.Web;
 using Umbraco.Web.Mvc;
+using Umbraco.Web.Routing;
+using Umbraco.Web.Security;
 using UmbracoExamine;
 
 namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
@@ -58,8 +65,9 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                     // If the result is a content node
                     if (result.Fields["__IndexType"] == "content")
                     {
+                        var LocalUmbracoContext = GetUmbracoContext();
                         // Get the node from the conent service and check it for an expiry date
-                        var contentNode = UmbracoContext.Application.Services.ContentService.GetById(int.Parse(result.Fields["__NodeId"]));
+                        var contentNode = LocalUmbracoContext.Application.Services.ContentService.GetById(int.Parse(result.Fields["__NodeId"]));
 
                         // If it doesn't have one then its a never expire page
                         if (contentNode.ExpireDate == null)
@@ -86,6 +94,22 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             model.TotalNeverExpires = model.NeverExpires.Table.Rows.Count;
         
             return model;
+        }
+
+              public UmbracoContext GetUmbracoContext()
+        {
+            // Ensures the UmbracoContext is available to Async methods that need access.
+            var context = new HttpContextWrapper(new HttpContext(new SimpleWorkerRequest("/", string.Empty, new StringWriter())));
+
+            UmbracoContext.EnsureContext(
+            context,
+            ApplicationContext.Current,
+            new WebSecurity(context, ApplicationContext.Current),
+            UmbracoConfig.For.UmbracoSettings(),
+            UrlProviderResolver.Current.Providers,
+            false);
+
+            return UmbracoContext.Current;
         }
         #endregion
 
