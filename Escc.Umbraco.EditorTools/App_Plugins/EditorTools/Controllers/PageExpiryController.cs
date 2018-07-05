@@ -59,8 +59,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             {
                 var editURL = new HtmlString(string.Format("<a target=\"_top\" href=\"/umbraco#/content/content/edit/{0}\">edit</a>", result.Fields["__NodeId"]));
 
-                // If the result doesn't contain the unpublishAt key
-                if (!result.Fields.ContainsKey("unpublishAt"))
+                // If the result doesn't contain the expireDate key
+                if (!result.Fields.ContainsKey("expireDate"))
                 {
                     // If the result is a content node
                     if (result.Fields["__IndexType"] == "content")
@@ -84,10 +84,10 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                         }
                     }
                 }
-                // if the result does contain the unpublishAt key, then it is expiring
-                else if (result.Fields.ContainsKey("unpublishAt"))
+                // if the result does contain the expireDate key, then it is expiring
+                else if (result.Fields.ContainsKey("expireDate"))
                 {
-                    model.Expiring.Table.Rows.Add(result.Fields["__NodeId"], result.Fields["nodeName"], result.Fields["urlName"], editURL, result.Fields["unpublishAt"]);
+                    model.Expiring.Table.Rows.Add(result.Fields["__NodeId"], result.Fields["nodeName"], result.Fields["urlName"], editURL, result.Fields["expireDate"]);
                 }
             }
             model.TotalExpiring = model.Expiring.Table.Rows.Count;

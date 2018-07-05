@@ -43,6 +43,7 @@ Microsoft.CodeDom.Providers.DotNetCompilerPlatform.*
 */*/DataTables
 */scripts/jquery*
 *.nupkg
+.vs
 
 # Umbraco files
 [Gg]lobal.asax
