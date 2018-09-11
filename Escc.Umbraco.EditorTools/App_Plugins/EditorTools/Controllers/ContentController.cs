@@ -9,6 +9,7 @@ using UmbracoExamine;
 using Examine;
 using System;
 using System.Runtime.Caching;
+using System.Globalization;
 
 namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
@@ -73,7 +74,10 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                     if (UmbracoContext.Application.Services.ContentService.HasPublishedVersion(int.Parse(node.Fields["__NodeId"])))
                     {
                         model.PublishedPages++;
-                        model.PublishedContent.Table.Rows.Add(node.Fields["__NodeId"], node.Fields["nodeName"], node.Fields["urlName"], editURL);
+
+                        // Adding <span style=\"font-size:1px\"> into URLs allows them to wrap
+                        var contentCacheNode = UmbracoContext.ContentCache.GetById(Int32.Parse(node.Fields["__NodeId"],CultureInfo.InvariantCulture));
+                        model.PublishedContent.Table.Rows.Add(node.Fields["__NodeId"], node.Fields["nodeName"], contentCacheNode != null ? contentCacheNode.Url.Replace("/", "/<span style=\"font-size:1px\"> </span>") : node.Fields["urlName"], editURL);
                     }
                     else
                     {
@@ -109,8 +113,10 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             {
                 if (result.Fields["__NodeTypeAlias"] == DocumentType)
                 {
+                    // Adding <span style=\"font-size:1px\"> into URLs allows them to wrap
+                    var contentCacheNode = UmbracoContext.ContentCache.GetById(Int32.Parse(result.Fields["__NodeId"],CultureInfo.InvariantCulture));
                     var editURL = new HtmlString(string.Format("<a target=\"_top\" href=\"/umbraco#/content/content/edit/{0}\">edit</a>", result.Fields["__NodeId"]));
-                    table.Rows.Add(result.Fields["__NodeId"], result.Fields["nodeName"], result.Fields["urlName"], editURL);
+                    table.Rows.Add(result.Fields["__NodeId"], result.Fields["nodeName"], contentCacheNode != null ? contentCacheNode.Url.Replace("/", "/<span style=\"font-size:1px\"> </span>") : result.Fields["urlName"], editURL);
                 }
             }
             return table;

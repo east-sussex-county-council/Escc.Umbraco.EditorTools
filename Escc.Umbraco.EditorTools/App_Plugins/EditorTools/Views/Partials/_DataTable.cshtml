@@ -20,7 +20,7 @@
                     <tr>
                         @foreach (DataColumn col in Model.Table.Columns)
                         {
-                            <td>@row[col.ColumnName]</td>
+                            <td>@Html.Raw(row[col.ColumnName])</td>
                         }
                     </tr>
                 }
