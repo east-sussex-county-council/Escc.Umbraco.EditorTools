@@ -38,7 +38,7 @@ The first time the tool is opened it might take some time to load as the tool qu
 
 This tool is particularly useful for audit purposes and to quickly find out what pages are expiring and when or which pages will never expire.
 
-Developers: This tool also makes use of Examine, so if you wish to speed up this tool you can add an "expireDate" UmbracoProperty to your document types that copies the expiry date and allows it to be indexed by Examine. If a result returned by examine doesn't have this property the process then queries the content service which causes an overall slow down.
+Developers: This tool also makes use of Examine, so if you wish to speed up this tool you can install [Escc.Umbraco.Expiry](https://github.com/east-sussex-county-council/Escc.Umbraco.Expiry) to add an "expireDate" UmbracoProperty to your document types that copies the expiry date into Examine. If a result returned by Examine doesn't have this property the process then queries the content service which causes an overall slow down.
 
 ### Search
 

@@ -1,6 +1,7 @@
 ﻿using Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels;
 using System;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Runtime.Caching;
 using System.Web;
@@ -41,7 +42,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             model.Expiring.Table.Columns.Add("Name", typeof(string));
             model.Expiring.Table.Columns.Add("Published Url", typeof(string));
             model.Expiring.Table.Columns.Add("Edit", typeof(HtmlString));
-            model.Expiring.Table.Columns.Add("Expire Date", typeof(DateTime));
+            model.Expiring.Table.Columns.Add("Expire Date", typeof(string));
 
             model.NeverExpires.Table = new DataTable();
             model.NeverExpires.Table.Columns.Add("ID", typeof(int));
@@ -66,17 +67,22 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                     if (result.Fields["__IndexType"] == "content")
                     {
                         var LocalUmbracoContext = GetUmbracoContext();
-                        // Get the node from the conent service and check it for an expiry date
-                        var contentNode = LocalUmbracoContext.Application.Services.ContentService.GetById(int.Parse(result.Fields["__NodeId"]));
+                        // Get the node from the content service and check it for an expiry date
+                        var nodeId = Int32.Parse(result.Fields["__NodeId"], CultureInfo.InvariantCulture);
+                        var contentNode = LocalUmbracoContext.Application.Services.ContentService.GetById(nodeId);
+                        var contentCacheNode = UmbracoContext.ContentCache.GetById(nodeId);
+
+                        // Adding <span style=\"font-size:1px\"> into URLs allows them to wrap
+                        var nodeUrl = contentCacheNode != null ? contentCacheNode.Url.Replace("/", "/<span style=\"font-size:1px\"> </span>") : result.Fields["urlName"];
 
                         // If it doesn't have one then its a never expire page
                         if (contentNode.ExpireDate == null)
                         {
-                            model.NeverExpires.Table.Rows.Add(result.Fields["__NodeId"], result.Fields["nodeName"], result.Fields["urlName"], editURL);
+                            model.NeverExpires.Table.Rows.Add(result.Fields["__NodeId"], result.Fields["nodeName"], nodeUrl, editURL);
                         }
                         else // if it does then its an expiring page
                         {
-                            model.Expiring.Table.Rows.Add(result.Fields["__NodeId"], result.Fields["nodeName"], result.Fields["urlName"], editURL, contentNode.ExpireDate);
+                            model.Expiring.Table.Rows.Add(result.Fields["__NodeId"], result.Fields["nodeName"], nodeUrl, editURL, contentNode.ExpireDate.Value.ToIsoString());
                             if (contentNode.ExpireDate < DateTime.Now.AddDays(14))
                             {
                                 model.TotalExpiresIn14Days++;                              
@@ -87,7 +93,22 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 // if the result does contain the expireDate key, then it is expiring
                 else if (result.Fields.ContainsKey("expireDate"))
                 {
-                    model.Expiring.Table.Rows.Add(result.Fields["__NodeId"], result.Fields["nodeName"], result.Fields["urlName"], editURL, result.Fields["expireDate"]);
+                    // Adding <span style=\"font-size:1px\"> into URLs allows them to wrap
+                    var nodeId = Int32.Parse(result.Fields["__NodeId"], CultureInfo.InvariantCulture);
+                    var contentCacheNode = UmbracoContext.ContentCache.GetById(nodeId);
+                    var nodeUrl = contentCacheNode != null ? contentCacheNode.Url.Replace("/", "/<span style=\"font-size:1px\"> </span>") : result.Fields["urlName"];
+
+                    if (result.Fields["expireDate"] == "99991231235959") // DateTime.MaxValue as a proxy for "never expire"
+                    {
+                        model.NeverExpires.Table.Rows.Add(result.Fields["__NodeId"], result.Fields["nodeName"], nodeUrl, editURL);
+                    }
+                    else
+                    {
+                        var expireDateExamine = result.Fields["expireDate"].ToString();
+                        var expiryDate = new DateTime(Int32.Parse(expireDateExamine.Substring(0, 4)), Int32.Parse(expireDateExamine.Substring(4, 2)), Int32.Parse(expireDateExamine.Substring(6, 2)), Int32.Parse(expireDateExamine.Substring(8, 2)), Int32.Parse(expireDateExamine.Substring(10, 2)), Int32.Parse(expireDateExamine.Substring(12, 2)));
+
+                        model.Expiring.Table.Rows.Add(result.Fields["__NodeId"], result.Fields["nodeName"], nodeUrl, editURL, expiryDate.ToIsoString());
+                    }
                 }
             }
             model.TotalExpiring = model.Expiring.Table.Rows.Count;
