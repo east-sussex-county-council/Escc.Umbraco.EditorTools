@@ -25,7 +25,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
     public class InBoundLinkCheckerController : UmbracoAuthorizedController
     {
-        ObjectCache cache = MemoryCache.Default;
+        private MemoryCache cache = MemoryCache.Default;
 
         #region ActionResults
         public ActionResult Index()
@@ -497,50 +497,36 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         {
             if (cache.Contains("ResultsDictionary"))
             {
-                cache["ResultsDictionary"] = results;
+                cache.Remove("ResultsDictionary");
             }
-            else
-            {
-                cache.Add("ResultsDictionary", results, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
-            }
+            cache.Add("ResultsDictionary", results, DateTime.Now.AddHours(1));
 
             if (cache.Contains("LinksFound"))
             {
-                cache["LinksFound"] = LinksFound;
+                cache.Remove("LinksFound");
             }
-            else
-            {
-                cache.Add("LinksFound", LinksFound, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
-            }
+            cache.Add("LinksFound", LinksFound, DateTime.Now.AddHours(1));
 
             if (cache.Contains("BrokenLinks"))
             {
-                cache["BrokenLinks"] = BrokenLinks;
+                cache.Remove("BrokenLinks");
             }
-            else
-            {
-                cache.Add("BrokenLinks", BrokenLinks, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
-            }
+            cache.Add("BrokenLinks", BrokenLinks, DateTime.Now.AddHours(1));
+
             if (cache.Contains("Domains"))
             {
-                cache["Domains"] = Domains;
+                cache.Remove("Domains");
             }
-            else
-            {
-                cache.Add("Domains", Domains, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
-            }
+            cache.Add("Domains", Domains, DateTime.Now.AddHours(1));
         }
 
         private void StoreModelInCache(InBoundLinkCheckerViewModel model)
         {
             if (cache.Contains("InBoundLinkCheckerViewModel"))
             {
-                cache["InBoundLinkCheckerViewModel"] = model;
+                cache.Remove("InBoundLinkCheckerViewModel");
             }
-            else
-            {
-                cache.Add("InBoundLinkCheckerViewModel", model, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
-            }
+            cache.Add("InBoundLinkCheckerViewModel", model, DateTime.Now.AddHours(1));
         }
         #endregion
 

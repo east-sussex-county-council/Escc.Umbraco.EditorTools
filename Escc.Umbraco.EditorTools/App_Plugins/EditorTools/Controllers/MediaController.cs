@@ -14,7 +14,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
     public class MediaController : UmbracoAuthorizedController
     {
-        ObjectCache cache = MemoryCache.Default;
+        private MemoryCache cache = MemoryCache.Default;
+
         public ActionResult Index()
         {
             var model = cache["MediaViewModel"] as MediaViewModel;
@@ -123,12 +124,10 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         {
             if (cache.Contains("MediaViewModel"))
             {
-                cache["MediaViewModel"] = model;
+                cache.Remove("MediaViewModel");
             }
-            else
-            {
-                cache.Add("MediaViewModel", model, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
-            }
+
+            cache.Add("MediaViewModel", model, DateTime.Now.AddHours(1));
         }
 
         public ActionResult RefreshCache()

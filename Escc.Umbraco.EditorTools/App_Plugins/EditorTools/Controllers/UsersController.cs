@@ -12,7 +12,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
     public class UsersController : UmbracoAuthorizedController
     {
-        ObjectCache cache = MemoryCache.Default;
+        private MemoryCache cache = MemoryCache.Default;
+
         public ActionResult Index()
         {
             var model = cache["UsersViewModel"] as UsersViewModel;
@@ -92,12 +93,9 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         {
             if (cache.Contains("UsersViewModel"))
             {
-                cache["UsersViewModel"] = model;
+                cache.Remove("UsersViewModel");
             }
-            else
-            {
-                cache.Add("UsersViewModel", model, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
-            }
+            cache.Add("UsersViewModel", model, DateTime.Now.AddHours(1));
         }
 
         public ActionResult RefreshCache()

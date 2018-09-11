@@ -12,7 +12,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
     public class StatsController : UmbracoAuthorizedController
     {
-        ObjectCache cache = MemoryCache.Default;
+        private MemoryCache cache = MemoryCache.Default;
+
         public ActionResult Index()
         {
             var Model = new StatsViewModel();

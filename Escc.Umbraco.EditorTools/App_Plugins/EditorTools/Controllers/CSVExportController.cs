@@ -9,7 +9,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
     public class CSVExportController : UmbracoAuthorizedController
     {
-        ObjectCache cache = MemoryCache.Default;
+        private MemoryCache cache = MemoryCache.Default;
+
         public ActionResult Index()
         {
             var model = new CSVExportViewModel();

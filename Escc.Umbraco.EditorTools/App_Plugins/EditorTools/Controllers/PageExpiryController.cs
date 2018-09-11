@@ -19,7 +19,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
     public class PageExpiryController : UmbracoAuthorizedController
     {
-        ObjectCache cache = MemoryCache.Default;
+        private MemoryCache cache = MemoryCache.Default;
+
         public ActionResult Index()
         {
             var model = cache["PageExpiryViewModel"] as PageExpiryViewModel;
@@ -139,12 +140,10 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         {
             if (cache.Contains("PageExpiryViewModel"))
             {
-                cache["PageExpiryViewModel"] = model;
+                cache.Remove("PageExpiryViewModel");
             }
-            else
-            {
-                cache.Add("PageExpiryViewModel", model, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
-            }
+
+            cache.Add("PageExpiryViewModel", model, DateTime.Now.AddHours(1));
         }
 
         public ActionResult RefreshCache()
