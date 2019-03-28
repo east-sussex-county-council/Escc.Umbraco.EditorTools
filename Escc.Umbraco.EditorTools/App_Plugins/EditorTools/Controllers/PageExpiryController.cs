@@ -1,15 +1,11 @@
 ﻿using Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels;
 using System;
 using System.Data;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Runtime.Caching;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
-using Examine.Providers;
-using Examine.SearchCriteria;
 using Umbraco.Core;
 using Umbraco.Core.Configuration;
 using Umbraco.Web;
@@ -26,8 +22,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
         public ActionResult Index()
         {
-            ObjectCache cache = MemoryCache.Default;
-            var model = (PageExpiryViewModel)cache["pageExpiry"];
+            var model = cache["PageExpiryViewModel"] as PageExpiryViewModel;
 
             if (model == null)
             {
@@ -42,13 +37,9 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         {
             PageExpiryViewModel model = new PageExpiryViewModel();
 
-            // instantiate the Examine searcher and give it a query
-            var Searcher = Examine.ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
-            var criteria = Searcher.CreateSearchCriteria(IndexTypes.Content);
-
-            model.Expiring.Table = GetExpiringTable(criteria, Searcher);
-            model.NeverExpires.Table = GetNeverExpiresTable(criteria, Searcher);
-            model.RecentlyExpired.Table = GetRecentlyExpiredTable(criteria, Searcher);
+            model.Expiring.Table = GetExpiringTable();
+            model.NeverExpires.Table = GetNeverExpiresTable();
+            model.RecentlyExpired.Table = GetRecentlyExpiredTable();
 
             model.TotalExpiring = model.Expiring.Table.Rows.Count;
             model.TotalNeverExpires = model.NeverExpires.Table.Rows.Count;
@@ -57,8 +48,11 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             return model;
         }
 
-        private DataTable GetRecentlyExpiredTable(ISearchCriteria criteria, BaseSearchProvider searcher)
+        private DataTable GetRecentlyExpiredTable()
         {
+            var searcher = Examine.ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
+            var criteria = searcher.CreateSearchCriteria(IndexTypes.Content);
+
             DataTable table = new DataTable();
             table.Columns.Add("ID", typeof(int));
             table.Columns.Add("Name", typeof(string));
@@ -85,8 +79,11 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             return table;
         }
 
-        private DataTable GetExpiringTable(ISearchCriteria criteria, BaseSearchProvider searcher)
+        private DataTable GetExpiringTable()
         {
+            var searcher = Examine.ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
+            var criteria = searcher.CreateSearchCriteria(IndexTypes.Content);
+
             DataTable table = new DataTable();
             table.Columns.Add("ID", typeof(int));
             table.Columns.Add("Name", typeof(string));
@@ -120,8 +117,11 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             return table;
         }
 
-        private DataTable GetNeverExpiresTable(ISearchCriteria criteria, BaseSearchProvider searcher)
+        private DataTable GetNeverExpiresTable()
         {
+            var searcher = Examine.ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
+            var criteria = searcher.CreateSearchCriteria(IndexTypes.Content);
+
             DataTable table = new DataTable();
             table.Columns.Add("ID", typeof(int));
             table.Columns.Add("Name", typeof(string));
@@ -181,24 +181,9 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
         public ActionResult RefreshCache()
         {
-            ObjectCache cache = MemoryCache.Default;
-            cache.Remove("pageExpiry");
-            var model = GetObjectFromCache<PageExpiryViewModel>("pageExpiry", 3600, CreateModel);
+            var model = CreateModel();
+            StoreInCache(model);
             return View("~/App_Plugins/EditorTools/Views/PageExpiry/Index.cshtml", model);
-        }
-
-        public T GetObjectFromCache<T>(string cacheItemName, int cacheTimeInMinutes, Func<T> objectSettingFunction)
-        {
-            ObjectCache cache = MemoryCache.Default;
-            var cachedObject = (T)cache[cacheItemName];
-            if (cachedObject == null)
-            {
-                CacheItemPolicy policy = new CacheItemPolicy();
-                policy.AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(cacheTimeInMinutes);
-                cachedObject = objectSettingFunction();
-                cache.Set(cacheItemName, cachedObject, policy);
-            }
-            return cachedObject;
         }
         #endregion
     }

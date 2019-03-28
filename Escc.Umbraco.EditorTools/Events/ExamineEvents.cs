@@ -1,13 +1,6 @@
 ﻿using Examine;
-using System.IO;
-using System.Web;
-using System.Web.Hosting;
 using umbraco.BusinessLogic;
 using Umbraco.Core;
-using Umbraco.Core.Configuration;
-using Umbraco.Web;
-using Umbraco.Web.Routing;
-using Umbraco.Web.Security;
 using UmbracoExamine;
 
 namespace Escc.Umbraco.EditorTools.Events
