@@ -3,10 +3,13 @@ using System;
 using System.Data;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.Caching;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
+using Examine.Providers;
+using Examine.SearchCriteria;
 using Umbraco.Core;
 using Umbraco.Core.Configuration;
 using Umbraco.Web;
@@ -23,7 +26,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
         public ActionResult Index()
         {
-            var model = cache["PageExpiryViewModel"] as PageExpiryViewModel;
+            ObjectCache cache = MemoryCache.Default;
+            var model = (PageExpiryViewModel)cache["pageExpiry"];
 
             if (model == null)
             {
@@ -37,88 +41,117 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         public PageExpiryViewModel CreateModel()
         {
             PageExpiryViewModel model = new PageExpiryViewModel();
-            // create the datatables and their columns
-            model.Expiring.Table = new DataTable();
-            model.Expiring.Table.Columns.Add("ID", typeof(int));
-            model.Expiring.Table.Columns.Add("Name", typeof(string));
-            model.Expiring.Table.Columns.Add("Published Url", typeof(string));
-            model.Expiring.Table.Columns.Add("Edit", typeof(HtmlString));
-            model.Expiring.Table.Columns.Add("Expire Date", typeof(string));
-
-            model.NeverExpires.Table = new DataTable();
-            model.NeverExpires.Table.Columns.Add("ID", typeof(int));
-            model.NeverExpires.Table.Columns.Add("Name", typeof(string));
-            model.NeverExpires.Table.Columns.Add("Published Url", typeof(string));
-            model.NeverExpires.Table.Columns.Add("Edit", typeof(HtmlString));
 
             // instantiate the Examine searcher and give it a query
-            var Searcher = Examine.ExamineManager.Instance.SearchProviderCollection["ExternalSearcher"];
+            var Searcher = Examine.ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
             var criteria = Searcher.CreateSearchCriteria(IndexTypes.Content);
-            var examineQuery = criteria.RawQuery("__NodeId:[0 TO 999999]");
-            var searchResults = Searcher.Search(examineQuery);
 
-            foreach (var result in searchResults)
-            {
-                var editURL = new HtmlString(string.Format("<a target=\"_top\" href=\"/umbraco#/content/content/edit/{0}\">edit</a>", result.Fields["__NodeId"]));
+            model.Expiring.Table = GetExpiringTable(criteria, Searcher);
+            model.NeverExpires.Table = GetNeverExpiresTable(criteria, Searcher);
+            model.RecentlyExpired.Table = GetRecentlyExpiredTable(criteria, Searcher);
 
-                // If the result doesn't contain the expireDate key
-                if (!result.Fields.ContainsKey("expireDate"))
-                {
-                    // If the result is a content node
-                    if (result.Fields["__IndexType"] == "content")
-                    {
-                        var LocalUmbracoContext = GetUmbracoContext();
-                        // Get the node from the content service and check it for an expiry date
-                        var nodeId = Int32.Parse(result.Fields["__NodeId"], CultureInfo.InvariantCulture);
-                        var contentNode = LocalUmbracoContext.Application.Services.ContentService.GetById(nodeId);
-                        var contentCacheNode = UmbracoContext.ContentCache.GetById(nodeId);
-
-                        // Adding <span style=\"font-size:1px\"> into URLs allows them to wrap
-                        var nodeUrl = contentCacheNode != null ? contentCacheNode.Url.Replace("/", "/<span style=\"font-size:1px\"> </span>") : result.Fields["urlName"];
-
-                        // If it doesn't have one then its a never expire page
-                        if (contentNode.ExpireDate == null)
-                        {
-                            model.NeverExpires.Table.Rows.Add(result.Fields["__NodeId"], result.Fields["nodeName"], nodeUrl, editURL);
-                        }
-                        else // if it does then its an expiring page
-                        {
-                            model.Expiring.Table.Rows.Add(result.Fields["__NodeId"], result.Fields["nodeName"], nodeUrl, editURL, contentNode.ExpireDate.Value.ToIsoString());
-                            if (contentNode.ExpireDate < DateTime.Now.AddDays(14))
-                            {
-                                model.TotalExpiresIn14Days++;                              
-                            }
-                        }
-                    }
-                }
-                // if the result does contain the expireDate key, then it is expiring
-                else if (result.Fields.ContainsKey("expireDate"))
-                {
-                    // Adding <span style=\"font-size:1px\"> into URLs allows them to wrap
-                    var nodeId = Int32.Parse(result.Fields["__NodeId"], CultureInfo.InvariantCulture);
-                    var contentCacheNode = UmbracoContext.ContentCache.GetById(nodeId);
-                    var nodeUrl = contentCacheNode != null ? contentCacheNode.Url.Replace("/", "/<span style=\"font-size:1px\"> </span>") : result.Fields["urlName"];
-
-                    if (result.Fields["expireDate"] == "99991231235959") // DateTime.MaxValue as a proxy for "never expire"
-                    {
-                        model.NeverExpires.Table.Rows.Add(result.Fields["__NodeId"], result.Fields["nodeName"], nodeUrl, editURL);
-                    }
-                    else
-                    {
-                        var expireDateExamine = result.Fields["expireDate"].ToString();
-                        var expiryDate = new DateTime(Int32.Parse(expireDateExamine.Substring(0, 4)), Int32.Parse(expireDateExamine.Substring(4, 2)), Int32.Parse(expireDateExamine.Substring(6, 2)), Int32.Parse(expireDateExamine.Substring(8, 2)), Int32.Parse(expireDateExamine.Substring(10, 2)), Int32.Parse(expireDateExamine.Substring(12, 2)));
-
-                        model.Expiring.Table.Rows.Add(result.Fields["__NodeId"], result.Fields["nodeName"], nodeUrl, editURL, expiryDate.ToIsoString());
-                    }
-                }
-            }
             model.TotalExpiring = model.Expiring.Table.Rows.Count;
             model.TotalNeverExpires = model.NeverExpires.Table.Rows.Count;
-        
+            model.TotalRecentlyExpired = model.RecentlyExpired.Table.Rows.Count;
+
             return model;
         }
 
-              public UmbracoContext GetUmbracoContext()
+        private DataTable GetRecentlyExpiredTable(ISearchCriteria criteria, BaseSearchProvider searcher)
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("ID", typeof(int));
+            table.Columns.Add("Name", typeof(string));
+            table.Columns.Add("Edit", typeof(HtmlString));
+            table.Columns.Add("Expire Date", typeof(string));
+
+            var recentlyExpiredDateRangeFilter = "+(customExpireDate:[" +
+                                                 DateTime.Now.AddDays(-14).Date.ToString("yyyy-MM-dd") + "* TO " +
+                                                 DateTime.Now.Date.ToString("yyyy-MM-dd") + "*])";
+            var recentlyExpiredQuery =
+                criteria.RawQuery("+(__IndexType:content) +(customIsPublished:False) " + recentlyExpiredDateRangeFilter);
+            var recentlyExpiredSearchResults = searcher.Search(recentlyExpiredQuery);
+
+            foreach (var result in recentlyExpiredSearchResults)
+            {
+                var editURL = new HtmlString(string.Format(
+                    "<a target=\"_top\" href=\"/umbraco#/content/content/edit/{0}\">edit</a>",
+                    result.Fields["__NodeId"]));
+
+                table.Rows.Add(result.Fields["__NodeId"], result.Fields["nodeName"], editURL,
+                    result.Fields["customExpireDate"]);
+            }
+
+            return table;
+        }
+
+        private DataTable GetExpiringTable(ISearchCriteria criteria, BaseSearchProvider searcher)
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("ID", typeof(int));
+            table.Columns.Add("Name", typeof(string));
+            table.Columns.Add("Published Url", typeof(string));
+            table.Columns.Add("Edit", typeof(HtmlString));
+            table.Columns.Add("Expire Date", typeof(string));
+
+            var expiringDateRangeFilter = "+(customExpireDate:[" + DateTime.Now.Date.ToString("yyyy-MM-dd") + "* TO " +
+                                          DateTime.Now.AddDays(14).Date.ToString("yyyy-MM-dd") + "*])";
+            var expiringQuery =
+                criteria.RawQuery("+(__IndexType:content) +(customIsPublished:True) " + expiringDateRangeFilter);
+            var expiringSearchResults = searcher.Search(expiringQuery);
+
+            foreach (var result in expiringSearchResults)
+            {
+                var editURL = new HtmlString(string.Format(
+                    "<a target=\"_top\" href=\"/umbraco#/content/content/edit/{0}\">edit</a>",
+                    result.Fields["__NodeId"]));
+
+                var contentCacheNode = UmbracoContext.ContentCache.GetById(result.Id);
+                // Adding <span style=\"font-size:1px\"> into URLs allows them to wrap
+
+                var nodeUrl = contentCacheNode != null
+                    ? contentCacheNode.Url.Replace("/", "/<span style=\"font-size:1px\"> </span>")
+                    : result.Fields["urlName"];
+
+                table.Rows.Add(result.Fields["__NodeId"], result.Fields["nodeName"], nodeUrl, editURL,
+                    result.Fields["customExpireDate"]);
+            }
+
+            return table;
+        }
+
+        private DataTable GetNeverExpiresTable(ISearchCriteria criteria, BaseSearchProvider searcher)
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("ID", typeof(int));
+            table.Columns.Add("Name", typeof(string));
+            table.Columns.Add("Published Url", typeof(string));
+            table.Columns.Add("Edit", typeof(HtmlString));
+
+            var neverExpiresQuery =
+                criteria.RawQuery(
+                    "+(__IndexType:content) +(customIsPublished:True) -(customExpireDate:[0001-01-01* TO 3999-12-31*])");
+            var neverExpiresSearchResults = searcher.Search(neverExpiresQuery);
+            foreach (var result in neverExpiresSearchResults)
+            {
+                var editURL = new HtmlString(string.Format(
+                    "<a target=\"_top\" href=\"/umbraco#/content/content/edit/{0}\">edit</a>",
+                    result.Fields["__NodeId"]));
+
+                var contentCacheNode = UmbracoContext.ContentCache.GetById(result.Id);
+
+                // Adding <span style=\"font-size:1px\"> into URLs allows them to wrap
+                var nodeUrl = contentCacheNode != null
+                    ? contentCacheNode.Url.Replace("/", "/<span style=\"font-size:1px\"> </span>")
+                    : result.Fields["urlName"];
+
+                table.Rows.Add(result.Id, result.Fields["nodeName"], nodeUrl, editURL);
+            }
+
+            return table;
+        }
+
+        public UmbracoContext GetUmbracoContext()
         {
             // Ensures the UmbracoContext is available to Async methods that need access.
             var context = new HttpContextWrapper(new HttpContext(new SimpleWorkerRequest("/", string.Empty, new StringWriter())));
@@ -148,9 +181,24 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
         public ActionResult RefreshCache()
         {
-            var model = CreateModel();
-            StoreInCache(model);
+            ObjectCache cache = MemoryCache.Default;
+            cache.Remove("pageExpiry");
+            var model = GetObjectFromCache<PageExpiryViewModel>("pageExpiry", 3600, CreateModel);
             return View("~/App_Plugins/EditorTools/Views/PageExpiry/Index.cshtml", model);
+        }
+
+        public T GetObjectFromCache<T>(string cacheItemName, int cacheTimeInMinutes, Func<T> objectSettingFunction)
+        {
+            ObjectCache cache = MemoryCache.Default;
+            var cachedObject = (T)cache[cacheItemName];
+            if (cachedObject == null)
+            {
+                CacheItemPolicy policy = new CacheItemPolicy();
+                policy.AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(cacheTimeInMinutes);
+                cachedObject = objectSettingFunction();
+                cache.Set(cacheItemName, cachedObject, policy);
+            }
+            return cachedObject;
         }
         #endregion
     }

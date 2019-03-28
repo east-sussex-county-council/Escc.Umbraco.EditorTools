@@ -35,7 +35,8 @@
             $('#@Model.ID').DataTable({
                 aLengthMenu: [
                     [-1],
-                    ["All"]
+                    ["All"],
+                    [-1]
                 ],
                 iDisplayLength: -1,
                 "order": [[0, "desc"]]
@@ -50,7 +51,8 @@ else
             $('#@Model.ID').DataTable({
                 aLengthMenu: [
                     [10, 25, 50, 100, -1],
-                    [10, 25, 50, 100, "All"]
+                    [10, 25, 50, 100, "All"],
+                    [10, 25, 50, 100, -1]
                 ],
                 iDisplayLength: 10,
                 "order": [[0, "desc"]]
