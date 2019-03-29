@@ -60,7 +60,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             table.Columns.Add("Expire Date", typeof(string));
 
             var recentlyExpiredDateRangeFilter = "+(customExpireDate:[" +
-                                                 DateTime.Now.AddDays(-14).Date.ToString("yyyy-MM-dd") + "* TO " +
+                                                 DateTime.Now.AddDays(-30).Date.ToString("yyyy-MM-dd") + "* TO " +
                                                  DateTime.Now.Date.ToString("yyyy-MM-dd") + "*])";
             var recentlyExpiredQuery =
                 criteria.RawQuery("+(__IndexType:content) +(customIsPublished:False) " + recentlyExpiredDateRangeFilter);
