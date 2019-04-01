@@ -37,8 +37,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         {
             PageExpiryViewModel model = new PageExpiryViewModel();
 
-            model.Expiring.Table = GetExpiringTable();
-            model.NeverExpires.Table = GetNeverExpiresTable();
+            model.Expiring.Table = GetExpiringTable(UmbracoContext.Current);
+            model.NeverExpires.Table = GetNeverExpiresTable(UmbracoContext.Current);
             model.RecentlyExpired.Table = GetRecentlyExpiredTable();
 
             model.TotalExpiring = model.Expiring.Table.Rows.Count;
@@ -48,7 +48,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             return model;
         }
 
-        private DataTable GetRecentlyExpiredTable()
+        private static DataTable GetRecentlyExpiredTable()
         {
             var searcher = Examine.ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
             var criteria = searcher.CreateSearchCriteria(IndexTypes.Content);
@@ -79,7 +79,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             return table;
         }
 
-        private DataTable GetExpiringTable()
+        private static DataTable GetExpiringTable(UmbracoContext umbracoContext)
         {
             var searcher = Examine.ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
             var criteria = searcher.CreateSearchCriteria(IndexTypes.Content);
@@ -103,7 +103,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                     "<a target=\"_top\" href=\"/umbraco#/content/content/edit/{0}\">edit</a>",
                     result.Fields["__NodeId"]));
 
-                var contentCacheNode = UmbracoContext.ContentCache.GetById(result.Id);
+                var contentCacheNode = umbracoContext.ContentCache.GetById(result.Id);
                 // Adding <span style=\"font-size:1px\"> into URLs allows them to wrap
 
                 var nodeUrl = contentCacheNode != null
@@ -117,7 +117,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             return table;
         }
 
-        private DataTable GetNeverExpiresTable()
+        private static DataTable GetNeverExpiresTable(UmbracoContext umbracoContext)
         {
             var searcher = Examine.ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
             var criteria = searcher.CreateSearchCriteria(IndexTypes.Content);
@@ -138,7 +138,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                     "<a target=\"_top\" href=\"/umbraco#/content/content/edit/{0}\">edit</a>",
                     result.Fields["__NodeId"]));
 
-                var contentCacheNode = UmbracoContext.ContentCache.GetById(result.Id);
+                var contentCacheNode = umbracoContext.ContentCache.GetById(result.Id);
 
                 // Adding <span style=\"font-size:1px\"> into URLs allows them to wrap
                 var nodeUrl = contentCacheNode != null
