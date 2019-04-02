@@ -32,13 +32,13 @@ If you go to the Stats tab you can view some basic statistics about your media f
 
 ### Page Expiry
 
-The 'Page Expiry' tool allows you to view all the pages in your Umbraco installation that are published and have either an expiry date or are set never to expire (they have no expiry date).
+The 'Page Expiry' tool allows you to view all the pages in your Umbraco installation that are published and have either an expiry date or are set never to expire (they have no expiry date). It can also tell you which pages have recently expired.
 
 The first time the tool is opened it might take some time to load as the tool queries the content service to find expiry dates. However, once loaded, the data is cached to avoid having to do the query again. If you believe the tables to out of date you can click refresh to update the cache.
 
-This tool is particularly useful for audit purposes and to quickly find out what pages are expiring and when or which pages will never expire.
+This tool is particularly useful for audit purposes and to quickly find out which pages are expiring and when, which pages will never expire, and which pages have recently expired.
 
-Developers: This tool also makes use of Examine, so if you wish to speed up this tool you can install [Escc.Umbraco.Expiry](https://github.com/east-sussex-county-council/Escc.Umbraco.Expiry) to add an "expireDate" UmbracoProperty to your document types that copies the expiry date into Examine. If a result returned by Examine doesn't have this property the process then queries the content service which causes an overall slow down.
+Developers: This tool also makes use of examine to speed up the generation of the report. It will add 2 fields to your InternalIndex "customIsPublished" and "customExpireDate".
 
 ### Search
 
