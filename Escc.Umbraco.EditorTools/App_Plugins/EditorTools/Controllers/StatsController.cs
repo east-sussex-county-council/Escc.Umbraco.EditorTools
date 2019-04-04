@@ -17,22 +17,6 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         public ActionResult Index()
         {
             var Model = new StatsViewModel();
-            Model.Users = cache["UsersViewModel"] as UsersViewModel;
-            if(Model.Users == null)
-            {
-                Model.UsersStatsAvailable = false;
-            }
-            else
-            {
-                if(Model.Users.ActiveUsers.Table == null || Model.Users.DisabledUsers.Table == null)
-                {
-                    Model.UsersStatsAvailable = false;
-                }
-                else
-                {
-                    Model.UsersStatsAvailable = true;
-                }
-            }
 
             Model.Content = cache["ContentViewModel"] as ContentViewModel;
             if (Model.Content == null)

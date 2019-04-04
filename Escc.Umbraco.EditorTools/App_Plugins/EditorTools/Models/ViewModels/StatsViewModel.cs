@@ -7,9 +7,6 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels
 {
     public class StatsViewModel
     {
-        public UsersViewModel Users { get; set; }
-        public bool UsersStatsAvailable { get; set; }
-
         public MediaViewModel Media { get; set; }
         public bool MediaStatsAvailable { get; set; }
 

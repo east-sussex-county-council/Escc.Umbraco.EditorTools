@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Runtime.Caching;
-using System.Web;
 using System.Web.Mvc;
 using Umbraco.Web.Mvc;
 
@@ -49,7 +48,6 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             model.DisabledUsers.Table.Columns.Add("Email", typeof(string));
 
             int totalRecords;
-            var UsersTypeCount = new Dictionary<string, int>();
             // for each user in the user service
             foreach (var user in userService.GetAll(0, int.MaxValue, out totalRecords))
             {
@@ -61,27 +59,6 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 {
                     model.DisabledUsers.Table.Rows.Add(user.Id, user.Name, user.Username, user.UserType.Alias, user.Email);
                 }
-
-                model.TotalUsers++;
-                var Active = user.IsApproved ? model.ActiveUsersCount++ : model.DisabledUsersCount++;
-
-                if (UsersTypeCount.Keys.Contains(user.UserType.Alias))
-                {
-                    UsersTypeCount[user.UserType.Alias] += 1;
-                }
-                else
-                {
-                    UsersTypeCount.Add(user.UserType.Alias, 1);
-                }
-            }
-
-            model.UserTypes.Table = new DataTable();
-            model.UserTypes.Table.Columns.Add("Type", typeof(string));
-            model.UserTypes.Table.Columns.Add("Count", typeof(int));
-
-            foreach (var item in UsersTypeCount)
-            {
-                model.UserTypes.Table.Rows.Add(item.Key, item.Value);
             }
 
             return model;

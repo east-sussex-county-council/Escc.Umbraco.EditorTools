@@ -17,7 +17,6 @@
                     <div class="panel-heading">
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#ContentStats" data-toggle="tab"><b>Content</b></a></li>
-                            <li><a href="#UsersStats" data-toggle="tab"><b>Users</b></a></li>
                             <li><a href="#MediaStats" data-toggle="tab"><b>Media</b></a></li>
                             <li><a href="#CrawlerStats" data-toggle="tab"><b>What Links Where?</b></a></li>
                         </ul>
@@ -71,53 +70,6 @@
                                                             <div class="panel-body">
                                                                 <div class="col-md-12">
                                                                     No data is currently cached for this tab, head over to the 'Content' tool and cache some data to view statistics.
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    }
-                            </div>
-                            <div class="tab-pane fade" id="UsersStats">
-                                @if (Model.UsersStatsAvailable)
-                                {
-                                    <div class="row">
-                                        <div class="panel panel-info">
-                                            <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-                                            <div class="panel-body">
-                                                <div class="col-md-6">
-                                                    This tab displays statistics about your users.
-                                                </div>
-                                                <div class="col-md-4">
-                                                    Data Cached on: @Model.Users.CacheDate
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="panel panel-primary">
-                                            <div class="panel-heading">
-                                                <h3 class="panel-title">Statistics</h3>
-                                            </div>
-                                            <div class="panel-body">
-                                                <h3>Total Users: <span class="label label-primary">@Model.Users.TotalUsers</span></h3>
-                                                <h3>Active Users: <span class="label label-success">@Model.Users.ActiveUsersCount</span></h3>
-                                                <h3>Disabled Users: <span class="label label-danger">@Model.Users.DisabledUsersCount</span></h3>
-                                            </div>
-                                        </div>
-                                        <div class="panel panel-success">
-                                            <div class="panel-heading">
-                                                <h3 class="panel-title">User Types</h3>
-                                            </div>
-                                            <div class="panel-body">
-                                                @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.Users.UserTypes);}
-                                            </div>
-                                        </div>
-                                    </div>
-                                                    }
-                                                    else
-                                                    {
-                                                        <div class="panel panel-info">
-                                                            <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-                                                            <div class="panel-body">
-                                                                <div class="col-md-12">
-                                                                    No data is currently cached for this tab, head over to the 'Users' tool and cache some data to view statistics.
                                                                 </div>
                                                             </div>
                                                         </div>
