@@ -1,9 +1,11 @@
 ﻿using Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Runtime.Caching;
+using System.Web;
 using System.Web.Mvc;
 using Umbraco.Web.Mvc;
 
@@ -47,17 +49,22 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             model.DisabledUsers.Table.Columns.Add("User Type", typeof(string));
             model.DisabledUsers.Table.Columns.Add("Email", typeof(string));
 
+            var umbracoVersionSupportsGroups = double.Parse(ConfigurationManager.AppSettings["UmbracoConfigurationStatus"].Substring(0, ConfigurationManager.AppSettings["UmbracoConfigurationStatus"].LastIndexOf("."))) >= 7.7;
+
             int totalRecords;
             // for each user in the user service
             foreach (var user in userService.GetAll(0, int.MaxValue, out totalRecords))
             {
+                var editURL = new HtmlString(umbracoVersionSupportsGroups ? 
+                    $"<a target=\"_top\" href=\"/umbraco#/users/users/user/{user.Id}?subview=users\">{user.Name}</a>" : 
+                    $"<a target=\"_top\" href=\"/umbraco#/users/framed/%252Fumbraco%252Fusers%252FeditUser.aspx%253Fid%253D{user.Id}\">{user.Name}</a>");
                 if (user.IsApproved)
                 {
-                    model.ActiveUsers.Table.Rows.Add(user.Id, user.Name, user.Username, user.UserType.Alias, user.Email);
+                    model.ActiveUsers.Table.Rows.Add(user.Id, editURL, user.Username, user.UserType.Alias, user.Email);
                 }
                 else
                 {
-                    model.DisabledUsers.Table.Rows.Add(user.Id, user.Name, user.Username, user.UserType.Alias, user.Email);
+                    model.DisabledUsers.Table.Rows.Add(user.Id, editURL, user.Username, user.UserType.Alias, user.Email);
                 }
             }
 
