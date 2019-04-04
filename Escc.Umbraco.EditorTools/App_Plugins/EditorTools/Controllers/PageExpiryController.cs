@@ -41,10 +41,6 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             model.NeverExpires.Table = GetNeverExpiresTable(UmbracoContext.Current);
             model.RecentlyExpired.Table = GetRecentlyExpiredTable();
 
-            model.TotalExpiring = model.Expiring.Table.Rows.Count;
-            model.TotalNeverExpires = model.NeverExpires.Table.Rows.Count;
-            model.TotalRecentlyExpired = model.RecentlyExpired.Table.Rows.Count;
-
             return model;
         }
 

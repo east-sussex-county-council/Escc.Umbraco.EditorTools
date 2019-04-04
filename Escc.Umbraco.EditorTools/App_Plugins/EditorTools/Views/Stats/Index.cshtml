@@ -19,7 +19,6 @@
                             <li class="active"><a href="#ContentStats" data-toggle="tab"><b>Content</b></a></li>
                             <li><a href="#UsersStats" data-toggle="tab"><b>Users</b></a></li>
                             <li><a href="#MediaStats" data-toggle="tab"><b>Media</b></a></li>
-                            <li><a href="#PageExpiryStats" data-toggle="tab"><b>Page Expiry</b></a></li>
                             <li><a href="#CrawlerStats" data-toggle="tab"><b>What Links Where?</b></a></li>
                         </ul>
                     </div>
@@ -173,45 +172,6 @@
                                                                 </div>
                                                             </div>
                                                         }
-                            </div>
-                            <div class="tab-pane fade" id="PageExpiryStats">
-                                @if (Model.PageExpiryStatsAvailable)
-                                {
-                                    <div class="row">
-                                        <div class="panel panel-info">
-                                            <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-                                            <div class="panel-body">
-                                                <div class="col-md-6">
-                                                    This tab displays statistics about page expiries.
-                                                </div>
-                                                <div class="col-md-4">
-                                                    Data Cached on: @Model.PageExpiry.CacheDate
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="panel panel-primary">
-                                            <div class="panel-heading">
-                                                <h3 class="panel-title">Statistics</h3>
-                                            </div>
-                                            <div class="panel-body">
-                                                <h3>Total Expiring: <span class="label label-danger">@Model.PageExpiry.TotalExpiring</span></h3>
-                                                <h3>Total Never Expiring: <span class="label label-success">@Model.PageExpiry.TotalNeverExpires</span></h3>
-                                                <h3>Total Expiring Within 14 days: <span class="label label-warning">@Model.PageExpiry.TotalExpiresIn14Days</span></h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-                                        <div class="panel-body">
-                                            <div class="col-md-12">
-                                                No data is currently cached for this tab, head over to the 'Page Expiry' tool and cache some data to view statistics.
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
                             </div>
                             <div class="tab-pane fade" id="CrawlerStats">
                                 @if (Model.CrawlerStatsAvailable)

@@ -69,23 +69,6 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 }
             }
 
-            Model.PageExpiry = cache["PageExpiryViewModel"] as PageExpiryViewModel;
-            if (Model.PageExpiry == null)
-            {
-                Model.PageExpiryStatsAvailable = false;
-            }
-            else
-            {
-                if (Model.PageExpiry.Expiring.Table == null || Model.PageExpiry.NeverExpires.Table == null)
-                {
-                    Model.PageExpiryStatsAvailable = false;
-                }
-                else
-                {
-                    Model.PageExpiryStatsAvailable = true;
-                }
-            }
-
             Model.Crawler = cache["InBoundLinkCheckerViewModel"] as InBoundLinkCheckerViewModel;
             if (Model.Crawler == null)
             {
