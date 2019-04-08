@@ -18,41 +18,6 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         {
             var Model = new StatsViewModel();
 
-            Model.Content = cache["ContentViewModel"] as ContentViewModel;
-            if (Model.Content == null)
-            {
-                Model.ContentStatsAvailable = false;
-            }
-            else
-            {
-                if (Model.Content.DocumentTypes.Table == null || Model.Content.PublishedContent.Table == null || Model.Content.UnpublishedContent.Table == null)
-                {
-                    Model.ContentStatsAvailable = false;
-                }
-                else
-                {
-                    Model.ContentStatsAvailable = true;
-                }
-
-            }
-
-            Model.Media = cache["MediaViewModel"] as MediaViewModel;
-            if (Model.Media == null)
-            {
-                Model.MediaStatsAvailable = false;
-            }
-            else
-            {
-                if (Model.Media.Media.Table == null)
-                {
-                    Model.MediaStatsAvailable = false;
-                }
-                else
-                {
-                    Model.MediaStatsAvailable = true;
-                }
-            }
-
             Model.Crawler = cache["InBoundLinkCheckerViewModel"] as InBoundLinkCheckerViewModel;
             if (Model.Crawler == null)
             {

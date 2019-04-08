@@ -19,6 +19,7 @@
                             <div class="panel-heading">
                                 <ul class="nav nav-tabs">
                                     <li class="active"><a href="#Media" data-toggle="tab"><b>Media</b></a></li>
+                                    <li><a href="#MediaStats" data-toggle="tab"><b>Statistics</b></a></li>
                                 </ul>
                             </div>
                             <div class="panel-body">
@@ -49,6 +50,42 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="tab-pane fade" id="MediaStats">
+                                        <div class="row">
+                                            <div class="panel panel-info">
+                                                <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
+                                                <div class="panel-body">
+                                                    <div class="col-md-6">
+                                                        This tab displays statistics about your media.
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        Data Cached on: @Model.CacheDate
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel panel-primary">
+                                                <div class="panel-heading">
+                                                    <h3 class="panel-title">Statistics</h3>
+                                                </div>
+                                                <div class="panel-body">
+                                                    <h3>Total Media: <span class="label label-primary">@Model.TotalMediaFiles</span></h3>
+                                                    <h3>Files: <span class="label label-info">@Model.TotalFiles</span></h3>
+                                                    <h3>Images: <span class="label label-info">@Model.TotalImages</span></h3>
+                                                    <h3>Folders: <span class="label label-info">@Model.TotalFolders</span></h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="panel panel-success">
+                                                <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> File Types</div>
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.MediaFileTypes);}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -56,11 +93,11 @@
                 </div>
             </div>
         </div>
-                                                            }
-                                                            else
-                                                            {
-                                                                Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_NoCachedData.cshtml", "/umbraco/backoffice/Plugins/Media/RefreshCache");
-                                                            }
+        }
+        else
+        {
+            Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_NoCachedData.cshtml", "/umbraco/backoffice/Plugins/Media/RefreshCache");
+        }
 }
 <div id="Regenerate">
     @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_RegeneratingCache.cshtml");}

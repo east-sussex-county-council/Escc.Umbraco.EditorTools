@@ -16,116 +16,12 @@
                 <div class="panel with-nav-tabs panel-czone">
                     <div class="panel-heading">
                         <ul class="nav nav-tabs">
-                            <li class="active"><a href="#ContentStats" data-toggle="tab"><b>Content</b></a></li>
-                            <li><a href="#MediaStats" data-toggle="tab"><b>Media</b></a></li>
-                            <li><a href="#CrawlerStats" data-toggle="tab"><b>What Links Where?</b></a></li>
+                            <li class="active"><a href="#CrawlerStats" data-toggle="tab"><b>What Links Where?</b></a></li>
                         </ul>
                     </div>
                     <div class="panel-body">
                         <div class="tab-content">
-                            <div class="tab-pane fade in active" id="ContentStats">
-                                @if (Model.ContentStatsAvailable)
-                                {
-                                    <div class="row">
-                                        <div class="panel panel-info">
-                                            <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-                                            <div class="panel-body">
-                                                <div class="col-md-6">
-                                                    This tab displays statistics about your content.
-                                                </div>
-                                                <div class="col-md-4">
-                                                    Data Cached on: @Model.Content.CacheDate
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="panel panel-primary">
-                                            <div class="panel-heading">
-                                                <h3 class="panel-title">Statistics</h3>
-                                            </div>
-                                            <div class="panel-body">
-                                                <h3>Total Pages: <span class="label label-primary">@Model.Content.TotalPages</span></h3>
-                                                <h3>Published Pages: <span class="label label-success">@Model.Content.PublishedPages</span></h3>
-                                                <h3>Unpublished Pages: <span class="label label-danger">@Model.Content.UnpublishedPages</span></h3>
-                                            </div>
-                                        </div>
-                                        <div class="progress" id="contentLoading">
-                                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-                                                <span class="sr-only">45% Complete</span>
-                                            </div>
-                                        </div>
-                                        <div class="panel panel-success">
-                                            <div class="panel-heading">
-                                                <h3 class="panel-title">Document Types</h3>
-                                            </div>
-                                            <div class="panel-body">
-                                                @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.Content.DocumentTypes);}
-                                            </div>
-                                        </div>
-                                    </div>
-                                                    }
-                                                    else
-                                                    {
-                                                        <div class="panel panel-info">
-                                                            <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-                                                            <div class="panel-body">
-                                                                <div class="col-md-12">
-                                                                    No data is currently cached for this tab, head over to the 'Content' tool and cache some data to view statistics.
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    }
-                            </div>
-                            <div class="tab-pane fade" id="MediaStats">
-                                @if (Model.MediaStatsAvailable)
-                                {
-                                    <div class="row">
-                                        <div class="panel panel-info">
-                                            <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-                                            <div class="panel-body">
-                                                <div class="col-md-6">
-                                                    This tab displays statistics about your media.
-                                                </div>
-                                                <div class="col-md-4">
-                                                    Data Cached on: @Model.Media.CacheDate
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="panel panel-primary">
-                                            <div class="panel-heading">
-                                                <h3 class="panel-title">Statistics</h3>
-                                            </div>
-                                            <div class="panel-body">
-                                                <h3>Total Media: <span class="label label-primary">@Model.Media.TotalMediaFiles</span></h3>
-                                                <h3>Files: <span class="label label-info">@Model.Media.TotalFiles</span></h3>
-                                                <h3>Images: <span class="label label-info">@Model.Media.TotalImages</span></h3>
-                                                <h3>Folders: <span class="label label-info">@Model.Media.TotalFolders</span></h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="panel panel-success">
-                                            <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> File Types</div>
-                                            <div class="panel-body">
-                                                <div class="row">
-                                                    @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.Media.MediaFileTypes);}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                                        }
-                                                        else
-                                                        {
-                                                            <div class="panel panel-info">
-                                                                <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-                                                                <div class="panel-body">
-                                                                    <div class="col-md-12">
-                                                                        No data is currently cached for this tab, head over to the 'Media' tool and cache some data to view statistics.
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        }
-                            </div>
-                            <div class="tab-pane fade" id="CrawlerStats">
+                            <div class="tab-pane fade in active" id="CrawlerStats">
                                 @if (Model.CrawlerStatsAvailable)
                                 {
                                     <div class="row">
@@ -159,18 +55,18 @@
                                             </div>
                                         </div>
                                     </div>
-                                                        }
-                                                        else
-                                                        {
-                                                            <div class="panel panel-info">
-                                                                <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-                                                                <div class="panel-body">
-                                                                    <div class="col-md-12">
-                                                                        No data is currently cached for this tab, head over to the 'What Links Where?' tool and cache some data to view statistics.
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        }
+                                    }
+                                    else
+                                    {
+                                        <div class="panel panel-info">
+                                            <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
+                                            <div class="panel-body">
+                                                <div class="col-md-12">
+                                                    No data is currently cached for this tab, head over to the 'What Links Where?' tool and cache some data to view statistics.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
                             </div>
                         </div>
                     </div>
@@ -179,31 +75,3 @@
         </div>
     </div>
 </div>
-
-@if (Model.ContentStatsAvailable)
-{
-    foreach (var item in Model.Content.ModalTables)
-    {
-        <div class="modal fade" id="@item.Key" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    </div>
-                    <div class="modal-body">
-                        @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", item.Value);}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-                            }}
-
-<script>
-    $(document).ready(function () {
-        $('#contentLoading').hide();
-    });
-    
-</script>
