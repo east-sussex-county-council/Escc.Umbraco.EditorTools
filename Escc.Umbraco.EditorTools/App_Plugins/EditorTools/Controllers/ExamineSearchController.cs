@@ -1,6 +1,6 @@
 ﻿using Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels;
 using Examine;
-using Examine.SearchCriteria;
+using Examine.Providers;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -35,18 +35,18 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                     // Create a dictionary to store the results and their value
                     var MediaResultsDictionary = new Dictionary<SearchResult, int>();
                     // instantiate the examine search and its criteria type
-                    var MediaSearcher = Examine.ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
+                    var MediaSearcher = ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
                     var MediaCriteria = MediaSearcher.CreateSearchCriteria(IndexTypes.Media);
 
                     // Create a query to get all media nodes and then filter by results that contain the umbracoFile property
-                    var MediaExamineQuery = MediaCriteria.RawQuery(string.Format("__IndexType:media"));
-                    var MediaResults = MediaSearcher.Search(MediaExamineQuery).Where(x => x.Fields.ContainsKey("umbracoFile"));
+                    var MediaExamineQuery = MediaCriteria.RawQuery("+(__IndexType:media) -(__NodeTypeAlias:folder)");
+                    var MediaResults = MediaSearcher.Search(MediaExamineQuery);
 
                     // Check each result for the search terms and assign a value rating that result
                     foreach (var result in MediaResults)
                     {
                         // if the umbracoFile property contains the search  term
-                        if(CleanString(result.Fields["umbracoFile"]).Contains(cleanQuery.ToLower()))
+                        if (CleanString(result.Fields["umbracoFile"]).Contains(cleanQuery.ToLower()))
                         {
                             CheckMediaDictionary(MediaResultsDictionary, result);
                         }
@@ -103,8 +103,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                         var id = getMediaID(result.Key);
 
                         var edit = new HtmlString(string.Format("<a target=\"_top\" href=\"/umbraco#/media/media/edit/{0}\">edit</a>", media.Fields["__NodeId"]));
-                        model.MediaTable.Table.Rows.Add(result.Value, id,media.Fields["nodeName"], media.Fields["umbracoExtension"], edit);
-                    }              
+                        model.MediaTable.Table.Rows.Add(result.Value, id, media.Fields["nodeName"], media.Fields["umbracoExtension"], edit);
+                    }
                     break;
 
                 case "Content":
@@ -114,12 +114,19 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                     var ContentResultsDictionary = new Dictionary<SearchResult, int>();
 
                     // instantiate the examine searcher and its criteria type.
-                    var ContentSearcher = Examine.ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
+                    var ContentSearcher = ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
                     var ContentCriteria = ContentSearcher.CreateSearchCriteria(IndexTypes.Content);
-
-                    // Start with a query for the whole phrase
-                    var ContentPhraseExamineQuery = ContentCriteria.RawQuery(string.Format("urlName:{0}*", PostModel.Query));
-                    var ContentResults = ContentSearcher.Search(ContentPhraseExamineQuery);
+                    ISearchResults ContentResults;
+                    if (!string.IsNullOrEmpty(PostModel.Query))
+                    {
+                        // Start with a query for the whole phrase
+                        var ContentPhraseExamineQuery = ContentCriteria.RawQuery(string.Format("+__IndexType:content +urlName:\"{0}\"", PostModel.Query));
+                        ContentResults = ContentSearcher.Search(ContentPhraseExamineQuery);
+                    }
+                    else
+                    {
+                        ContentResults = ContentSearcher.Search(ContentCriteria.RawQuery("+(__IndexType:content)"));
+                    }
 
                     foreach (var result in ContentResults)
                     {
@@ -131,24 +138,30 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                     }
 
                     // Split the query by its white space
-                    var splitTerm = PostModel.Query.Split(' ');
-                    // for each word in the query
-                    foreach (var term in splitTerm)
+                    if (!string.IsNullOrEmpty(PostModel.Query))
                     {
-                        // do another search for the word
-                        var ContentSplitExamineQuery = ContentCriteria.RawQuery(string.Format("urlName:{0}*", term));
-                        var TermContentResults = ContentSearcher.Search(ContentSplitExamineQuery);
-                        foreach (var result in TermContentResults)
+                        var splitTerm = PostModel.Query.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                        var exampleNotFoundResult = default(KeyValuePair<SearchResult, int>);
+                        // for each word in the query
+                        foreach (var term in splitTerm)
                         {
-                            // if the dictionary doesn't already contain the result, add it and give it an initial value of 1.
-                            if (!ContentResultsDictionary.Keys.Contains(result))
+                            // do another search for the word
+                            ContentCriteria = ContentSearcher.CreateSearchCriteria(IndexTypes.Content);
+                            var ContentSplitExamineQuery = ContentCriteria.RawQuery(string.Format("+__IndexType:content +urlName:{0}*", term));
+                            var TermContentResults = ContentSearcher.Search(ContentSplitExamineQuery);
+                            foreach (var result in TermContentResults)
                             {
-                                ContentResultsDictionary.Add(result, 1);
-                            }
-                            else
-                            {
-                                // if the dicionary did already contain the result, increase its value by 1.
-                                ContentResultsDictionary[result] += 1;
+                                // if the dictionary doesn't already contain the result, add it and give it an initial value of 1.
+                                var existingResult = ContentResultsDictionary.FirstOrDefault(x => x.Key.DocId == result.DocId);
+                                if (existingResult.Key == exampleNotFoundResult.Key)
+                                {
+                                    ContentResultsDictionary.Add(result, 1);
+                                }
+                                else
+                                {
+                                    // if the dicionary did already contain the result, increase its value by 1.
+                                    ContentResultsDictionary[existingResult.Key] += 1;
+                                }
                             }
                         }
                     }
@@ -202,12 +215,15 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             return id;
         }
 
-        public string CleanString (string text)
+        public string CleanString(string text)
         {
-            var regex = new Regex(@"[^\w\s-]");
-            return regex.Replace(text, "");
+            if (!string.IsNullOrEmpty(text))
+            {
+                var regex = new Regex(@"[^\w\s-]");
+                return regex.Replace(text, string.Empty);
+            }
+            else return string.Empty;
         }
-
         #endregion
     }
 }
