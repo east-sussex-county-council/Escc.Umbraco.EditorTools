@@ -144,25 +144,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
                 OnAfterNodeRender(ref tree, ref CSVExportNode, EventArgs.Empty);
             }
 
-            var InBoundLinkCheckerNode = XmlTreeNode.Create(this);
-            InBoundLinkCheckerNode.NodeID = "8";
-            InBoundLinkCheckerNode.NodeType = "InBoundLinkChecker";
-            InBoundLinkCheckerNode.Text = "What Links Where?";
-            InBoundLinkCheckerNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/InBoundLinkChecker/Index');";
-            InBoundLinkCheckerNode.Icon = "icon-return-to-top";
-            InBoundLinkCheckerNode.HasChildren = false;
-            InBoundLinkCheckerNode.Menu = new List<IAction>();
-            OnBeforeNodeRender(ref tree, ref InBoundLinkCheckerNode, EventArgs.Empty);
-            if (InBoundLinkCheckerNode != null)
-            {
-                tree.Add(InBoundLinkCheckerNode);
-                OnAfterNodeRender(ref tree, ref InBoundLinkCheckerNode, EventArgs.Empty);
-            }
-
-        
-
             var MultiMoveNode = XmlTreeNode.Create(this);
-            MultiMoveNode.NodeID = "9";
+            MultiMoveNode.NodeID = "8";
             MultiMoveNode.NodeType = "MultiMove";
             MultiMoveNode.Text = "Multi Page Mover";
             MultiMoveNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/MultiMove/Index');";
@@ -175,22 +158,6 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
                 tree.Add(MultiMoveNode);
                 OnAfterNodeRender(ref tree, ref MultiMoveNode, EventArgs.Empty);
             }
-
-            var StatsNode = XmlTreeNode.Create(this);
-            StatsNode.NodeID = "10";
-            StatsNode.NodeType = "Stats";
-            StatsNode.Text = "Statistics";
-            StatsNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/Stats/Index');";
-            StatsNode.Icon = "icon-info";
-            StatsNode.HasChildren = false;
-            StatsNode.Menu = new List<IAction>();
-            OnBeforeNodeRender(ref tree, ref StatsNode, EventArgs.Empty);
-            if (StatsNode != null)
-            {
-                tree.Add(StatsNode);
-                OnAfterNodeRender(ref tree, ref StatsNode, EventArgs.Empty);
-            }
-
         }
 
         public override void RenderJS(ref System.Text.StringBuilder Javascript)

@@ -20,7 +20,6 @@
                             <li><a href="#PageExpiry" data-toggle="tab"><b>Page Expiry</b></a></li>
                             <li><a href="#ExamineSearch" data-toggle="tab"><b>Examine Search</b></a></li>
                             <li><a href="#CSVExport" data-toggle="tab"><b>CSV Export</b></a></li>
-                            <li><a href="#InBoundLinkChecker" data-toggle="tab"><b>What Links Where?</b></a></li>
                         </ul>
                     </div>
                     <div class="panel-body">
@@ -36,9 +35,6 @@
                                             <p>
                                                 This is particuly useful if a user is struggling to log in. For example they may have forgotten their username or believes their account to be disabled for some reason (Umbraco disables a user account after several failed login attempts). When not being used to troubleshoot login problems it is also a useful audit tool to see how many users you have.
                                             </p>
-                                            If you visit the Stats tab you can see some basic statistics about your users, such as total users and a table of your user types.
-                                            </p>
-                                            <p>
                                         </div>
                                     </div>
                                 </div>
@@ -55,7 +51,7 @@
                                                 On each table for your content you are provided with the ID, Name, published url and a link to the edit page for each content node.
                                             </p>
                                             <p>
-                                                If you click on the Stats tab you can see some basic statistics about all your content pages such as your total pages and a table of your document types.
+                                                You can see some basic statistics about all your content pages such as your total pages and a table of your document types.
                                                 The process then goes a step further and generates a table for each document type to allow you to quickly view all the pages that fall under that type. On each table you can view basic information such as the pages name, id and published url. Your also provided with a link to each pages edit page.
                                             </p>
                                         </div>
@@ -74,7 +70,7 @@
                                                 You can view the name, date created, the creator and the edit link for media in this table.
                                             </p>
                                             <p>
-                                                If you goto the Stats tab you can view some basic statistics about your media files, such as the total media count and a table of your file types.
+                                                You can view some basic statistics about your media files, such as the total media count and a table of your file types.
                                             </p>
                                         </div>
                                     </div>
@@ -136,28 +132,6 @@
                                             </p>
                                             <p>
                                                 The CSV file contains the following properties for each page: Header, Template, Document Type, Expiry Date, Edit URL and Live URL.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="InBoundLinkChecker">
-                                <div class="row">
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-                                        <div class="panel-body">
-                                            <p>
-                                                The 'What Links Where?' tool crawls all of your published umbraco pages and indexes all the links found on those pages.
-                                            </p>
-                                            <p>
-                                                It will also log which pages it had trouble accessing, and log all the unique domains it finds.
-                                            </p>
-                                            <p>
-                                                Once a crawl has been done, you can then search for a link to a page, to find out which umbraco pages have that page link.
-                                            </p>
-                                            <p>
-                                                Some issues have been found with using this tool, most notably errors that occur when the umbraco cache is not up to date. If you get an error when trying to run that crawl that says collection modified or multiple errors occured, first republish the site to
-                                                refresh the umbraco cache. Then refresh the external examine index before trying again. 
                                             </p>
                                         </div>
                                     </div>

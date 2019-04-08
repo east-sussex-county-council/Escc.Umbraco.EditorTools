@@ -10,15 +10,13 @@ The 'Users' tool is designed to be a quick an easy way to view all of the active
 
 This is particularly useful if a user is struggling to log in. For example they may have forgotten their username or believes their account to be disabled for some reason (Umbraco disables a user account after several failed login attempts). When not being used to troubleshoot login problems it is also a useful audit tool to see how many users you have.
 
-If you visit the Stats tab you can see some basic statistics about your users, such as total users and a table of your user types.
-
 ### Content
 
 The 'Content' tool queries the examine indexes and the content service for your Umbraco installation and creates a table of all of your published and unpublished content. This tool is particularly handy for audit purposes. If your site is particularly large the generation of data can take at least a minute, but is then cached for future use.
 
 On each table for your content you are provided with the ID, Name, published URL and a link to the edit page for each content node.
 
-If you click on the Stats tab you can see some basic statistics about all your content pages such as your total pages and a table of your document types. 
+You can see some basic statistics about all your content pages such as your total pages and a table of your document types. 
 
 The process then goes a step further and generates a table for each document type to allow you to quickly view all the pages that fall under that type. On each table you can view basic information such as the pages name, id and published URL. Your also provided with a link to each pages edit page.
 
@@ -28,7 +26,7 @@ The 'Media' tool queries examine for all the media files it can find and returns
 
 You can view the name, date created, the creator and the edit link for media in this table.
 
-If you go to the Stats tab you can view some basic statistics about your media files, such as the total media count and a table of your file types.
+You can view some basic statistics about your media files, such as the total media count and a table of your file types.
 
 ### Page Expiry
 
