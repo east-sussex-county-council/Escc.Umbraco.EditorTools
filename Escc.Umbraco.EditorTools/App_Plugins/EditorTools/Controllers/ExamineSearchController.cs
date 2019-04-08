@@ -90,7 +90,6 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
                     // instantiate the media results datatable
                     model.MediaTable.Table = new DataTable();
-                    model.MediaTable.Table.Columns.Add("Score", typeof(string));
                     model.MediaTable.Table.Columns.Add("ID", typeof(string));
                     model.MediaTable.Table.Columns.Add("Name", typeof(string));
                     model.MediaTable.Table.Columns.Add("Type", typeof(string));
@@ -103,7 +102,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                         var id = getMediaID(result.Key);
 
                         var edit = new HtmlString(string.Format("<a target=\"_top\" href=\"/umbraco#/media/media/edit/{0}\">edit</a>", media.Fields["__NodeId"]));
-                        model.MediaTable.Table.Rows.Add(result.Value, id, media.Fields["nodeName"], media.Fields["umbracoExtension"], edit);
+                        model.MediaTable.Table.Rows.Add(id, media.Fields["nodeName"], media.Fields["umbracoExtension"], edit);
                     }
                     break;
 
@@ -174,7 +173,6 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
                     // instantiate the results datatable
                     model.ContentTable.Table = new DataTable();
-                    model.ContentTable.Table.Columns.Add("Score", typeof(int));
                     model.ContentTable.Table.Columns.Add("ID", typeof(int));
                     model.ContentTable.Table.Columns.Add("Name", typeof(string));
                     model.ContentTable.Table.Columns.Add("Published Url", typeof(string));
@@ -185,7 +183,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                     {
                         var content = result.Key;
                         var editURL = new HtmlString(string.Format("<a target=\"_top\" href=\"/umbraco#/content/content/edit/{0}\">edit</a>", content.Fields["__NodeId"]));
-                        model.ContentTable.Table.Rows.Add(result.Value, content.Fields["__NodeId"], content.Fields["nodeName"], content.Fields["urlName"], editURL);
+                        model.ContentTable.Table.Rows.Add(content.Fields["__NodeId"], content.Fields["nodeName"], content.Fields["urlName"], editURL);
                     }
                     break;
             }
