@@ -7,7 +7,7 @@ using umbraco.interfaces;
 
 namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
 {
-    [Tree("EditorTools", "EditorToolsTree", "Example")]
+    [Tree("EditorTools", "EditorToolsTree", "Editor Tools")]
     public class EditorToolsTree : BaseTree
     {
         public EditorToolsTree(string application)
@@ -24,23 +24,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
 
         public override void Render(ref XmlTree tree)
         {
-            var IndexNode = XmlTreeNode.Create(this);
-            IndexNode.NodeID = "0";
-            IndexNode.NodeType = "Home";
-            IndexNode.Text = "Home";
-            IndexNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/EditorToolsHome/Index');";
-            IndexNode.Icon = "icon-home";
-            IndexNode.HasChildren = false;
-            IndexNode.Menu = new List<IAction>();
-            OnBeforeNodeRender(ref tree, ref IndexNode, EventArgs.Empty);
-            if (IndexNode != null)
-            {
-                tree.Add(IndexNode);
-                OnAfterNodeRender(ref tree, ref IndexNode, EventArgs.Empty);
-            }
-
             var UsersNode = XmlTreeNode.Create(this);
-            UsersNode.NodeID = "1";
+            UsersNode.NodeID = "0";
             UsersNode.NodeType = "Users";
             UsersNode.Text = "Users";
             UsersNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/Users/Index');";
@@ -55,7 +40,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
             }
 
             var ContentToolsNode = XmlTreeNode.Create(this);
-            ContentToolsNode.NodeID = "2";
+            ContentToolsNode.NodeID = "1";
             ContentToolsNode.NodeType = "ContentTools";
             ContentToolsNode.Text = "Content";
             ContentToolsNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/Content/Index');";
@@ -70,7 +55,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
             }
 
             var MediaToolsNode = XmlTreeNode.Create(this);
-            MediaToolsNode.NodeID = "3";
+            MediaToolsNode.NodeID = "2";
             MediaToolsNode.NodeType = "MediaTools";
             MediaToolsNode.Text = "Media";
             MediaToolsNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/Media/Index');";
@@ -85,7 +70,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
             }
 
             var PageExpiryNode = XmlTreeNode.Create(this);
-            PageExpiryNode.NodeID = "4";
+            PageExpiryNode.NodeID = "3";
             PageExpiryNode.NodeType = "PageExpiry";
             PageExpiryNode.Text = "Page Expiry";
             PageExpiryNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/PageExpiry/Index');";
@@ -100,7 +85,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
             }
 
             var ExpiryBulkUpdateNode = XmlTreeNode.Create(this);
-            ExpiryBulkUpdateNode.NodeID = "5";
+            ExpiryBulkUpdateNode.NodeID = "4";
             ExpiryBulkUpdateNode.NodeType = "ExpiryBulkUpdate";
             ExpiryBulkUpdateNode.Text = "Bulk Update Expiry Dates";
             ExpiryBulkUpdateNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/ExpiryBulkUpdate/Index');";
@@ -115,7 +100,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
             }
 
             var CSVExportNode = XmlTreeNode.Create(this);
-            CSVExportNode.NodeID = "6";
+            CSVExportNode.NodeID = "5";
             CSVExportNode.NodeType = "CSVExport";
             CSVExportNode.Text = "CSV Export";
             CSVExportNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/CSVExport/Index');";
@@ -130,7 +115,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
             }
 
             var MultiMoveNode = XmlTreeNode.Create(this);
-            MultiMoveNode.NodeID = "7";
+            MultiMoveNode.NodeID = "6";
             MultiMoveNode.NodeType = "MultiMove";
             MultiMoveNode.Text = "Multi Page Mover";
             MultiMoveNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/MultiMove/Index');";

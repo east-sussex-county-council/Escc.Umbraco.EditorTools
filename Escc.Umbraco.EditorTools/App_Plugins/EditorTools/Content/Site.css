@@ -10,6 +10,9 @@
     padding-top: 15px;
 }
 
+/* Override h1 styles for .navbar-brand */
+.navbar-brand { margin-top: 0; margin-bottom: 0; }
+
 /* Override the default bootstrap behavior where horizontal description lists 
    will truncate terms that are too long to fit in the left column 
 */

@@ -22,7 +22,7 @@ The process then goes a step further and generates a table for each document typ
 
 ### Media
 
-The 'Media' tool queries examine for all the media files it can find and returns them to you in a table.
+The 'Media' tool queries Examine for all the media files it can find and returns them to you in a table.
 
 You can view the name, date created, the creator and the edit link for media in this table.
 
@@ -36,15 +36,7 @@ The first time the tool is opened it might take some time to load as the tool qu
 
 This tool is particularly useful for audit purposes and to quickly find out which pages are expiring and when, which pages will never expire, and which pages have recently expired.
 
-Developers: This tool also makes use of examine to speed up the generation of the report. It will add 2 fields to your InternalIndex "customIsPublished" and "customExpireDate".
-
-### Search
-
-The 'Search' tool takes your search terms and queries the Examine indexes for your Umbraco installation.
-
-Using the drop down list you can choose to either search for media files or content pages. The results are then returned to you in a table which contains the closest results that examine could find.
-
-Both queries for either media or content allow for multiple search terms and will score the results returned to you.
+Developers: This tool also makes use of Examine to speed up the generation of the report. It will add 2 fields to your InternalIndex "customIsPublished" and "customExpireDate".
 
 ### CSV Export
 

@@ -307,17 +307,12 @@
     <Content Include="App_Plugins\EditorTools\Content\DataTables\css\mixins.scss" />
     <Content Include="App_Plugins\EditorTools\Content\DataTables\css\common.scss" />
     <Content Include="App_Plugins\EditorTools\Views\Shared\_Layout.cshtml" />
-    <Content Include="App_Plugins\EditorTools\Views\EditorToolsHome\Index.cshtml" />
     <Content Include="App_Plugins\EditorTools\Views\Web.config" />
     <Content Include="App_Plugins\EditorTools\Views\CSVExport\Index.cshtml" />
     <Content Include="App_Plugins\EditorTools\Views\PageExpiry\Index.cshtml" />
     <Content Include="App_Plugins\EditorTools\Views\Users\Index.cshtml" />
     <Content Include="App_Plugins\EditorTools\Views\Partials\_DataTable.cshtml" />
     <Content Include="App_Plugins\EditorTools\fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="App_Plugins\EditorTools\Views\EditorToolsHome\About.cshtml" />
-    <Content Include="App_Plugins\EditorTools\Views\EditorToolsHome\Help.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Plugins\EditorTools\App_Start\WebApiConfig.cs" />
@@ -330,7 +325,6 @@
     <Compile Include="App_Plugins\EditorTools\Controllers\PageExpiryController.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\UsersController.cs" />
     <Compile Include="App_Plugins\EditorTools\EditorToolsSection.cs" />
-    <Compile Include="App_Plugins\EditorTools\Controllers\EditorToolsHomeController.cs" />
     <Compile Include="App_Plugins\EditorTools\EditorToolsTree.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\DataModels\MultiMoveContentModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\DataModels\TableModel.cs" />
