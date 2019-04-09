@@ -39,14 +39,14 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             model.ActiveUsers.Table.Columns.Add("ID", typeof(int));
             model.ActiveUsers.Table.Columns.Add("Name", typeof(string));
             model.ActiveUsers.Table.Columns.Add("Username", typeof(string));
-            model.ActiveUsers.Table.Columns.Add("User Type", typeof(string));
+            model.ActiveUsers.Table.Columns.Add("Sections", typeof(string));
             model.ActiveUsers.Table.Columns.Add("Email", typeof(string));
 
             model.DisabledUsers.Table = new DataTable();
             model.DisabledUsers.Table.Columns.Add("ID", typeof(int));
             model.DisabledUsers.Table.Columns.Add("Name", typeof(string));
             model.DisabledUsers.Table.Columns.Add("Username", typeof(string));
-            model.DisabledUsers.Table.Columns.Add("User Type", typeof(string));
+            model.DisabledUsers.Table.Columns.Add("Sections", typeof(string));
             model.DisabledUsers.Table.Columns.Add("Email", typeof(string));
 
             var umbracoVersionSupportsGroups = double.Parse(ConfigurationManager.AppSettings["UmbracoConfigurationStatus"].Substring(0, ConfigurationManager.AppSettings["UmbracoConfigurationStatus"].LastIndexOf("."))) >= 7.7;
@@ -60,11 +60,11 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                     $"<a target=\"_top\" href=\"/umbraco#/users/framed/%252Fumbraco%252Fusers%252FeditUser.aspx%253Fid%253D{user.Id}\">{user.Name}</a>");
                 if (user.IsApproved)
                 {
-                    model.ActiveUsers.Table.Rows.Add(user.Id, editURL, user.Username, user.UserType.Alias, user.Email);
+                    model.ActiveUsers.Table.Rows.Add(user.Id, editURL, user.Username, string.Join(", ", user.AllowedSections.ToArray()), user.Email);
                 }
                 else
                 {
-                    model.DisabledUsers.Table.Rows.Add(user.Id, editURL, user.Username, user.UserType.Alias, user.Email);
+                    model.DisabledUsers.Table.Rows.Add(user.Id, editURL, user.Username, string.Join(", ", user.AllowedSections.ToArray()), user.Email);
                 }
             }
 
