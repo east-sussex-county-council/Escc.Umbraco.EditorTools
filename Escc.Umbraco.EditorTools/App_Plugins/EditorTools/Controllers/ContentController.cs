@@ -10,34 +10,60 @@ using Examine;
 using System;
 using System.Runtime.Caching;
 using System.Globalization;
+using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
     public class ContentController : UmbracoAuthorizedController
     {
-        private MemoryCache cache = MemoryCache.Default;
+        private MemoryCache _cache = MemoryCache.Default;
 
         public ActionResult Index()
         {
-            var model = cache["ContentViewModel"] as ContentViewModel;
-
-            if (model == null)
-            {
-                model = new ContentViewModel();
-                model.CachedDataAvailable = false;
-            }
+            var model = AddCachedDataToModel(new ContentViewModel());
             return View("~/App_Plugins/EditorTools/Views/Content/Index.cshtml", model);
         }
 
-        #region Helpers
-        private ContentViewModel CreateModel()
+        private ContentViewModel AddCachedDataToModel(ContentViewModel model)
         {
-            var model = new ContentViewModel();
+            var cachedModel = _cache["ContentViewModel"] as ContentViewModel;
+
+            if (cachedModel == null)
+            {
+                model.CachedDataAvailable = false;
+            }
+            else
+            {
+                model.PublishedContent = cachedModel.PublishedContent;
+                model.PublishedPages = cachedModel.PublishedPages;
+                model.UnpublishedContent = cachedModel.UnpublishedContent;
+                model.UnpublishedPages = cachedModel.UnpublishedPages;
+                model.DocumentTypes = cachedModel.DocumentTypes;
+                model.TotalPages = cachedModel.TotalPages;
+                model.ModalTables = cachedModel.ModalTables;
+                model.CachedDataAvailable = true;
+            }
+
+            return model;
+        }
+
+        [HttpGet]
+        public ActionResult RefreshCache(string tab)
+        {
+            var model = AddContentDataToModel(new ContentViewModel());
+            StoreInCache(model);
+            model.Tab = tab;
+            return View("~/App_Plugins/EditorTools/Views/Content/Index.cshtml", model);
+        }
+
+        private ContentViewModel AddContentDataToModel(ContentViewModel model)
+        {
             // instantiate the Examine searcher and give it a query
-            var Searcher = Examine.ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
-            var criteria = Searcher.CreateSearchCriteria(IndexTypes.Content);
-            var examineQuery = criteria.RawQuery("__NodeId:[0 TO 999999]");
-            var searchResults = Searcher.Search(examineQuery);
+            var searcher = ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
+            var criteria = searcher.CreateSearchCriteria(IndexTypes.Content);
+            var examineQuery = criteria.RawQuery("+(__IndexType:content) +__NodeId:[0 TO 999999]");
+            var searchResults = searcher.Search(examineQuery);
 
             model.PublishedContent.Table = new DataTable();
             model.PublishedContent.Table.Columns.Add("ID", typeof(int));
@@ -60,31 +86,28 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             foreach (var node in searchResults)
             {
                 var key = node.Fields["__NodeTypeAlias"];
-                if (node.Fields["__IndexType"] == "content")
+                var editURL = new HtmlString(string.Format("<a target=\"_top\" href=\"/umbraco#/content/content/edit/{0}\">edit</a>", node.Fields["__NodeId"]));
+                model.TotalPages++;
+                if (DocumentTypesDictionary.ContainsKey(key))
                 {
-                    var editURL = new HtmlString(string.Format("<a target=\"_top\" href=\"/umbraco#/content/content/edit/{0}\">edit</a>", node.Fields["__NodeId"]));
-                    model.TotalPages++;
-                    if (DocumentTypesDictionary.ContainsKey(key))
-                    {
-                        DocumentTypesDictionary[key] = DocumentTypesDictionary[key] + 1;
-                    }
-                    else
-                    {
-                        DocumentTypesDictionary.Add(key, 1);
-                    }
-                    if (UmbracoContext.Application.Services.ContentService.HasPublishedVersion(int.Parse(node.Fields["__NodeId"])))
-                    {
-                        model.PublishedPages++;
+                    DocumentTypesDictionary[key] = DocumentTypesDictionary[key] + 1;
+                }
+                else
+                {
+                    DocumentTypesDictionary.Add(key, 1);
+                }
+                if (UmbracoContext.Application.Services.ContentService.HasPublishedVersion(int.Parse(node.Fields["__NodeId"])))
+                {
+                    model.PublishedPages++;
 
-                        // Adding <span style=\"font-size:1px\"> into URLs allows them to wrap
-                        var contentCacheNode = UmbracoContext.ContentCache.GetById(Int32.Parse(node.Fields["__NodeId"],CultureInfo.InvariantCulture));
-                        model.PublishedContent.Table.Rows.Add(node.Fields["__NodeId"], node.Fields["nodeName"], contentCacheNode != null ? contentCacheNode.Url.Replace("/", "/<span style=\"font-size:1px\"> </span>") : node.Fields["urlName"], editURL);
-                    }
-                    else
-                    {
-                        model.UnpublishedPages++;
-                        model.UnpublishedContent.Table.Rows.Add(node.Fields["__NodeId"], node.Fields["nodeName"], node.Fields["urlName"], editURL);
-                    }
+                    // Adding <span style=\"font-size:1px\"> into URLs allows them to wrap
+                    var contentCacheNode = UmbracoContext.ContentCache.GetById(Int32.Parse(node.Fields["__NodeId"],CultureInfo.InvariantCulture));
+                    model.PublishedContent.Table.Rows.Add(node.Fields["__NodeId"], node.Fields["nodeName"], contentCacheNode != null ? contentCacheNode.Url.Replace("/", "/<span style=\"font-size:1px\"> </span>") : node.Fields["urlName"], editURL);
+                }
+                else
+                {
+                    model.UnpublishedPages++;
+                    model.UnpublishedContent.Table.Rows.Add(node.Fields["__NodeId"], node.Fields["nodeName"], node.Fields["urlName"], editURL);
                 }
             }
 
@@ -98,6 +121,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 tableModel.Table = CreateModalTable(searchResults, document.Key);
                 model.ModalTables.Add(document.Key, tableModel);
             }
+
+            model.CachedDataAvailable = true;
 
             return model;
         }
@@ -123,24 +148,112 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             return table;
         }
 
-        #endregion
-
-        #region Cache Methods
-        private void StoreInCache(ContentViewModel model)
+        [HttpPost]
+        public ActionResult GetResults(ContentViewModel model)
         {
-            if (cache.Contains("ContentViewModel"))
+            model = AddCachedDataToModel(model);
+            // Clean out any reserved characters from the query
+            model.Query = CleanString(model.Query);
+            // Create a dictionary to store the results and their value
+            var ContentResultsDictionary = new Dictionary<SearchResult, int>();
+
+            // instantiate the examine searcher and its criteria type.
+            var ContentSearcher = ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
+            var ContentCriteria = ContentSearcher.CreateSearchCriteria(IndexTypes.Content);
+            ISearchResults ContentResults;
+            if (!string.IsNullOrEmpty(model.Query))
             {
-                cache.Remove("ContentViewModel");
+                // Start with a query for the whole phrase
+                var ContentPhraseExamineQuery = ContentCriteria.RawQuery(string.Format("+__IndexType:content +urlName:\"{0}\"", model.Query));
+                ContentResults = ContentSearcher.Search(ContentPhraseExamineQuery);
             }
-            cache.Add("ContentViewModel", model, DateTime.Now.AddHours(1));
-        }
+            else
+            {
+                ContentResults = ContentSearcher.Search(ContentCriteria.RawQuery("+(__IndexType:content)"));
+            }
 
-        public ActionResult RefreshCache()
-        {
-            var model = CreateModel();
-            StoreInCache(model);
+            foreach (var result in ContentResults)
+            {
+                // Add each result to the dictionary and give it an initial value of 1.
+                ContentResultsDictionary.Add(result, 1);
+                // if our query exactly matched the urlName or the nodeName, Increase the results value to push the result to the top of the list
+                if (CleanString(result.Fields["urlName"].ToLower()) == model.Query.ToLower()) ContentResultsDictionary[result] += 5;
+                if (CleanString(result.Fields["nodeName"].ToLower()) == model.Query.ToLower()) ContentResultsDictionary[result] += 5;
+            }
+
+            // Split the query by its white space
+            if (!string.IsNullOrEmpty(model.Query))
+            {
+                var splitTerm = model.Query.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                var exampleNotFoundResult = default(KeyValuePair<SearchResult, int>);
+                // for each word in the query
+                foreach (var term in splitTerm)
+                {
+                    // do another search for the word
+                    ContentCriteria = ContentSearcher.CreateSearchCriteria(IndexTypes.Content);
+                    var ContentSplitExamineQuery = ContentCriteria.RawQuery(string.Format("+__IndexType:content +urlName:{0}*", term));
+                    var TermContentResults = ContentSearcher.Search(ContentSplitExamineQuery);
+                    foreach (var result in TermContentResults)
+                    {
+                        // if the dictionary doesn't already contain the result, add it and give it an initial value of 1.
+                        var existingResult = ContentResultsDictionary.FirstOrDefault(x => x.Key.DocId == result.DocId);
+                        if (existingResult.Key == exampleNotFoundResult.Key)
+                        {
+                            ContentResultsDictionary.Add(result, 1);
+                        }
+                        else
+                        {
+                            // if the dicionary did already contain the result, increase its value by 1.
+                            ContentResultsDictionary[existingResult.Key] += 1;
+                        }
+                    }
+                }
+            }
+
+            // create a new dictionary ordered by the results value
+            var OrderedContentResultsDictionary = ContentResultsDictionary.OrderByDescending(x => x.Value);
+
+            // if we have some results, set HasContentResults to true
+            if (OrderedContentResultsDictionary.Count() > 0)
+            {
+                model.HasContentResults = true;
+            }
+
+            // instantiate the results datatable
+            model.Content.Table = new DataTable();
+            model.Content.Table.Columns.Add("ID", typeof(int));
+            model.Content.Table.Columns.Add("Name", typeof(string));
+            model.Content.Table.Columns.Add("Published Url", typeof(string));
+            model.Content.Table.Columns.Add("Edit", typeof(HtmlString));
+
+            // for each results, add a new row for the result to the table.
+            foreach (var result in OrderedContentResultsDictionary)
+            {
+                var content = result.Key;
+                var editURL = new HtmlString(string.Format("<a target=\"_top\" href=\"/umbraco#/content/content/edit/{0}\">edit</a>", content.Fields["__NodeId"]));
+                model.Content.Table.Rows.Add(content.Fields["__NodeId"], content.Fields["nodeName"], content.Fields["urlName"], editURL);
+            }
+
             return View("~/App_Plugins/EditorTools/Views/Content/Index.cshtml", model);
         }
-        #endregion
+
+        private static string CleanString(string text)
+        {
+            if (!string.IsNullOrEmpty(text))
+            {
+                var regex = new Regex(@"[^\w\s-]");
+                return regex.Replace(text, string.Empty);
+            }
+            else return string.Empty;
+        }
+
+        private void StoreInCache(ContentViewModel model)
+        {
+            if (_cache.Contains("ContentViewModel"))
+            {
+                _cache.Remove("ContentViewModel");
+            }
+            _cache.Add("ContentViewModel", model, DateTime.Now.AddHours(1));
+        }
     }
 }

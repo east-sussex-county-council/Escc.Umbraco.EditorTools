@@ -310,7 +310,6 @@
     <Content Include="App_Plugins\EditorTools\Views\EditorToolsHome\Index.cshtml" />
     <Content Include="App_Plugins\EditorTools\Views\Web.config" />
     <Content Include="App_Plugins\EditorTools\Views\CSVExport\Index.cshtml" />
-    <Content Include="App_Plugins\EditorTools\Views\ExamineSearch\Index.cshtml" />
     <Content Include="App_Plugins\EditorTools\Views\PageExpiry\Index.cshtml" />
     <Content Include="App_Plugins\EditorTools\Views\Users\Index.cshtml" />
     <Content Include="App_Plugins\EditorTools\Views\Partials\_DataTable.cshtml" />
@@ -325,7 +324,6 @@
     <Compile Include="App_Plugins\EditorTools\App_Start\RouteConfig.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\ContentController.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\CSVExportController.cs" />
-    <Compile Include="App_Plugins\EditorTools\Controllers\ExamineSearchController.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\ExpiryBulkUpdateController.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\MediaController.cs" />
     <Compile Include="App_Plugins\EditorTools\Controllers\MultiMoveController.cs" />
@@ -338,7 +336,6 @@
     <Compile Include="App_Plugins\EditorTools\Models\DataModels\TableModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\CSVExportViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\ContentViewModel.cs" />
-    <Compile Include="App_Plugins\EditorTools\Models\ViewModels\ExamineSearchViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\ExpiryBulkUpdateViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\MultiMoveConfirmSelectedViewModel.cs" />
     <Compile Include="App_Plugins\EditorTools\Models\ViewModels\MultiMoveViewModel.cs" />

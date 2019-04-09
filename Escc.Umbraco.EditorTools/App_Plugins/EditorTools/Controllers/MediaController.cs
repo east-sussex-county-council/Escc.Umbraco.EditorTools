@@ -1,10 +1,12 @@
 ﻿using Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels;
+using Examine;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.Caching;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using Umbraco.Web.Mvc;
@@ -14,67 +16,74 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
     public class MediaController : UmbracoAuthorizedController
     {
-        private MemoryCache cache = MemoryCache.Default;
+        private MemoryCache _cache = MemoryCache.Default;
 
         public ActionResult Index()
         {
-            var model = cache["MediaViewModel"] as MediaViewModel;
-            if (model == null)
-            {
-                model = new MediaViewModel();
-                model.CachedDataAvailable = false;
-            }
+            var model = AddMediaStatisticsToModelFromCache(new MediaViewModel());
             return View("~/App_Plugins/EditorTools/Views/Media/Index.cshtml", model);
         }
-        #region Helpers
 
-        public MediaViewModel CreateModel()
+        private MediaViewModel AddMediaStatisticsToModelFromCache(MediaViewModel model)
         {
-            var model = new MediaViewModel();
+            var cachedModel = _cache["MediaViewModel"] as MediaViewModel;
+            if (cachedModel == null)
+            {
+                model.StatisticsDataAvailable = false;
+            }
+            else
+            {
+                model.StatisticsDataAvailable = true;
+                model.TotalMediaFiles = cachedModel.TotalMediaFiles;
+                model.TotalFiles = cachedModel.TotalFiles;
+                model.TotalFolders = cachedModel.TotalFolders;
+                model.TotalImages = cachedModel.TotalImages;
+                model.MediaFileTypes = cachedModel.MediaFileTypes;
+            }
 
-            var Searcher = Examine.ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
-            var criteria = Searcher.CreateSearchCriteria(IndexTypes.Content);
-            var examineQuery = criteria.RawQuery("__NodeId:[0 TO 999999]");
-            var searchResults = Searcher.Search(examineQuery);
+            return model;
+        }
+
+        [HttpGet]
+        public ActionResult RefreshCache()
+        {
+            var model = AddMediaStatisticsToModel(new MediaViewModel());
+            StoreInCache(model);
+            model.ShowStatistics = true;
+            return View("~/App_Plugins/EditorTools/Views/Media/Index.cshtml", model);
+        }
+
+        private MediaViewModel AddMediaStatisticsToModel(MediaViewModel model)
+        {
+            var searcher = ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
+            var criteria = searcher.CreateSearchCriteria(IndexTypes.Media);
+            var examineQuery = criteria.RawQuery("+(__IndexType:media) +__NodeId:[0 TO 999999]");
+            var searchResults = searcher.Search(examineQuery);
 
             var mediaFileTypeCount = new Dictionary<string, int>();
 
-            model.Media.Table = new DataTable();
-            model.Media.Table.Columns.Add("Name", typeof(string));
-            model.Media.Table.Columns.Add("Date Created", typeof(string));
-            model.Media.Table.Columns.Add("Created By", typeof(string));
-            model.Media.Table.Columns.Add("Edit Url", typeof(HtmlString));
-
             foreach (var item in searchResults)
             {
-                switch (item.Fields["__IndexType"])
+                if (mediaFileTypeCount.Keys.Contains(item.Fields["nodeTypeAlias"]))
                 {
-                    case "media":
-                        if (mediaFileTypeCount.Keys.Contains(item.Fields["nodeTypeAlias"]))
-                        {
-                            mediaFileTypeCount[item.Fields["nodeTypeAlias"]] += 1;
-                        }
-                        else
-                        {
-                            mediaFileTypeCount.Add(item.Fields["nodeTypeAlias"], 1);
-                        }
+                    mediaFileTypeCount[item.Fields["nodeTypeAlias"]] += 1;
+                }
+                else
+                {
+                    mediaFileTypeCount.Add(item.Fields["nodeTypeAlias"], 1);
+                }
 
-                        if (item.Fields.Keys.Contains("umbracoExtension"))
-                        {
-                            model.TotalMediaFiles++;
-                            if (mediaFileTypeCount.Keys.Contains(item.Fields["umbracoExtension"]))
-                            {
-                                mediaFileTypeCount[item.Fields["umbracoExtension"]] += 1;
-                            }
-                            else
-                            {
-                                mediaFileTypeCount.Add(item.Fields["umbracoExtension"], 1);
-                            }
-                            var editURL = new HtmlString(string.Format("<a target=\"_top\" href=\"/umbraco#/media/media/edit/{0}\">edit</a>", item.Fields["__NodeId"]));
-                            model.Media.Table.Rows.Add(item.Fields["__nodeName"], ParseLuceneDate(item.Fields["createDate"]).ToString(), item.Fields["writerName"], editURL);
-                        }
-                        break;
-                        
+                if (item.Fields.Keys.Contains("umbracoExtension"))
+                {
+                    model.TotalMediaFiles++;
+                    if (mediaFileTypeCount.Keys.Contains(item.Fields["umbracoExtension"]))
+                    {
+                        mediaFileTypeCount[item.Fields["umbracoExtension"]] += 1;
+                    }
+                    else
+                    {
+                        mediaFileTypeCount.Add(item.Fields["umbracoExtension"], 1);
+                    }
                 }
             }
 
@@ -95,10 +104,136 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 model.MediaFileTypes.Table.Rows.Add(item.Key, item.Value);
             }
 
+            model.StatisticsDataAvailable = true;
+
             return model;
         }
 
-        public DateTime? ParseLuceneDate(string luceneDateTime)
+        [HttpPost]
+        public ActionResult GetResults(MediaViewModel model)
+        {
+            model = AddMediaStatisticsToModelFromCache(model);
+            var cleanQuery = CleanString(model.Query);
+             
+            // Create a dictionary to store the results and their value
+            var MediaResultsDictionary = new Dictionary<SearchResult, int>();
+            // instantiate the examine search and its criteria type
+            var MediaSearcher = ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
+            var MediaCriteria = MediaSearcher.CreateSearchCriteria(IndexTypes.Media);
+
+            // Create a query to get all media nodes and then filter by results that contain the umbracoFile property
+            var MediaExamineQuery = MediaCriteria.RawQuery("+(__IndexType:media) -(__NodeTypeAlias:folder)");
+            var MediaResults = MediaSearcher.Search(MediaExamineQuery);
+
+            // Check each result for the search terms and assign a value rating that result
+            foreach (var result in MediaResults)
+            {
+                // if the umbracoFile property contains the search  term
+                if (CleanString(result.Fields["umbracoFile"]).Contains(cleanQuery.ToLower()))
+                {
+                    CheckMediaDictionary(MediaResultsDictionary, result);
+                }
+                // if the nodeName contains the seach term
+                if (CleanString(result.Fields["nodeName"]).ToLower().Contains(cleanQuery.ToLower()))
+                {
+                    CheckMediaDictionary(MediaResultsDictionary, result);
+                }
+                // if the nodeName exactly equals the seach term
+                if (CleanString(result.Fields["nodeName"]).ToLower() == cleanQuery.ToLower())
+                {
+                    CheckMediaDictionary(MediaResultsDictionary, result);
+                }
+                // if the search term matches the media id in the umbracoFile property
+                if (getMediaID(result) == model.Query)
+                {
+                    CheckMediaDictionary(MediaResultsDictionary, result);
+                }
+                var splitMediaQuery = cleanQuery.Split(' ');
+                // for each word in the query
+                foreach (var term in splitMediaQuery)
+                {
+                    // if the term is found in the the umbracoFile property
+                    if (CleanString(result.Fields["umbracoFile"].ToLower()).Contains(term.ToLower()))
+                    {
+                        CheckMediaDictionary(MediaResultsDictionary, result);
+                    }
+                    // if the term is found in the nodeName property
+                    if (CleanString(result.Fields["nodeName"].ToLower()).Contains(term.ToLower()))
+                    {
+                        CheckMediaDictionary(MediaResultsDictionary, result);
+                    }
+                }
+            }
+
+            // create a new dictionary ordered by the results value
+            var OrderedMediaResultsDictionary = MediaResultsDictionary.OrderByDescending(x => x.Value);
+
+            // if the search returned any results, set HasMediaResults to true
+            if (OrderedMediaResultsDictionary.Count() > 0)
+            {
+                model.HasMediaResults = true;
+            }
+
+            // instantiate the media results datatable
+            model.Media.Table = new DataTable();
+            model.Media.Table.Columns.Add("ID", typeof(string));
+            model.Media.Table.Columns.Add("Name", typeof(string));
+            model.Media.Table.Columns.Add("Type", typeof(string));
+            model.Media.Table.Columns.Add("Date Created", typeof(string));
+            model.Media.Table.Columns.Add("Created By", typeof(string));
+            model.Media.Table.Columns.Add("Edit", typeof(HtmlString));
+
+            // for each result, add a new row to the table
+            foreach (var result in OrderedMediaResultsDictionary)
+            {
+                var media = result.Key;
+                var id = getMediaID(result.Key);
+
+                var edit = new HtmlString(string.Format("<a target=\"_top\" href=\"/umbraco#/media/media/edit/{0}\">edit</a>", media.Fields["__NodeId"]));
+                model.Media.Table.Rows.Add(id, 
+                    media.Fields["nodeName"], 
+                    media.Fields["umbracoExtension"], 
+                    ParseLuceneDate(media.Fields["createDate"]).ToString(), 
+                    media.Fields["writerName"], 
+                    edit);
+            }
+
+            return View("~/App_Plugins/EditorTools/Views/Media/Index.cshtml", model);
+        }
+
+        private static string CleanString(string text)
+        {
+            if (!string.IsNullOrEmpty(text))
+            {
+                var regex = new Regex(@"[^\w\s-]");
+                return regex.Replace(text, string.Empty);
+            }
+            else return string.Empty;
+        }
+
+        private static void CheckMediaDictionary(Dictionary<SearchResult, int> MediaResultsDictionary, SearchResult result)
+        {
+            // Check the media results dictionary and either add a new entry or add to the results value
+            if (!MediaResultsDictionary.Keys.Contains(result))
+            {
+                MediaResultsDictionary.Add(result, 1);
+            }
+            else
+            {
+                MediaResultsDictionary[result] += 1;
+            }
+        }
+
+        private static string getMediaID(SearchResult result)
+        {
+            //Split the UmbracoFile property to get the media ID 
+            var umbracoFileName = result.Fields["umbracoFile"];
+            var splitFileName = umbracoFileName.Split('/');
+            var id = splitFileName[2];
+            return id;
+        }
+
+        private static DateTime? ParseLuceneDate(string luceneDateTime)
         {
             if (String.IsNullOrEmpty(luceneDateTime) || luceneDateTime.Length < 14) return null;
 
@@ -112,32 +247,21 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                                     Int32.Parse(luceneDateTime.Substring(12, 2), CultureInfo.InvariantCulture));
 
             }
-            catch (FormatException ex)
+            catch (FormatException)
             {
                 return null;
             }
         }
-        #endregion
 
-        #region Cache Methods
         private void StoreInCache(MediaViewModel model)
         {
-            if (cache.Contains("MediaViewModel"))
+            if (_cache.Contains("MediaViewModel"))
             {
-                cache.Remove("MediaViewModel");
+                _cache.Remove("MediaViewModel");
             }
 
-            cache.Add("MediaViewModel", model, DateTime.Now.AddHours(1));
+            _cache.Add("MediaViewModel", model, DateTime.Now.AddHours(1));
         }
 
-        public ActionResult RefreshCache()
-        {
-            // instantiate the view model
-            var model = CreateModel();
-            // populate the view models variables
-            StoreInCache(model);
-            return View("~/App_Plugins/EditorTools/Views/Media/Index.cshtml", model);
-        }
-        #endregion
     }
 }

@@ -4,109 +4,173 @@
 
 @model Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels.ContentViewModel
 @{
-    if (Model.CachedDataAvailable)
-    {
-        <p></p>
         <div id="Content">
             <div class="list-group panel panel-info">
                 <a href="#ContentPanel" class="list-group-item" data-toggle="active" data-parent="#Content"><span class="glyphicon glyphicon-file"></span> <b>Content</b></a>
                 <div class="active" id="ContentPanel">
                     <div class="thumbnail">
-                        <p>  </p>
-                        <div class="panel with-nav-tabs panel-czone">
+                        <div class="panel with-nav-tabs">
                             <div class="panel-heading">
                                 <ul class="nav nav-tabs">
-                                    <li class="active"><a href="#Published" data-toggle="tab"><b>Published</b></a></li>
-                                    <li><a href="#Unpublished" data-toggle="tab"><b>Unpublished</b></a></li>
-                                    <li><a href="#ContentStats" data-toggle="tab"><b>Statistics</b></a></li>
+                                    <li class="@(string.IsNullOrEmpty(Model.Tab) ? "active" : string.Empty)"><a href="#Search" data-toggle="tab"><b>Search</b></a></li>
+                                    <li class="@(Model.Tab == "published" ? "active" : string.Empty)"><a href="#Published" data-toggle="tab"><b>Published</b></a></li>
+                                    <li class="@(Model.Tab == "unpublished" ? "active" : string.Empty)"><a href="#Unpublished" data-toggle="tab"><b>Unpublished</b></a></li>
+                                    <li class="@(Model.Tab == "statistics" ? "active" : string.Empty)"><a href="#ContentStats" data-toggle="tab"><b>Statistics</b></a></li>
                                 </ul>
                             </div>
                             <div class="panel-body">
                                 <div class="tab-content">
-                                    <div class="tab-pane fade in active" id="Published">
+                                    <div class="tab-pane fade@(string.IsNullOrEmpty(Model.Tab) ? " in active" : string.Empty)" id="Search">
                                         <div class="row">
-                                            <div class="panel panel-info">
-                                                <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search content</div>
                                                 <div class="panel-body">
-                                                    <div class="col-md-6">
-                                                        This tab displays all of Umbraco's published content.
+
+                                                    <div class="row">
+                                                        @using (Html.BeginForm("GetResults", "Content", FormMethod.Post))
+                                                        {
+                                                            <div class="form-group">
+                                                                <div class="col-md-4">
+                                                                    @Html.TextBoxFor(m => m.Query, new { @placeholder = "Search", @class = "form-control" })
+                                                                </div>
+
+                                                                <div class="col-md-2">
+                                                                    <input type="submit" class="btn btn-primary" value="Search" />
+                                                                </div>
+                                                            </div>
+                                                        }
                                                     </div>
-                                                    <div class="col-md-4">
-                                                        Data Cached on: @Model.CacheDate
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <p><a href="/umbraco/backoffice/Plugins/Content/RefreshCache" class="btn btn-primary" type="button" id="RefreshButton">Refresh <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a></p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="panel panel-success">
-                                                <div class="panel-heading">
-                                                    <h3 class="panel-title">Published</h3>
-                                                </div>
-                                                <div class="panel-body">
-                                                    @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.PublishedContent);}
                                                 </div>
                                             </div>
                                         </div>
+                                        @if (Model.HasContentResults)
+                                        {
+                                            <div class="row">
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading">Content</div>
+                                                    <div class="panel-body">
+                                                        @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.Content);}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
                                     </div>
-                                    <div class="tab-pane fade" id="Unpublished">
-                                        <div class="row">
-                                            <div class="panel panel-info">
-                                                <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-                                                <div class="panel-body">
-                                                    <div class="col-md-6">
-                                                        This tab displays all of Umbraco's unpublished content.
+                                    <div class="tab-pane fade@(Model.Tab == "published" ? " in active" : string.Empty)" id="Published">
+                                        @if (Model.CachedDataAvailable)
+                                        {
+
+                                            <div class="row">
+                                                <div class="panel panel-info">
+                                                    <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
+                                                    <div class="panel-body">
+                                                        <div class="col-md-6">
+                                                            This tab displays all of Umbraco's published content.
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            Data Cached on: @Model.CacheDate
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <p><a href="/umbraco/backoffice/Plugins/Content/RefreshCache?tab=published" class="btn btn-primary" type="button" id="RefreshButton">Refresh <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a></p>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-md-4">
-                                                        Data Cached on: @Model.CacheDate
+                                                </div>
+                                                <div class="panel panel-success">
+                                                    <div class="panel-heading">
+                                                        <h3 class="panel-title">Published</h3>
                                                     </div>
-                                                    <div class="col-md-2">
-                                                        <p><a href="/umbraco/backoffice/Plugins/Content/RefreshCache" class="btn btn-primary" type="button" id="RefreshButton">Refresh <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a></p>
+                                                    <div class="panel-body">
+                                                        @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.PublishedContent);}
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="panel panel-danger">
-                                                <div class="panel-heading">
-                                                    <h3 class="panel-title">Unpublished</h3>
-                                                </div>
-                                                <div class="panel-body">
-                                                    @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.UnpublishedContent);}
-                                                </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="row">
+                                                @{ Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_NoCachedData.cshtml", "/umbraco/backoffice/Plugins/Content/RefreshCache?tab=published"); }
                                             </div>
-                                        </div>
+                                        }
                                     </div>
-                                    <div class="tab-pane fade" id="ContentStats">
-                                        <div class="row">
-                                            <div class="panel panel-info">
-                                                <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-                                                <div class="panel-body">
-                                                    <div class="col-md-6">
-                                                        This tab displays statistics about your content.
+                                    <div class="tab-pane fade@(Model.Tab == "unpublished" ? " in active" : string.Empty)" id="Unpublished">
+                                        @if (Model.CachedDataAvailable)
+                                        {
+                                            <div class="row">
+                                                <div class="panel panel-info">
+                                                    <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
+                                                    <div class="panel-body">
+                                                        <div class="col-md-6">
+                                                            This tab displays all of Umbraco's unpublished content.
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            Data Cached on: @Model.CacheDate
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <p><a href="/umbraco/backoffice/Plugins/Content/RefreshCache?tab=unpublished" class="btn btn-primary" type="button" id="RefreshButton">Refresh <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a></p>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-md-4">
-                                                        Data Cached on: @Model.CacheDate
+                                                </div>
+                                                <div class="panel panel-danger">
+                                                    <div class="panel-heading">
+                                                        <h3 class="panel-title">Unpublished</h3>
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.UnpublishedContent);}
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="panel panel-primary">
-                                                <div class="panel-heading">
-                                                    <h3 class="panel-title">Statistics</h3>
+                                        }
+                                        else
+                                        {
+                                            <div class="row">
+                                                @{ Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_NoCachedData.cshtml", "/umbraco/backoffice/Plugins/Content/RefreshCache?tab=unpublished"); }
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="tab-pane fade@(Model.Tab == "statistics" ? " in active" : string.Empty)" id="ContentStats">
+                                        @if (Model.CachedDataAvailable)
+                                        {
+
+                                            <div class="row">
+                                                <div class="panel panel-info">
+                                                    <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
+                                                    <div class="panel-body">
+                                                        <div class="col-md-6">
+                                                            This tab displays statistics about your content.
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            Data Cached on: @Model.CacheDate
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <p><a href="/umbraco/backoffice/Plugins/Content/RefreshCache?tab=statistics" class="btn btn-primary" type="button" id="RefreshButton">Refresh <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a></p>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="panel-body">
-                                                    <h3>Total Pages: <span class="label label-primary">@Model.TotalPages</span></h3>
-                                                    <h3>Published Pages: <span class="label label-success">@Model.PublishedPages</span></h3>
-                                                    <h3>Unpublished Pages: <span class="label label-danger">@Model.UnpublishedPages</span></h3>
+                                                <div class="panel panel-primary">
+                                                    <div class="panel-heading">
+                                                        <h3 class="panel-title">Statistics</h3>
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        <h3>Total Pages: <span class="label label-primary">@Model.TotalPages</span></h3>
+                                                        <h3>Published Pages: <span class="label label-success">@Model.PublishedPages</span></h3>
+                                                        <h3>Unpublished Pages: <span class="label label-danger">@Model.UnpublishedPages</span></h3>
+                                                    </div>
+                                                </div>
+                                                <div class="panel panel-success">
+                                                    <div class="panel-heading">
+                                                        <h3 class="panel-title">Document Types</h3>
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.DocumentTypes);}
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="panel panel-success">
-                                                <div class="panel-heading">
-                                                    <h3 class="panel-title">Document Types</h3>
-                                                </div>
-                                                <div class="panel-body">
-                                                    @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.DocumentTypes);}
-                                                </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="row">
+                                                @{ Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_NoCachedData.cshtml", "/umbraco/backoffice/Plugins/Content/RefreshCache?tab=statistics"); }
                                             </div>
-                                        </div>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -134,12 +198,6 @@
                 </div>
             </div>
         }
-    }
-    else
-    {
-        Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_NoCachedData.cshtml", "/umbraco/backoffice/Plugins/Content/RefreshCache");
-    }
-
 }
 <div id="Regenerate">
     @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_RegeneratingCache.cshtml");}

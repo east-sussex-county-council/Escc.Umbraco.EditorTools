@@ -114,23 +114,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
                 OnAfterNodeRender(ref tree, ref ExpiryBulkUpdateNode, EventArgs.Empty);
             }
 
-            var ExamineSearchNode = XmlTreeNode.Create(this);
-            ExamineSearchNode.NodeID = "6";
-            ExamineSearchNode.NodeType = "ExamineSearch";
-            ExamineSearchNode.Text = "Search";
-            ExamineSearchNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/ExamineSearch/Index');";
-            ExamineSearchNode.Icon = "icon-search";
-            ExamineSearchNode.HasChildren = false;
-            ExamineSearchNode.Menu = new List<IAction>();
-            OnBeforeNodeRender(ref tree, ref ExamineSearchNode, EventArgs.Empty);
-            if (ExamineSearchNode != null)
-            {
-                tree.Add(ExamineSearchNode);
-                OnAfterNodeRender(ref tree, ref ExamineSearchNode, EventArgs.Empty);
-            }
-
             var CSVExportNode = XmlTreeNode.Create(this);
-            CSVExportNode.NodeID = "7";
+            CSVExportNode.NodeID = "6";
             CSVExportNode.NodeType = "CSVExport";
             CSVExportNode.Text = "CSV Export";
             CSVExportNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/CSVExport/Index');";
@@ -145,7 +130,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools
             }
 
             var MultiMoveNode = XmlTreeNode.Create(this);
-            MultiMoveNode.NodeID = "8";
+            MultiMoveNode.NodeID = "7";
             MultiMoveNode.NodeType = "MultiMove";
             MultiMoveNode.Text = "Multi Page Mover";
             MultiMoveNode.Action = "javascript:openPage('/umbraco/backoffice/Plugins/MultiMove/Index');";

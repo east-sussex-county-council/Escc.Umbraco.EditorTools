@@ -6,8 +6,7 @@
 <script src="~/App_Plugins/EditorTools/Scripts/jquery-3.1.1.js"></script>
 <script src="~/App_Plugins/EditorTools/Scripts/bootstrap.js"></script>
 
-<p></p>
-<div class="panel panel-info" id="noDataPanel">
+<div class="panel panel-info no-data-panel">
     <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> No Cached Data</div>
     <div class="panel-body">
         <div class="col-md-10">
@@ -15,11 +14,11 @@
                 There is currently no cached data available for this tab. Click Generate to get started. For data that requires the content service (The Content Tab and Page Expiry Tab), this could take a minimum of 30 seconds.
             </p>
             <p>
-                Once some data is gnerated and cached you won't have to wait the next time you open this tab.
+                Once some data is generated and cached you won't have to wait the next time you open this tab.
             </p>
         </div>
         <div class="col-md-2">
-            <p><a href="@Model" class="btn btn-primary" type="button" id="GenerateButton">Generate <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a></p>
+            <p><a href="@Model" class="btn btn-primary generate" type="button">Generate <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a></p>
         </div>
     </div>
 </div>
@@ -27,9 +26,9 @@
 @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_RegeneratingCache.cshtml");}
 
 <script>
-    $('#GeneratingPanel').hide();
-    $('#GenerateButton').on('click', function (event) {
-        $('#GeneratingPanel').show();
-        $('#noDataPanel').hide();
+    $('.generating').hide();
+    $('.generate').on('click', function (event) {
+        $('.generating').show();
+        $('.no-data-panel').hide();
     });
 </script>

@@ -6,51 +6,65 @@
 }
 @model Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels.MediaViewModel
 @{
-    if (Model.CachedDataAvailable)
-    {
-        <p></p>
-        <div id="Media">
-            <div class="list-group panel panel-info">
-                <a href="#MediaPanel" class="list-group-item" data-toggle="active" data-parent="#Media"><span class="glyphicon glyphicon-info-sign"></span> <b>Media</b></a>
-                <div class="active" id="MediaPanel">
-                    <div class="thumbnail">
-                        <p>  </p>
-                        <div class="panel with-nav-tabs">
-                            <div class="panel-heading">
-                                <ul class="nav nav-tabs">
+    <div id="MediaWrapper">
+        <div class="list-group panel panel-info">
+            <a href="#MediaPanel" class="list-group-item" data-toggle="active" data-parent="#Media"><span class="glyphicon glyphicon-info-sign"></span> <b>Media</b></a>
+            <div class="active" id="MediaPanel">
+                <div class="thumbnail">
+                    <div class="panel with-nav-tabs">
+                        <div class="panel-heading">
+                            <ul class="nav nav-tabs">
+                                @if (Model.ShowStatistics)
+                                {
+                                    <li><a href="#Media" data-toggle="tab"><b>Media</b></a></li>
+                                    <li class="active"><a href="#MediaStats" data-toggle="tab"><b>Statistics</b></a></li>
+                                }
+                                else
+                                {
                                     <li class="active"><a href="#Media" data-toggle="tab"><b>Media</b></a></li>
                                     <li><a href="#MediaStats" data-toggle="tab"><b>Statistics</b></a></li>
-                                </ul>
-                            </div>
-                            <div class="panel-body">
-                                <div class="tab-content">
-                                    <div class="tab-pane fade in active" id="Media">
-                                        <div class="row">
-                                            <div class="panel panel-info">
-                                                <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-                                                <div class="panel-body">
-                                                    <div class="col-md-6">
-                                                        This tab displays all of Umbraco's media files.
+                                }
+                            </ul>
+                        </div>
+                        <div class="panel-body">
+                            <div class="tab-content">
+                                <div class="tab-pane fade@(Model.ShowStatistics ? string.Empty : " in active")" id="Media">
+                                    <div class="row">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search media</div>
+                                            <div class="panel-body">
+                                                @using (Html.BeginForm("GetResults", "Media", FormMethod.Post))
+                                                {
+                                                    <div class="row">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TextBoxFor(m => m.Query, new { @placeholder = "Search", @class = "form-control" })
+                                                            </div>
+
+                                                            <div class="col-md-2">
+                                                                <input type="submit" class="btn btn-primary" value="Search" />
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-md-4">
-                                                        Data Cached on: @Model.CacheDate
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <p><a href="/umbraco/backoffice/Plugins/Media/RefreshCache" class="btn btn-primary" type="button" id="RefreshButton">Refresh <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a></p>
-                                                    </div>
-                                                </div>
+                                                }
                                             </div>
-                                            <div class="panel panel-success">
-                                                <div class="panel-heading">
-                                                    <h3 class="panel-title">Media</h3>
-                                                </div>
+                                        </div>
+                                    </div>
+                                    @if (Model.HasMediaResults)
+                                    {
+                                        <div class="row">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">Media</div>
                                                 <div class="panel-body">
                                                     @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_DataTable.cshtml", Model.Media);}
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="MediaStats">
+                                    }
+                                </div>
+                                <div class="tab-pane fade@(Model.ShowStatistics ? " in active" : string.Empty)" id="MediaStats">
+                                    @if (Model.StatisticsDataAvailable)
+                                    {
                                         <div class="row">
                                             <div class="panel panel-info">
                                                 <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
@@ -60,6 +74,9 @@
                                                     </div>
                                                     <div class="col-md-4">
                                                         Data Cached on: @Model.CacheDate
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <p><a href="/umbraco/backoffice/Plugins/Media/RefreshCache" class="btn btn-primary" type="button" id="RefreshButton">Refresh <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a></p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -85,7 +102,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="row">
+                                            @{ Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_NoCachedData.cshtml", "/umbraco/backoffice/Plugins/Media/RefreshCache"); }
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -93,11 +116,7 @@
                 </div>
             </div>
         </div>
-        }
-        else
-        {
-            Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_NoCachedData.cshtml", "/umbraco/backoffice/Plugins/Media/RefreshCache");
-        }
+    </div>
 }
 <div id="Regenerate">
     @{Html.RenderPartial("~/App_Plugins/EditorTools/Views/Partials/_RegeneratingCache.cshtml");}
@@ -105,7 +124,7 @@
 <script>
     $('#Regenerate').hide();
     $('#RefreshButton').on('click', function (event) {
-        $('#Media').hide();
+        $('#MediaWrapper').hide();
         $('#Regenerate').show();
     });
 </script>
