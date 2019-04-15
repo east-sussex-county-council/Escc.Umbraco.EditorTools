@@ -11,24 +11,16 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
     public class CSVExportController : UmbracoAuthorizedController
     {
-        private MemoryCache cache = MemoryCache.Default;
-
+        [HttpGet]
         public ActionResult Index()
         {
-            var model = new CSVExportViewModel();
-            model.CacheDate = cache["CacheDate"] as string;
-            return View("~/App_Plugins/EditorTools/Views/CSVExport/Index.cshtml", model);
+            return View("~/App_Plugins/EditorTools/Views/CSVExport/Index.cshtml");
         }
 
-        #region Helpers
+        [HttpGet]
         public void GetFile()
         {
-            var CSVString = cache["CSVString"] as StringBuilder;
-
-            if (CSVString == null)
-            {
-                CSVString = BuildString();
-            }
+            var CSVString = BuildString();
 
             // When not using an API controller to return a HTTPResonseMessage we must write directly to the HttpContext.Current.Response to return the file.
             string attachment = "attachment; filename=ContentExport.csv";
@@ -58,7 +50,6 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             {
                 AddRowForNode(csvString, node);
             }
-            StoreInCache(csvString);
             return csvString;
         }
 
@@ -89,38 +80,5 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             // append to the string builder
             sb.Append(name).Append(",").Append(docType).Append(",").Append(expiryDate).Append(",").Append("/umbraco#/content/content/edit/").Append(node.Id).Append(",").Append(liveURL).Append(Environment.NewLine);
         }
-
-        #endregion
-
-        #region Cache Methods
-        private void StoreInCache(StringBuilder CSVString)
-        {
-            if (cache.Contains("CSVString"))
-            {
-                cache["CSVString"] = CSVString;
-            }
-            else
-            {
-                cache.Add("CSVString", CSVString, System.Web.Caching.Cache.NoAbsoluteExpiration, null);
-            }
-            if (cache.Contains("CacheDate"))
-            {
-                cache["CacheDate"] = DateTime.Now.ToString();
-            }
-            else
-            {
-                cache.Add("CacheDate", DateTime.Now.ToString(), System.Web.Caching.Cache.NoAbsoluteExpiration, null);
-            }
-        }
-
-        public ActionResult RefreshCache()
-        {
-            BuildString();
-            GetFile();
-            var model = new CSVExportViewModel();
-            model.CacheDate = cache["CacheDate"] as string;
-            return View("~/App_Plugins/EditorTools/Views/CSVExport/Index.cshtml", model);
-        }
-        #endregion
     }
 }

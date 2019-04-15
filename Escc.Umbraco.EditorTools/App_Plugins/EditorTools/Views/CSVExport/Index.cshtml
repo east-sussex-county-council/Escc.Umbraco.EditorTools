@@ -4,7 +4,6 @@
 @{
     ViewBag.Title = "CSV Export";
 }
-@model Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels.CSVExportViewModel
 
 <link href="~/App_Plugins/EditorTools/Content/bootstrap.css" rel="stylesheet" />
 <link href="~/App_Plugins/EditorTools/Content/Site.css" rel="stylesheet" />
@@ -12,39 +11,11 @@
 <script src="~/App_Plugins/EditorTools/Scripts/bootstrap.js"></script>
 
 @{
-    if (Model.CacheDate == null)
-    {
         <div class="jumbotron" id="PageLoadedJumbo">
             <h1>Export To CSV</h1>
             <p class="lead">Click Export to download a CSV file of the entire Umbraco content tree</p>
             <p><a href="/umbraco/backoffice/Plugins/CSVExport/GetFile" class="btn btn-primary btn-lg" type="button" id="ExportButton">Export <span class="glyphicon glyphicon-save" aria-hidden="true"></span></a></p>
         </div>
-    }
-    else
-    {
-        <div class="jumbotron" id="PageLoadedJumboCached">
-            <h1>Export To CSV</h1>
-            <p class="lead">Click Export to download a CSV file of the entire Umbraco content tree</p>
-            <p><a href="/umbraco/backoffice/Plugins/CSVExport/GetFile" class="btn btn-primary btn-lg" type="button" id="CachedExportButton">Export <span class="glyphicon glyphicon-save" aria-hidden="true"></span></a></p>
-        </div>
-
-        <div class="panel panel-info" id="CachedFileAvailable">
-            <div class="panel-heading"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-6">
-                       A cached file is available to download
-                    </div>
-                    <div class="col-md-4">
-                        Data Cached on: @Model.CacheDate
-                    </div>
-                    <div class="col-md-2">
-                        <p><a href="/umbraco/backoffice/Plugins/CSVExport/RefreshCache" class="btn btn-primary" type="button" id="RefreshButton">Refresh <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
 }
 
 <div class="jumbotron" id="DownloadStartedJumbo">
@@ -62,12 +33,6 @@
 
     $('#ExportButton').on('click', function (event) {
         $('#PageLoadedJumbo').hide();
-        $('#DownloadStartedJumbo').show();
-    });
-
-    $('#RefreshButton').on('click', function (event) {
-        $('#PageLoadedJumboCached').hide();
-        $('#CachedFileAvailable').hide();
         $('#DownloadStartedJumbo').show();
     });
 </script>

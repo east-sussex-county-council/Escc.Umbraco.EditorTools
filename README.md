@@ -42,10 +42,6 @@ Developers: This tool also makes use of Examine to speed up the generation of th
 
 The 'CSV Export' tool generates a CSV file of your entire Umbraco content tree that you can download.
 
-Once generated the file is cached allowing you to immediately download the file again.
-
-If you believe the file to be out of date, simply click the refresh button to regenerate a new CSV file.
-
 The CSV file contains the following properties for each page: Header, Document Type, Expiry Date, Edit URL and Live URL.
 
 ## Installation
