@@ -153,7 +153,8 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                 foreach (var term in splitMediaQuery)
                 {
                     // if the term is found in the the umbracoFile property
-                    if (CleanString(result.Fields["umbracoFile"].ToLower()).Contains(term.ToLower()))
+                    // Note that umbracoFile is not present for a media item which has had its file removed
+                    if (CleanString(result.Fields["umbracoFile"]?.ToLower()).Contains(term.ToLower()))
                     {
                         CheckMediaDictionary(MediaResultsDictionary, result);
                     }
@@ -226,11 +227,16 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
         private static string getMediaID(SearchResult result)
         {
-            //Split the UmbracoFile property to get the media ID 
-            var umbracoFileName = result.Fields["umbracoFile"];
-            var splitFileName = umbracoFileName.Split('/');
-            var id = splitFileName[2];
-            return id;
+            // Split the UmbracoFile property to get the media ID 
+            // Note that umbracoFile is not present for a media item which has had its file removed
+            if (!string.IsNullOrEmpty(result.Fields["umbracoFile"]))
+            {
+                var umbracoFileName = result.Fields["umbracoFile"];
+                var splitFileName = umbracoFileName.Split('/');
+                var id = splitFileName[2];
+                return id;
+            }
+            else return string.Empty;
         }
 
         private static DateTime? ParseLuceneDate(string luceneDateTime)
