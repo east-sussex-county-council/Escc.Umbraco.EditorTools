@@ -2,15 +2,15 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Escc.Umbraco.EditorTools</id>
-    <version>3.0.0-beta18</version>
-    <authors>Cai Lehwald</authors>
+    <version>3.0.0</version>
+    <authors>East Sussex County Council</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>2.4.5 adds a recently expired tab to the page expiry report </description>
+    <description>A collection of tools for sitewide content, media and user management, for expert editors in Umbraco.</description>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System" targetFramework="net452" />
       <frameworkAssembly assemblyName="System.Runtime.caching" targetFramework="net452" />
     </frameworkAssemblies>
-    <releaseNotes>Addition of Recently Expired Tab to the Page Expiry Report</releaseNotes>
+    <releaseNotes>3.0.0 adds a recently expired tab to the page expiry report, removes or merges some unused, broken or duplicate tools and speeds up the CSV download</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <iconUrl>https://www.eastsussex.gov.uk/apple-touch-icon.png</iconUrl>
     <licenseUrl>http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/</licenseUrl>
