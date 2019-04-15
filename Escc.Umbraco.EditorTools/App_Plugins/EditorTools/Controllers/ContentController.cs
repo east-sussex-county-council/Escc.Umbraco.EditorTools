@@ -62,7 +62,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             // instantiate the Examine searcher and give it a query
             var searcher = ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
             var criteria = searcher.CreateSearchCriteria(IndexTypes.Content);
-            var examineQuery = criteria.RawQuery("+(__IndexType:content) +__NodeId:[0 TO 999999]");
+            var examineQuery = criteria.RawQuery("+(__IndexType:content)");
             var searchResults = searcher.Search(examineQuery);
 
             model.PublishedContent.Table = new DataTable();

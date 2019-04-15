@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Escc.Umbraco.EditorTools</id>
-    <version>2.4.5</version>
+    <version>3.0.0-beta18</version>
     <authors>Cai Lehwald</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>2.4.5 adds a recently expired tab to the page expiry report </description>
@@ -44,16 +44,12 @@
 
     <file src="App_Plugins\EditorTools\Views\Content\*.cshtml" target="content\App_Plugins\EditorTools\Views\Content\"/>
     <file src="App_Plugins\EditorTools\Views\CSVExport\*.cshtml" target="content\App_Plugins\EditorTools\Views\CSVExport\"/>
-    <file src="App_Plugins\EditorTools\Views\EditorToolsHome\*.cshtml" target="content\App_Plugins\EditorTools\Views\EditorToolsHome\"/>
-    <file src="App_Plugins\EditorTools\Views\ExamineSearch\*.cshtml" target="content\App_Plugins\EditorTools\Views\ExamineSearch\"/>
     <file src="App_Plugins\EditorTools\Views\ExpiryBulkUpdate\*.cshtml" target="content\App_Plugins\EditorTools\Views\ExpiryBulkUpdate\"/>
-    <file src="App_Plugins\EditorTools\Views\InBoundLinkChecker\*.cshtml" target="content\App_Plugins\EditorTools\Views\InBoundLinkChecker\"/>
     <file src="App_Plugins\EditorTools\Views\Media\*.cshtml" target="content\App_Plugins\EditorTools\Views\Media\"/>
     <file src="App_Plugins\EditorTools\Views\MultiMove\*.cshtml" target="content\App_Plugins\EditorTools\Views\MultiMove\"/>
     <file src="App_Plugins\EditorTools\Views\PageExpiry\*.cshtml" target="content\App_Plugins\EditorTools\Views\PageExpiry\"/>
     <file src="App_Plugins\EditorTools\Views\Partials\*.cshtml" target="content\App_Plugins\EditorTools\Views\Partials\"/>
     <file src="App_Plugins\EditorTools\Views\Shared\*.cshtml" target="content\App_Plugins\EditorTools\Views\Shared\"/>
-    <file src="App_Plugins\EditorTools\Views\Stats\*.cshtml" target="content\App_Plugins\EditorTools\Views\Stats\"/>
     <file src="App_Plugins\EditorTools\Views\Users\*.cshtml" target="content\App_Plugins\EditorTools\Views\Users\"/>
     <file src="App_Plugins\EditorTools\Views\Web.config" target="content\App_Plugins\EditorTools\Views\"/>
 

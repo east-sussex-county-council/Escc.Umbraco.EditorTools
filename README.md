@@ -42,7 +42,7 @@ Developers: This tool also makes use of Examine to speed up the generation of th
 
 The 'CSV Export' tool generates a CSV file of your entire Umbraco content tree that you can download.
 
-On particularly large websites the process will take a minimum of 30 seconds to create the CSV file. However once generated the file is cached allowing you to immediately download the file again.
+Once generated the file is cached allowing you to immediately download the file again.
 
 If you believe the file to be out of date, simply click the refresh button to regenerate a new CSV file.
 

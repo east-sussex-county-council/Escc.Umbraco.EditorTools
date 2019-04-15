@@ -57,7 +57,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         {
             var searcher = ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
             var criteria = searcher.CreateSearchCriteria(IndexTypes.Media);
-            var examineQuery = criteria.RawQuery("+(__IndexType:media) +__NodeId:[0 TO 999999]");
+            var examineQuery = criteria.RawQuery("+(__IndexType:media)");
             var searchResults = searcher.Search(examineQuery);
 
             var mediaFileTypeCount = new Dictionary<string, int>();

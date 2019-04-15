@@ -1,9 +1,11 @@
 ﻿using Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Models.ViewModels;
+using Examine;
 using System;
 using System.Runtime.Caching;
 using System.Text;
 using System.Web.Mvc;
 using Umbraco.Web.Mvc;
+using UmbracoExamine;
 
 namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 {
@@ -42,64 +44,50 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
         private StringBuilder BuildString()
         {
             // instantiate a string builder for our csv file
-            var CSVString = new StringBuilder();
+            var csvString = new StringBuilder();
 
             // append the first row of column names
-            CSVString.Append(string.Format("{0},{1},{2},{3},{4}", "Header", "Document Type", "Expiry Date", "Edit Url", "Live Url") + Environment.NewLine);
+            csvString.Append("Name,Document Type,Expiry Date,Edit Url,Live Url").Append(Environment.NewLine);
 
             // get all nodes at the root of the content tree
-            var root = ApplicationContext.Services.ContentService.GetRootContent();
-            foreach (var node in root)
+            var searcher = ExamineManager.Instance.SearchProviderCollection["InternalSearcher"];
+            var criteria = searcher.CreateSearchCriteria(IndexTypes.Content);
+            var examineQuery = criteria.RawQuery("+__IndexType:content +isDeleted:false");
+            var searchResults = searcher.Search(examineQuery);
+            foreach (var node in searchResults)
             {
-                // get the descendants of the node
-                var descendants = ApplicationContext.Services.ContentService.GetDescendants(node.Id);
-
-                // append the node to the stringbuilder
-                AppendToBuilder(CSVString, node);
-
-                foreach (var child in descendants)
-                {
-                    //append the child to the stringbuilder
-                    AppendToBuilder(CSVString, child);
-                }
+                AddRowForNode(csvString, node);
             }
-            StoreInCache(CSVString);
-            return CSVString;
+            StoreInCache(csvString);
+            return csvString;
         }
 
-        public void AppendToBuilder(StringBuilder sb, global::Umbraco.Core.Models.IContent node)
+        public void AddRowForNode(StringBuilder sb, SearchResult node)
         {
-            // get the node from the content cache
-            var contentCacheNode = UmbracoContext.ContentCache.GetById(node.Id);
-
-            // set variables to empty strings
-            var name = "";
-            var expiryDate = "";
-            var liveURL = "";
-            var docType = "";
-
-            // perform null checks on the fields
-            if (node.Name == null) name = "Null";
-            else name = node.Name;
-
-            if (node.ExpireDate == null) expiryDate = "No Expiry Date";
-            else expiryDate = node.ExpireDate.ToString();
-
-            if (contentCacheNode == null) liveURL = "Unpublished";
-            else liveURL = contentCacheNode.Url;
-
-            if (node.ContentType == null) docType = "None Found";
-            else docType = node.ContentType.Name;
-
+            var name = node.Fields["nodeName"];
+            
             // if the name contains a comma, surround it in "" so the csv doesn't treat each comma as the start of a new column
             if (name.Contains(","))
             {
-                var temp = name;
-                name = "\"" + temp.Replace("\"", "\"\"") + "\"";
+                name = "\"" + name.Replace("\"", "\"\"") + "\"";
             }
 
+            var docType = node.Fields["__NodeTypeAlias"];
+            var expiryDate = node.Fields["customExpireDate"];
+
+            string liveURL;
+            if (!String.IsNullOrEmpty(node.Fields["customIsPublished"]) && bool.Parse(node.Fields["customIsPublished"]))
+            {
+                var contentCacheNode = UmbracoContext.ContentCache.GetById(node.Id);
+                liveURL = contentCacheNode?.Url ?? "Parent unpublished";
+            }
+            else
+            {
+                liveURL = "Unpublished";
+            }
+            
             // append to the string builder
-            sb.Append(string.Format("{0},{1},{2},{3},{4}", name, docType, expiryDate, "/umbraco#/content/content/edit/" + node.Id, liveURL) + Environment.NewLine);
+            sb.Append(name).Append(",").Append(docType).Append(",").Append(expiryDate).Append(",").Append("/umbraco#/content/content/edit/").Append(node.Id).Append(",").Append(liveURL).Append(Environment.NewLine);
         }
 
         #endregion

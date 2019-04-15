@@ -18,8 +18,8 @@ namespace Escc.Umbraco.EditorTools.Events
             {
                 var contentService = ApplicationContext.Current.Services.ContentService;
                 var node = contentService.GetById(e.NodeId);
-                var isPublished = node.Published;
-                e.Fields.Add("customIsPublished", isPublished.ToString());
+                e.Fields.Add("isDeleted", node.Trashed.ToString().ToLowerInvariant());
+                e.Fields.Add("customIsPublished", node.Published.ToString().ToLowerInvariant());
 
                 if (node.ExpireDate.HasValue)
                 {
