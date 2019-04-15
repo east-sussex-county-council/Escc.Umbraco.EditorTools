@@ -59,7 +59,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
                                                  DateTime.Now.AddDays(-30).Date.ToString("yyyy-MM-dd") + "* TO " +
                                                  DateTime.Now.Date.ToString("yyyy-MM-dd") + "*])";
             var recentlyExpiredQuery =
-                criteria.RawQuery("+(__IndexType:content) +(isPublished:false) " + recentlyExpiredDateRangeFilter);
+                criteria.RawQuery("+(__IndexType:content) +(customIsPublished:false) " + recentlyExpiredDateRangeFilter);
             var recentlyExpiredSearchResults = searcher.Search(recentlyExpiredQuery);
 
             foreach (var result in recentlyExpiredSearchResults)
@@ -90,7 +90,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
             var expiringDateRangeFilter = "+(customExpireDate:[" + DateTime.Now.Date.ToString("yyyy-MM-dd") + "* TO " +
                                           DateTime.Now.AddDays(14).Date.ToString("yyyy-MM-dd") + "*])";
             var expiringQuery =
-                criteria.RawQuery("+(__IndexType:content) +(isPublished:true) " + expiringDateRangeFilter);
+                criteria.RawQuery("+(__IndexType:content) +(customIsPublished:true) " + expiringDateRangeFilter);
             var expiringSearchResults = searcher.Search(expiringQuery);
 
             foreach (var result in expiringSearchResults)
@@ -126,7 +126,7 @@ namespace Escc.Umbraco.EditorTools.App_Plugins.EditorTools.Controllers
 
             var neverExpiresQuery =
                 criteria.RawQuery(
-                    "+(__IndexType:content) +(isPublished:true) -(customExpireDate:[0001-01-01* TO 3999-12-31*])");
+                    "+(__IndexType:content) +(customIsPublished:true) -(customExpireDate:[0001-01-01* TO 3999-12-31*])");
             var neverExpiresSearchResults = searcher.Search(neverExpiresQuery);
             foreach (var result in neverExpiresSearchResults)
             {
