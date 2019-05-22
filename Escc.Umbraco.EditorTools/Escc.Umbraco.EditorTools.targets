@@ -2,8 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Escc_Umbraco_EditorTools_AppPlugins Include="$(MSBuildProjectDirectory)\..\packages\Escc.Umbraco.EditorTools.3.0.1\Content\App_Plugins\**\*.*"/>
-	<Escc_Umbraco_EditorTools_Content Include="$(MSBuildProjectDirectory)\..\packages\jquery.datatables.1.10.12\Content\Content\**\*.*"/>
-	<Escc_Umbraco_EditorTools_Scripts Include="$(MSBuildProjectDirectory)\..\packages\jquery.datatables.1.10.12\Content\Scripts\**\*.*"/>
   </ItemGroup>
 
   <Target Name="Escc_Umbraco_EditorTools_CopyFiles" BeforeTargets="PrepareForBuild">
@@ -11,16 +9,6 @@
     <Copy
         SourceFiles="@(Escc_Umbraco_EditorTools_AppPlugins)"
         DestinationFiles="@(Escc_Umbraco_EditorTools_AppPlugins->'.\App_Plugins\%(RecursiveDir)%(Filename)%(Extension)')"
-        />	
-		<Message Text="Copying Escc.Umbraco.EditorTools files to Content" />
-    <Copy
-        SourceFiles="@(Escc_Umbraco_EditorTools_Content)"
-        DestinationFiles="@(Escc_Umbraco_EditorTools_Content->'.\Content\%(RecursiveDir)%(Filename)%(Extension)')"
-        />	
-	<Message Text="Copying Escc.Umbraco.EditorTools files to Scripts" />
-    <Copy
-        SourceFiles="@(Escc_Umbraco_EditorTools_Scripts)"
-        DestinationFiles="@(Escc_Umbraco_EditorTools_Scripts->'.\Scripts\%(RecursiveDir)%(Filename)%(Extension)')"
         />	
   </Target>
 </Project>
