@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Escc.Umbraco.EditorTools</id>
-    <version>4.0.0</version>
+    <version>4.0.1</version>
     <authors>East Sussex County Council</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A collection of tools for sitewide content, media and user management, for expert editors in Umbraco.</description>
@@ -10,7 +10,7 @@
       <frameworkAssembly assemblyName="System" targetFramework="net452" />
       <frameworkAssembly assemblyName="System.Runtime.caching" targetFramework="net452" />
     </frameworkAssemblies>
-    <releaseNotes>4.0.0 updates the minimum requirement to Umbraco 7.7.0</releaseNotes>
+    <releaseNotes>4.0.1 fixes the .targets file in 4.0.0</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <iconUrl>https://www.eastsussex.gov.uk/apple-touch-icon.png</iconUrl>
     <licenseUrl>http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/</licenseUrl>
